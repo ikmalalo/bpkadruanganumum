@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react"
-import StatCard from "../components/DashboardComponents/Statcard"
+import StatCard from "../components/DashboardComponents/StatCard"
 import BookingTable from "../components/DashboardComponents/BookingTable"
 import DashboardFilter from "../components/DashboardComponents/DashboardFilter"
 import "../index.css"
