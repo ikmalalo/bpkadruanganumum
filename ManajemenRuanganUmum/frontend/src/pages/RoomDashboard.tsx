@@ -21,7 +21,7 @@ const [selectedAgenda, setSelectedAgenda] = useState<any | null>(null)
 useEffect(() => {
   const fetchData = async () => {
     try {
-      const response = await fetch('http://localhost:5000/api/agendas')
+      const response = await fetch('/api/agendas')
       const data = await response.json()
       
       const bpkad = data.filter((item: any) => item.type === 'BPKAD')

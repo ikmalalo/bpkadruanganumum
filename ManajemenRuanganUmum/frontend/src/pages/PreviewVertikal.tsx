@@ -27,7 +27,7 @@ export default function PreviewVertikal() {
   // Fetch Data from API
   const fetchAgendas = async () => {
     try {
-      const response = await fetch('http://localhost:5000/api/agendas')
+      const response = await fetch('/api/agendas')
       const data = await response.json()
       setAllAgendas(data)
       setLoading(false)

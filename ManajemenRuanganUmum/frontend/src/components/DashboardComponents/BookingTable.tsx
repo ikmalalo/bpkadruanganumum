@@ -194,7 +194,7 @@ const applyStatusChange=async ()=>{
   const targetData = type === "bpkad" ? bpkadData[index] : pemkotData[index];
 
   try {
-    const response = await fetch(`http://localhost:5000/api/agendas/${targetData.id}/status`, {
+    const response = await fetch(`/api/agendas/${targetData.id}/status`, {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ status }),

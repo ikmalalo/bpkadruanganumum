@@ -84,8 +84,8 @@ export default function KonfirmasiPeminjaman() {
             onClick={async () => {
               const isEdit = (data as any).isEdit;
               const url = isEdit 
-                ? `http://localhost:5000/api/agendas/${(data as any).id}` 
-                : 'http://localhost:5000/api/agendas';
+                ? `/api/agendas/${(data as any).id}` 
+                : '/api/agendas';
               const method = isEdit ? 'PUT' : 'POST';
 
               try {
