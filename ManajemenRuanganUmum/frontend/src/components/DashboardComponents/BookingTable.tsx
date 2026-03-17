@@ -55,18 +55,18 @@ const AgendaCard = ({ item, index, realIndex, type, isSelected, onClick, onStatu
           </div>
         </div>
 
-        <div className="flex items-start gap-1.5 text-[11px] text-gray-600">
+        <div className="flex items-start gap-1.5 text-[11px] text-gray-600 font-bold">
            <MapPin size={12} className="text-gray-400 mt-0.5" />
            <span className="font-semibold uppercase">{item.tempat}</span>
         </div>
 
-        <div className="flex flex-wrap gap-x-4 gap-y-1">
-          <div className="flex items-center gap-1.5 text-[11px] text-gray-500">
+        <div className="flex flex-wrap gap-x-4 gap-y-1 font-bold">
+          <div className="flex items-center gap-1.5 text-[11px] text-gray-500 font-bold">
              <User size={12} className="text-gray-400" />
              <span>{item.pelaksana}</span>
           </div>
           {item.dihadiri && (
-            <div className="flex items-center gap-1.5 text-[11px] text-gray-500">
+            <div className="flex items-center gap-1.5 text-[11px] text-gray-500 font-bold">
                <Users size={12} className="text-gray-400" />
                <span>{item.dihadiri}</span>
             </div>

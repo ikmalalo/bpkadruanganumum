@@ -186,12 +186,12 @@ export default function DashboardFilter({
             onClick={() => navigate("/peminjaman", { state: { ...selectedAgenda, isEdit: true } })}
             className="
               flex items-center justify-center gap-2
-              bg-indigo-600 hover:bg-indigo-700
+              bg-blue-600 hover:bg-blue-700
               text-white
               px-5 py-2.5
               rounded-xl
               text-sm font-bold
-              shadow-md shadow-indigo-100
+              shadow-md shadow-blue-100
               transition-all
               hover:scale-[1.02] active:scale-95
               w-full

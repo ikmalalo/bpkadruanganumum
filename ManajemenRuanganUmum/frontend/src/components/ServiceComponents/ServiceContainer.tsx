@@ -20,10 +20,10 @@ export default function ServiceContainer() {
 
       <div className="w-[420px]">
         <ServiceCard
-          title="Penggajian Karyawan"
+          title="Kenaikan Gaji"
           description="Sistem informasi penggajian pegawai BPKAD."
           icon="$"
-          color="bg-orange-100 text-orange-600"
+          color="bg-green-100 text-green-600"
           onClick={() => navigate("/payroll")}
         />
       </div>
