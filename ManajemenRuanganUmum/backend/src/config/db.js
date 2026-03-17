@@ -9,4 +9,5 @@ if (!connectionString) {
 }
 
 const pool = mysql.createPool(connectionString);
+
 module.exports = pool;
