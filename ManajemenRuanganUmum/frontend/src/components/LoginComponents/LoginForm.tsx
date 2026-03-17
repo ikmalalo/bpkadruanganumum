@@ -4,6 +4,7 @@ import LoginButton from "./LoginButton"
 import logo from "../../assets/images/logo.png"
 import { useNavigate } from "react-router-dom"
 import Notification from "../Common/Notification"
+import { apiUrl } from "../../lib/api"
 
 export default function LoginForm() {
   const navigate = useNavigate()
@@ -36,7 +37,7 @@ export default function LoginForm() {
 
     setLoading(true)
     try {
-      const response = await fetch('/api/auth/login', {
+      const response = await fetch(apiUrl('/api/auth/login'), {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
