@@ -19,11 +19,11 @@ export default defineConfig({
     // 🔥 ini cuma buat LOCAL
     proxy: {
       "/api": {
-        target: "https://bpkadruanganumum.vercel.app/",
+        target: "http://localhost:59489",
         changeOrigin: true,
       },
       "/uploads": {
-        target: "https://bpkadruanganumum.vercel.app/",
+        target: "http://localhost:59489",
         changeOrigin: true,
       },
     },
