@@ -3,6 +3,8 @@ import { useState, useRef } from "react"
 import { useNavigate } from "react-router-dom"
 import { format } from "date-fns"
 import { id } from "date-fns/locale"
+import { DayPicker } from "react-day-picker"
+import "react-day-picker/dist/style.css"
 import { 
   Award, 
   User, 
@@ -24,8 +26,13 @@ export default function UploadSertifikat() {
   const [form, setForm] = useState({
     namaPenerima: "",
     penghargaan: "ASN TERBAIK",
+    tanggal: format(new Date(), "EEEE, dd MMM yyyy", { locale: id }),
     foto: null as File | null
   })
+
+  const [selectedDate, setSelectedDate] = useState<Date | undefined>(new Date())
+  const [openCalendar, setOpenCalendar] = useState(false)
+  const calendarRef = useRef<HTMLDivElement>(null)
 
   const [preview, setPreview] = useState<string | null>(null)
   const fileInputRef = useRef<HTMLInputElement>(null)
@@ -45,6 +52,21 @@ export default function UploadSertifikat() {
       reader.readAsDataURL(file)
     }
   }
+
+  useEffect(() => {
+    const handleClickOutside = (event: any) => {
+      if (
+        calendarRef.current &&
+        !calendarRef.current.contains(event.target)
+      ) {
+        setOpenCalendar(false)
+      }
+    }
+    document.addEventListener("mousedown", handleClickOutside)
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside)
+    }
+  }, [])
 
   const handleSubmit = () => {
     // For now, just show a success message or navigate
@@ -74,14 +96,41 @@ export default function UploadSertifikat() {
               />
             </FormField>
             <FormField label="Tanggal Upload">
-              <div className="relative">
-                <input 
-                  type="text" 
-                  className={`${inputClass} bg-gray-50 cursor-not-allowed`}
-                  value={format(new Date(), "dd MMMM yyyy", { locale: id })}
-                  disabled
-                />
-                <Calendar size={16} className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400" />
+              <div className="relative" ref={calendarRef}>
+                <button
+                  type="button"
+                  onClick={() => setOpenCalendar(!openCalendar)}
+                  className="w-full flex items-center justify-between px-3 py-2 border border-gray-300 rounded-lg text-sm bg-white hover:border-orange-400 transition min-h-[40px]"
+                >
+                  <span className="text-gray-700">
+                    {selectedDate
+                      ? format(selectedDate, "dd MMMM yyyy", { locale: id })
+                      : "Pilih tanggal"}
+                  </span>
+                  <Calendar size={18} className="text-gray-400" />
+                </button>
+                <div
+                  className={`absolute z-30 mt-2 bg-white rounded-xl shadow-lg border p-3 transition-all duration-200 ${
+                    openCalendar
+                      ? "opacity-100 translate-y-0"
+                      : "opacity-0 -translate-y-2 pointer-events-none"
+                  }`}
+                >
+                  <DayPicker
+                    mode="single"
+                    selected={selectedDate}
+                    onSelect={(date) => {
+                      setSelectedDate(date)
+                      if (date) {
+                        handleChange(
+                          "tanggal",
+                          format(date, "EEEE, dd MMM yyyy", { locale: id })
+                        )
+                      }
+                      setOpenCalendar(false)
+                    }}
+                  />
+                </div>
               </div>
             </FormField>
           </div>
