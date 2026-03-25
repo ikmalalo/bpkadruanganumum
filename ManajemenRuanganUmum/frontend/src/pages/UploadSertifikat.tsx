@@ -19,6 +19,7 @@ import {
 import SectionHeader from "../components/PeminjamanComponents/SectionHeader"
 import FormField from "../components/PeminjamanComponents/FormField"
 import RadioCard from "../components/PeminjamanComponents/RadioCard"
+import Toast from "../components/DashboardComponents/Toast"
 
 const inputClass = "w-full px-3 py-2 border border-gray-300 rounded-lg text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-orange-400 transition"
 
@@ -37,6 +38,8 @@ export default function UploadSertifikat() {
 
   const [preview, setPreview] = useState<string | null>(null)
   const fileInputRef = useRef<HTMLInputElement>(null)
+  
+  const [toast, setToast] = useState({ show: false, message: "", type: 'success' as 'success' | 'error' })
 
   const handleChange = (field: string, value: any) => {
     setForm(prev => ({ ...prev, [field]: value }))
@@ -80,25 +83,26 @@ export default function UploadSertifikat() {
           namaPenerima: form.namaPenerima,
           penghargaan: form.penghargaan,
           tanggal: form.tanggal,
-          foto: preview, // Send the base64 string
+          foto: preview,
         }),
       });
 
       if (response.ok) {
-        alert("Sertifikat berhasil diupload!");
-        navigate("/riwayat");
+        setToast({ show: true, message: "Sertifikat berhasil diupload!", type: 'success' });
+        setTimeout(() => navigate("/riwayat"), 1500);
       } else {
-        const errorData = await response.json();
-        alert(`Gagal upload sertifikat: ${errorData.message}`);
+        const errorData = await response.json().catch(() => ({ message: "Ukuran file terlalu besar atau terjadi kesalahan server" }));
+        setToast({ show: true, message: `Gagal upload: ${errorData.message}`, type: 'error' });
       }
     } catch (error) {
       console.error('Error uploading certificate:', error);
-      alert("Terjadi kesalahan saat upload sertifikat.");
+      setToast({ show: true, message: "Terjadi kesalahan saat upload sertifikat.", type: 'error' });
     }
+    setTimeout(() => setToast(prev => ({ ...prev, show: false })), 3000);
   }
 
   return (
-    <div className="flex flex-col pt-4">
+    <div className="flex flex-col pt-4 relative">
       <div className="bg-white rounded-xl shadow-sm border border-gray-200 px-8 py-7 space-y-8">
         
         {/* INFORMASI PENERIMA */}
@@ -245,6 +249,7 @@ export default function UploadSertifikat() {
         </div>
 
       </div>
+      <Toast show={toast.show} message={toast.message} type={toast.type} />
     </div>
   )
 }
