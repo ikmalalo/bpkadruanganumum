@@ -205,11 +205,12 @@ export default function PreviewHorizontal() {
               </tbody>
             </table>
           ) : currentSlide?.type === 'CERTIFICATE' ? (
-            <div className="flex-1 flex items-center justify-center p-8 bg-white overflow-hidden">
+            <div className="flex-1 flex items-center justify-center bg-white overflow-hidden p-10">
                 <img 
                   src={currentSlide.data.foto} 
                   alt="Sertifikat" 
-                  className="max-w-[90%] max-h-[90%] w-auto h-auto object-contain shadow-[0_35px_60px_-15px_rgba(0,0,0,0.3)] border-[12px] border-white rounded-lg" 
+                  style={{ maxHeight: '72vh', maxWidth: '85vw' }}
+                  className="w-auto h-auto object-contain shadow-[0_35px_60px_-15px_rgba(0,0,0,0.3)] border-[12px] border-white rounded-lg" 
                 />
             </div>
           ) : null}
