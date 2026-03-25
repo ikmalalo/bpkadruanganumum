@@ -4,7 +4,7 @@ export default function LoginInfo() {
   return (
     
     <div
-      className="w-1/2 bg-cover bg-center flex items-end justify-center pb-32 relative"
+      className="w-full md:w-1/2 bg-cover bg-center flex items-end justify-center pb-10 md:pb-32 relative min-h-[400px] md:min-h-0"
       style={{ backgroundImage: `url(${gedung})` }}
     >
 
@@ -41,9 +41,11 @@ export default function LoginInfo() {
         backdrop-blur-sm
         border border-white/20
         text-white
-        p-10
+        p-6
+        md:p-10
         rounded-2xl
-        w-[450px]
+        w-[90%]
+        max-w-[450px]
         shadow-[0_10px_40px_rgba(0,0,0,0.35)]
         ">
 

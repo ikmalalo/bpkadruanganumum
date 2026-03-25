@@ -83,7 +83,8 @@ export default function LoginForm() {
     shadow-xl
     rounded-xl
     p-10
-    w-[420px]
+    w-full
+    max-w-[420px]
     transition-all
     duration-300
     hover:scale-105
