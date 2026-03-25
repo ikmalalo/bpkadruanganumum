@@ -7,7 +7,7 @@ import { useNavigate } from "react-router-dom"
 import { apiUrl } from "../lib/api"
 
 interface AgendaItem {
-  no: number
+  id: number
   hari: string
   tanggal: string
   tempat: string
@@ -19,95 +19,104 @@ interface AgendaItem {
   type: "BPKAD" | "PEMKOT"
 }
 
+interface CertificateItem {
+  id: number
+  nama_penerima: string
+  penghargaan: string
+  tanggal: string
+  foto: string // base64
+}
+
+type SlideItem = { type: 'AGENDA'; data: AgendaItem[]; category: 'BPKAD' | 'PEMKOT' } | { type: 'CERTIFICATE'; data: CertificateItem }
+
 export default function PreviewVertikal() {
   const navigate = useNavigate()
   const [time, setTime] = useState(new Date())
   const [allAgendas, setAllAgendas] = useState<AgendaItem[]>([])
+  const [allCertificates, setAllCertificates] = useState<CertificateItem[]>([])
   const [loading, setLoading] = useState(true)
 
-  // Fetch Data from API
-  const fetchAgendas = async () => {
+  const fetchData = async () => {
     try {
-      const response = await fetch(apiUrl('/api/agendas'))
-      const data = await response.json()
-      setAllAgendas(data)
+      const [respAgendas, respCerts] = await Promise.all([
+        fetch(apiUrl('/api/agendas')),
+        fetch(apiUrl('/api/certificates'))
+      ])
+      const agendas = await respAgendas.json()
+      const certs = await respCerts.json()
+      setAllAgendas(agendas)
+      setAllCertificates(certs)
       setLoading(false)
     } catch (error) {
-      console.error('Error fetching agendas:', error)
+      console.error('Error fetching data:', error)
       setLoading(false)
     }
   }
 
   useEffect(() => {
-    fetchAgendas()
-    const refreshInterval = setInterval(fetchAgendas, 30000) // Refresh every 30 seconds
+    fetchData()
+    const refreshInterval = setInterval(fetchData, 30000)
     return () => clearInterval(refreshInterval)
   }, [])
 
   const itemsPerPageCount = 2
-  const SLIDE_DURATION = 10000 // 10 seconds per page
+  const SLIDE_DURATION = 10000
 
-  // Process data into pages grouped by type with reset numbering
-  const pagedAgendas = useMemo(() => {
-    if (!allAgendas.length) return []
-
-    const bpkad = allAgendas
-      .filter(item => item.type === "BPKAD")
-      .map((item, idx) => ({ ...item, no: idx + 1 }))
+  const pages = useMemo(() => {
+    const slides: SlideItem[] = []
     
-    const pemkot = allAgendas
-      .filter(item => item.type === "PEMKOT")
-      .map((item, idx) => ({ ...item, no: idx + 1 }))
+    // Group Agendas
+    const bpkad = allAgendas.filter(item => item.type === "BPKAD")
+    const pemkot = allAgendas.filter(item => item.type === "PEMKOT")
 
-    const chunk = (arr: AgendaItem[], size: number) => {
-      const chunks = []
+    const chunk = (arr: AgendaItem[], size: number, category: 'BPKAD' | 'PEMKOT') => {
       for (let i = 0; i < arr.length; i += size) {
-        chunks.push(arr.slice(i, i + size))
+        slides.push({ type: 'AGENDA', data: arr.slice(i, i + size), category })
       }
-      return chunks
     }
 
-    return [...chunk(bpkad, itemsPerPageCount), ...chunk(pemkot, itemsPerPageCount)]
-  }, [allAgendas, itemsPerPageCount])
+    chunk(bpkad, itemsPerPageCount, 'BPKAD')
+    chunk(pemkot, itemsPerPageCount, 'PEMKOT')
 
-  const totalPages = pagedAgendas.length
+    // Add Certificates
+    allCertificates.forEach(cert => {
+      slides.push({ type: 'CERTIFICATE', data: cert })
+    })
+
+    return slides
+  }, [allAgendas, allCertificates])
+
   const [currentPage, setCurrentPage] = useState(0)
   const [progress, setProgress] = useState(0)
 
-  // Update Time
   useEffect(() => {
     const timer = setInterval(() => setTime(new Date()), 1000)
     return () => clearInterval(timer)
   }, [])
 
-  // Auto-slide Progress Bar Logic
   useEffect(() => {
-    if (totalPages === 0) return
-
-    const interval = 50 // Update every 50ms for smoother animation
+    if (pages.length === 0) return
+    const interval = 50
     const step = (interval / SLIDE_DURATION) * 100
-
     const timer = setInterval(() => {
       setProgress((prev) => {
         if (prev >= 100) {
-          setCurrentPage((oldPage) => (oldPage + 1) % totalPages)
+          setCurrentPage((oldPage) => (oldPage + 1) % pages.length)
           return 0
         }
         return prev + step
       })
     }, interval)
-
     return () => clearInterval(timer)
-  }, [totalPages])
+  }, [pages.length])
 
-  const currentAgendas = useMemo(() => {
-    return pagedAgendas[currentPage] || []
-  }, [currentPage, pagedAgendas])
+  const currentSlide = pages[currentPage]
 
   const pageTitle = useMemo(() => {
-    const firstItemType = currentAgendas[0]?.type
-    return `AGENDA RUANG RAPAT ${firstItemType || "BPKAD"}`
-  }, [currentAgendas])
+    if (!currentSlide) return "AGENDA RUANG RAPAT"
+    if (currentSlide.type === 'AGENDA') return `AGENDA RUANG RAPAT ${currentSlide.category}`
+    return "PENGHARGAAN & SERTIFIKAT"
+  }, [currentSlide])
 
   if (loading && allAgendas.length === 0) {
     return (
@@ -120,27 +129,18 @@ export default function PreviewVertikal() {
 
   return (
     <div className="bg-[#f3f4f6] h-screen relative overflow-hidden flex flex-col">
-      
-      {/* HIDDEN BACK BUTTON TRIGGER (TOP LEFT) */}
       <div className="fixed top-0 left-0 w-20 h-20 z-50 group flex items-start justify-start p-3">
-        <button 
-          onClick={() => navigate('/preview')}
-          className="bg-white p-2 rounded-full shadow-2xl border border-gray-100 text-orange-500 transition-all duration-300 opacity-0 group-hover:opacity-100 scale-75 group-hover:scale-100 active:scale-90"
-        >
+        <button onClick={() => navigate('/preview')} className="bg-white p-2 rounded-full shadow-2xl border border-gray-100 text-orange-500 transition-all duration-300 opacity-0 group-hover:opacity-100 scale-75 group-hover:scale-100 active:scale-90">
           <ArrowLeft size={18} strokeWidth={3} />
         </button>
       </div>
 
       <div className="flex-1 p-3 md:p-4 flex flex-col w-full max-w-full mx-auto overflow-hidden">
-        {/* HEADER: CLOCK, DATE & LOGO */}
         <div className="flex flex-col items-center mb-3 text-center">
-          <img src={logo} alt="Logo BPKAD" className="h-10 mb-2 object-contain" />
-          
+          <img src={logo} alt="Logo" className="h-10 mb-2 object-contain" />
           <div className="flex flex-col items-center">
-            <div className="flex items-baseline gap-1.5 mb-0">
-              <span className="text-2xl md:text-3xl font-black text-gray-800 leading-none">
-                {format(time, "HH:mm")}
-              </span>
+            <div className="flex items-baseline gap-1.5">
+              <span className="text-2xl md:text-3xl font-black text-gray-800">{format(time, "HH:mm")}</span>
               <span className="text-base md:text-lg font-bold text-orange-500">WITA</span>
             </div>
             <span className="text-xs md:text-sm font-bold text-orange-500 uppercase tracking-widest leading-none">
@@ -149,101 +149,68 @@ export default function PreviewVertikal() {
           </div>
         </div>
 
-        {/* PROGRESS ACCENT BAR */}
         <div className="w-full h-1.5 rounded-full overflow-hidden flex mb-3 shadow-inner bg-gray-200">
-            <div 
-              className="bg-orange-500 h-full shadow-[0_0_15px_rgba(249,115,22,0.4)] transition-all duration-100 ease-linear"
-              style={{ width: `${progress}%` }}
-            ></div>
+          <div className="bg-orange-500 h-full transition-all duration-100 ease-linear" style={{ width: `${progress}%` }}></div>
         </div>
 
-        {/* DYNAMIC PAGE TITLE */}
         <div className="flex flex-col items-center mb-3 text-center">
-            <h1 className="text-base md:text-lg font-black text-gray-800 tracking-tight uppercase leading-tight mb-2 min-h-[1.5em]">
-              {pageTitle}
-            </h1>
-            
-            {/* DYNAMIC PAGE CIRCLES */}
-            <div className="flex gap-1">
-                {Array.from({ length: totalPages }).map((_, i) => (
-                  <div 
-                    key={i}
-                    className={`w-1.5 h-1.5 rounded-full transition-all duration-300 ${
-                      i === currentPage 
-                        ? "bg-orange-500 shadow-lg shadow-orange-200 animate-pulse scale-110" 
-                        : "bg-gray-300 shadow-sm"
-                    }`}
-                  ></div>
-                ))}
-            </div>
-        </div>
-
-        {/* AGENDA LIST CONTAINER (2 PER PAGE) */}
-        <div className="flex-1 overflow-hidden space-y-4 pb-4">
-          <div className="flex flex-col gap-4">
-            {currentAgendas.map((item, idx) => (
-              <div key={`${currentPage}-${idx}`} className="bg-white rounded-2xl shadow-md border border-gray-100 overflow-hidden flex flex-col relative">
-                {/* STATUS BADGE */}
-                <div className={`absolute top-4 right-4 px-4 py-1.5 rounded-full text-xs font-black text-white shadow-md z-10
-                  ${item.status === "Berlangsung" ? "bg-[#10b981]" : "bg-[#3b82f6]"}`}>
-                  {item.status}
-                </div>
-
-                {/* TOP SECTION: NO & TIME */}
-                <div className="bg-gray-50/50 p-4 border-b border-gray-100 flex items-center gap-4">
-                  <div className="w-10 h-10 rounded-xl bg-orange-500 flex items-center justify-center text-white font-black text-lg shadow-orange-200 shadow-lg">
-                    {item.no}
-                  </div>
-                  <div>
-                    <div className="text-[10px] font-bold text-gray-400 uppercase tracking-wider leading-none">
-                      {item.hari}
-                    </div>
-                    <div className="text-xs font-black text-gray-600 uppercase mt-0.5">
-                      {item.tanggal.includes(', ') ? item.tanggal.split(', ')[1] : item.tanggal}
-                    </div>
-                    <div className="text-base font-black text-orange-500 leading-none mt-1">{item.pukul}</div>
-                  </div>
-                </div>
-
-                {/* MIDDLE SECTION: CONTENT */}
-                <div className="p-5 flex flex-col gap-4">
-                  {/* ACARA */}
-                  <div>
-                    <div className="text-[10px] font-bold text-orange-500 uppercase tracking-widest mb-1">ACARA / AGENDA</div>
-                    <h3 className="text-lg font-black text-gray-800 leading-tight uppercase line-clamp-3">
-                      {item.acara}
-                    </h3>
-                  </div>
-
-                  {/* INFO GRID */}
-                  <div className="grid grid-cols-2 gap-4 mt-2">
-                    <div>
-                      <div className="text-[10px] font-bold text-orange-500 uppercase tracking-widest mb-1">TEMPAT / RUANG</div>
-                      <div className="text-sm font-black text-gray-700 leading-snug uppercase">
-                        {item.tempat}
-                      </div>
-                    </div>
-                    <div>
-                      <div className="text-[10px] font-bold text-orange-500 uppercase tracking-widest mb-1">PELAKSANA</div>
-                      <div className="text-sm font-black text-gray-700 leading-snug uppercase">
-                        {item.pelaksana}
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* DIHADIRI (IF ANY) */}
-                  {item.dihadiri && (
-                    <div className="mt-1 border-t border-gray-50 pt-3">
-                      <div className="text-[10px] font-bold text-orange-500 uppercase tracking-widest mb-1">DIHADIRI / PESERTA</div>
-                      <div className="text-sm font-black text-gray-800 uppercase leading-snug">
-                        {item.dihadiri}
-                      </div>
-                    </div>
-                  )}
-                </div>
-              </div>
+          <h1 className="text-base md:text-lg font-black text-gray-800 tracking-tight uppercase leading-tight mb-2 min-h-[1.5em]">{pageTitle}</h1>
+          <div className="flex gap-1">
+            {pages.map((_, i) => (
+              <div key={i} className={`w-1.5 h-1.5 rounded-full transition-all duration-300 ${i === currentPage ? "bg-orange-500 scale-110" : "bg-gray-300"}`}></div>
             ))}
           </div>
+        </div>
+
+        <div className="flex-1 overflow-hidden">
+          {currentSlide?.type === 'AGENDA' ? (
+            <div className="flex flex-col gap-4 animate-in fade-in slide-in-from-bottom-4 duration-500">
+              {currentSlide.data.map((item, idx) => (
+                <div key={idx} className="bg-white rounded-2xl shadow-md border border-gray-100 overflow-hidden flex flex-col relative translate-y-0 hover:-translate-y-1 transition-transform">
+                  <div className={`absolute top-4 right-4 px-4 py-1.5 rounded-full text-xs font-black text-white shadow-md z-10 ${item.status === "Berlangsung" ? "bg-[#10b981]" : "bg-[#3b82f6]"}`}>
+                    {item.status}
+                  </div>
+                  <div className="bg-gray-50/50 p-4 border-b border-gray-100 flex items-center gap-4">
+                    <div className="w-10 h-10 rounded-xl bg-orange-500 flex items-center justify-center text-white font-black text-lg shadow-orange-200 shadow-lg">{idx + 1}</div>
+                    <div>
+                      <div className="text-[10px] font-bold text-gray-400 uppercase tracking-wider leading-none">{item.hari}</div>
+                      <div className="text-xs font-black text-gray-600 uppercase mt-0.5">{item.tanggal.split(', ')[1] || item.tanggal}</div>
+                      <div className="text-base font-black text-orange-500 leading-none mt-1">{item.pukul}</div>
+                    </div>
+                  </div>
+                  <div className="p-5 flex flex-col gap-4">
+                    <div>
+                      <div className="text-[10px] font-bold text-orange-500 uppercase tracking-widest mb-1">ACARA / AGENDA</div>
+                      <h3 className="text-lg font-black text-gray-800 leading-tight uppercase line-clamp-3">{item.acara}</h3>
+                    </div>
+                    <div className="grid grid-cols-2 gap-4 mt-2">
+                       <div>
+                          <div className="text-[10px] font-bold text-orange-500 uppercase tracking-widest mb-1">TEMPAT</div>
+                          <div className="text-sm font-black text-gray-700 uppercase">{item.tempat}</div>
+                       </div>
+                       <div>
+                          <div className="text-[10px] font-bold text-orange-500 uppercase tracking-widest mb-1">PELAKSANA</div>
+                          <div className="text-sm font-black text-gray-700 uppercase">{item.pelaksana}</div>
+                       </div>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          ) : currentSlide?.type === 'CERTIFICATE' ? (
+            <div className="h-full flex flex-col gap-6 p-4 animate-in fade-in slide-in-from-bottom-4 duration-500">
+               <div className="flex-1 flex items-center justify-center overflow-hidden">
+                  <img src={currentSlide.data.foto} alt="Sertifikat" className="max-w-full max-h-full w-auto h-auto object-contain rounded-2xl shadow-2xl border-4 border-white" />
+               </div>
+               <div className="bg-white rounded-[2rem] p-8 shadow-xl border border-gray-100 text-center flex flex-col items-center">
+                  <span className="px-4 py-1.5 bg-yellow-500 text-white text-xs font-black rounded-lg mb-4 uppercase tracking-widest shadow-lg shadow-yellow-100">Penghargaan</span>
+                  <h2 className="text-3xl font-black text-gray-900 leading-tight uppercase mb-4">{currentSlide.data.nama_penerima}</h2>
+                  <div className="w-12 h-1 bg-orange-500 rounded-full mb-4"></div>
+                  <p className="text-xl font-bold text-orange-500 uppercase tracking-wider mb-2">{currentSlide.data.penghargaan}</p>
+                  <p className="text-sm font-medium text-gray-400 uppercase">Terbit: <span className="font-black text-gray-600 ml-1">{currentSlide.data.tanggal}</span></p>
+               </div>
+            </div>
+          ) : null}
         </div>
       </div>
     </div>

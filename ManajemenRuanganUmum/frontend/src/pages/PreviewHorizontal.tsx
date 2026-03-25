@@ -7,7 +7,7 @@ import { useNavigate } from "react-router-dom"
 import { apiUrl } from "../lib/api"
 
 interface AgendaItem {
-  no: number
+  id: number
   hari: string
   tanggal: string
   tempat: string
@@ -19,102 +19,104 @@ interface AgendaItem {
   type: "BPKAD" | "PEMKOT"
 }
 
+interface CertificateItem {
+  id: number
+  nama_penerima: string
+  penghargaan: string
+  tanggal: string
+  foto: string // base64
+}
+
+type SlideItem = { type: 'AGENDA'; data: AgendaItem[]; category: 'BPKAD' | 'PEMKOT' } | { type: 'CERTIFICATE'; data: CertificateItem }
+
 export default function PreviewHorizontal() {
   const navigate = useNavigate()
   const [time, setTime] = useState(new Date())
   const [allAgendas, setAllAgendas] = useState<AgendaItem[]>([])
+  const [allCertificates, setAllCertificates] = useState<CertificateItem[]>([])
   const [loading, setLoading] = useState(true)
 
-  // Fetch Data from API
-  const fetchAgendas = async () => {
+  const fetchData = async () => {
     try {
-      const response = await fetch(apiUrl('/api/agendas'))
-      const data = await response.json()
-      setAllAgendas(data)
+      const [respAgendas, respCerts] = await Promise.all([
+        fetch(apiUrl('/api/agendas')),
+        fetch(apiUrl('/api/certificates'))
+      ])
+      const agendas = await respAgendas.json()
+      const certs = await respCerts.json()
+      setAllAgendas(agendas)
+      setAllCertificates(certs)
       setLoading(false)
     } catch (error) {
-      console.error('Error fetching agendas:', error)
+      console.error('Error fetching data:', error)
       setLoading(false)
     }
   }
 
   useEffect(() => {
-    fetchAgendas()
-    const refreshInterval = setInterval(fetchAgendas, 30000) // Refresh every 30 seconds
+    fetchData()
+    const refreshInterval = setInterval(fetchData, 30000)
     return () => clearInterval(refreshInterval)
   }, [])
 
-  const itemsPerPageCount = 3 // 3 items per page for horizontal layout
-  const SLIDE_DURATION = 10000 // 10 seconds per page
+  const itemsPerPageCount = 3
+  const SLIDE_DURATION = 10000
 
-  // Process data into pages grouped by type with reset numbering
-  const pagedAgendas = useMemo(() => {
-    if (!allAgendas.length) return []
+  const pages = useMemo(() => {
+    const slides: SlideItem[] = []
     
-    const bpkad = allAgendas
-      .filter(item => item.type === "BPKAD")
-      .map((item, idx) => ({ ...item, no: idx + 1 }))
-    
-    const pemkot = allAgendas
-      .filter(item => item.type === "PEMKOT")
-      .map((item, idx) => ({ ...item, no: idx + 1 }))
+    // Group Agendas
+    const bpkad = allAgendas.filter(item => item.type === "BPKAD")
+    const pemkot = allAgendas.filter(item => item.type === "PEMKOT")
 
-    const chunk = (arr: AgendaItem[], size: number) => {
-      const chunks = []
+    const chunk = (arr: AgendaItem[], size: number, category: 'BPKAD' | 'PEMKOT') => {
       for (let i = 0; i < arr.length; i += size) {
-        chunks.push(arr.slice(i, i + size))
+        slides.push({ type: 'AGENDA', data: arr.slice(i, i + size), category })
       }
-      return chunks
     }
 
-    return [...chunk(bpkad, itemsPerPageCount), ...chunk(pemkot, itemsPerPageCount)]
-  }, [allAgendas, itemsPerPageCount])
+    chunk(bpkad, itemsPerPageCount, 'BPKAD')
+    chunk(pemkot, itemsPerPageCount, 'PEMKOT')
 
-  const totalPages = pagedAgendas.length
+    // Add Certificates as individual slides
+    allCertificates.forEach(cert => {
+      slides.push({ type: 'CERTIFICATE', data: cert })
+    })
+
+    return slides
+  }, [allAgendas, allCertificates])
+
   const [currentPage, setCurrentPage] = useState(0)
   const [progress, setProgress] = useState(0)
 
-  // Update Time
   useEffect(() => {
     const timer = setInterval(() => setTime(new Date()), 1000)
     return () => clearInterval(timer)
   }, [])
 
-  // Auto-slide Progress Bar Logic
   useEffect(() => {
-    if (totalPages === 0) return
-
-    const interval = 50 // Update every 50ms for smoother animation
+    if (pages.length === 0) return
+    const interval = 50
     const step = (interval / SLIDE_DURATION) * 100
-
     const timer = setInterval(() => {
       setProgress((prev) => {
         if (prev >= 100) {
-          setCurrentPage((oldPage) => {
-             const nextPage = (oldPage + 1) % totalPages
-             return nextPage
-          })
+          setCurrentPage((oldPage) => (oldPage + 1) % pages.length)
           return 0
         }
         return prev + step
       })
     }, interval)
-
     return () => clearInterval(timer)
-  }, [totalPages])
+  }, [pages.length])
 
-  const currentAgendas = useMemo(() => {
-    return pagedAgendas[currentPage] || []
-  }, [currentPage, pagedAgendas])
+  const currentSlide = pages[currentPage]
 
   const pageTitle = useMemo(() => {
-    const firstItemType = currentAgendas[0]?.type
-    return `AGENDA RUANG RAPAT ${firstItemType || "BPKAD"}`
-  }, [currentAgendas])
-
-  const hasDihadiriData = useMemo(() => {
-    return currentAgendas.some(item => item.dihadiri)
-  }, [currentAgendas])
+    if (!currentSlide) return "AGENDA RUANG RAPAT"
+    if (currentSlide.type === 'AGENDA') return `AGENDA RUANG RAPAT ${currentSlide.category}`
+    return "PENGHARGAAN & SERTIFIKAT"
+  }, [currentSlide])
 
   if (loading && allAgendas.length === 0) {
     return (
@@ -127,148 +129,103 @@ export default function PreviewHorizontal() {
 
   return (
     <div className="bg-[#f3f4f6] h-screen relative overflow-hidden flex flex-col">
-      
-      {/* HIDDEN BACK BUTTON TRIGGER (TOP LEFT) */}
       <div className="fixed top-0 left-0 w-20 h-20 z-50 group flex items-start justify-start p-3">
-        <button 
-          onClick={() => navigate('/preview')}
-          className="bg-white p-2 rounded-full shadow-2xl border border-gray-100 text-orange-500 transition-all duration-300 opacity-0 group-hover:opacity-100 scale-75 group-hover:scale-100 active:scale-90"
-        >
+        <button onClick={() => navigate('/preview')} className="bg-white p-2 rounded-full shadow-2xl border border-gray-100 text-orange-500 transition-all duration-300 opacity-0 group-hover:opacity-100 scale-75 group-hover:scale-100 active:scale-90">
           <ArrowLeft size={18} strokeWidth={3} />
         </button>
       </div>
 
       <div className="flex-1 p-3 md:p-5 flex flex-col w-full max-w-[1920px] mx-auto overflow-hidden">
-        {/* HEADER: CLOCK, DATE & LOGO */}
         <div className="flex justify-between items-center mb-2 pl-8 md:pl-0">
           <div className="flex flex-col">
             <div className="flex items-baseline gap-2">
-              <span className="text-4xl md:text-5xl font-black text-gray-800 leading-none">
-                {format(time, "HH:mm")}
-              </span>
+              <span className="text-4xl md:text-5xl font-black text-gray-800 leading-none">{format(time, "HH:mm")}</span>
               <span className="text-xl md:text-2xl font-bold text-orange-500">WITA</span>
             </div>
             <span className="text-base md:text-lg font-bold text-orange-500 uppercase tracking-widest leading-none mt-1">
               {format(time, "EEEE, dd MMMM yyyy", { locale: id })}
             </span>
           </div>
+          <img src={logo} alt="Logo" className="h-14 md:h-16 object-contain" />
+        </div>
 
-          <div className="flex items-center gap-4">
-            <img src={logo} alt="Logo BPKAD" className="h-14 md:h-16 object-contain" />
+        <div className="w-full h-1.5 rounded-full overflow-hidden flex mb-3 shadow-inner bg-gray-200">
+          <div className="bg-orange-500 h-full transition-all duration-100 ease-linear" style={{ width: `${progress}%` }}></div>
+        </div>
+
+        <div className="flex items-center justify-between mb-2">
+          <h1 className="text-xl md:text-2xl font-black text-gray-800 tracking-tight uppercase leading-none">{pageTitle}</h1>
+          <div className="flex gap-2">
+            {pages.map((_, i) => (
+              <div key={i} className={`w-2.5 h-2.5 rounded-full transition-all duration-300 ${i === currentPage ? "bg-orange-500 scale-125" : "bg-gray-300"}`}></div>
+            ))}
           </div>
         </div>
 
-        {/* PROGRESS ACCENT BAR */}
-        <div className="w-full h-1.5 rounded-full overflow-hidden flex mb-3 shadow-inner bg-gray-200">
-            <div 
-              className="bg-orange-500 h-full shadow-[0_0_15px_rgba(249,115,22,0.4)] transition-all duration-100 ease-linear"
-              style={{ width: `${progress}%` }}
-            ></div>
-        </div>
-
-        {/* DYNAMIC PAGE TITLE */}
-        <div className="flex items-center justify-between mb-2">
-            <h1 className="text-xl md:text-2xl font-black text-gray-800 tracking-tight uppercase leading-none min-h-[1em]">
-              {pageTitle}
-            </h1>
-            
-            {/* DYNAMIC PAGE CIRCLES */}
-            <div className="flex gap-2">
-                {Array.from({ length: totalPages }).map((_, i) => (
-                  <div 
-                    key={i}
-                    className={`w-2.5 h-2.5 rounded-full transition-all duration-300 ${
-                      i === currentPage 
-                        ? "bg-orange-500 shadow-lg shadow-orange-200 animate-pulse scale-125" 
-                        : "bg-gray-300 shadow-sm"
-                    }`}
-                  ></div>
-                ))}
-            </div>
-        </div>
-
-        {/* TABLE CONTAINER */}
-        <div className="bg-white rounded-[1.2rem] shadow-[0_15px_40px_-15px_rgba(0,0,0,0.1)] overflow-hidden border border-gray-100 w-full flex-1 flex flex-col">
-          <table className="w-full border-collapse flex-1 flex flex-col items-stretch">
-            <thead className="w-full">
-              <tr className="bg-orange-500 text-white flex w-full">
-                <th className="py-2 px-2 text-center text-sm font-black border-r border-orange-400/30 w-16 flex items-center justify-center">NO</th>
-                <th className="py-2 px-4 text-left text-sm font-black border-r border-orange-400/30 flex-1 flex items-center">HARI / TANGGAL</th>
-                <th className="py-2 px-4 text-left text-sm font-black border-r border-orange-400/30 flex-1 flex items-center">TEMPAT</th>
-                <th className="py-2 px-4 text-center text-sm font-black border-r border-orange-400/30 w-32 flex items-center justify-center">PUKUL</th>
-                <th className="py-2 px-6 text-left text-sm font-black border-r border-orange-400/30 flex-[2] flex items-center">ACARA</th>
-                <th className="py-2 px-4 text-left text-sm font-black border-r border-orange-400/30 flex-1 flex items-center">PELAKSANA</th>
-                {hasDihadiriData && (
-                  <th className="py-2 px-4 text-left text-sm font-black border-r border-orange-400/30 flex-1 flex items-center">DIHADIRI</th>
-                )}
-                <th className="py-2 px-4 text-center text-sm font-black w-32 flex items-center justify-center">STATUS</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-gray-100 flex-1 flex flex-col w-full overflow-hidden">
-              {currentAgendas.map((item, idx) => (
-                <tr key={`${currentPage}-${idx}`} className="hover:bg-orange-50/40 transition-all duration-300 group flex w-full flex-1 items-stretch min-h-0 animate-in fade-in slide-in-from-right-4 duration-500">
-                  <td className="px-2 text-base font-black text-gray-400 text-center border-r border-gray-50 group-hover:text-orange-500 transition-colors w-16 flex items-center justify-center">
-                    {item.no}
-                  </td>
-                  <td className="px-4 border-r border-gray-50 flex-1 flex flex-col justify-center min-w-0">
-                    <span className="text-sm font-black text-gray-800 uppercase leading-none mb-1 block">
-                      {item.hari}
-                    </span>
-                    <span className="text-[11px] font-bold text-gray-400 uppercase tracking-wider block leading-tight">
-                      {item.tanggal.includes(', ') ? item.tanggal.split(', ')[1] : item.tanggal}
-                    </span>
-                  </td>
-                  <td className="px-4 border-r border-gray-50 flex-1 flex items-center min-w-0">
-                    <span className="text-sm font-black text-gray-800 uppercase leading-tight">
-                        {item.tempat}
-                    </span>
-                  </td>
-                  <td className="px-4 border-r border-gray-50 w-32 flex items-center justify-center">
-                    <span className="text-base font-black text-orange-500 bg-orange-50 px-2.5 py-1 rounded-md">
-                        {item.pukul}
-                    </span>
-                  </td>
-                  <td className="px-6 border-r border-gray-50 flex-[2] flex items-center min-w-0">
-                    <span className="text-sm font-black text-gray-800 uppercase leading-[1.2] block">
-                        {item.acara}
-                    </span>
-                  </td>
-                  <td className="px-4 border-r border-gray-50 flex-1 flex items-center min-w-0">
-                    <span className="text-[13px] font-black text-gray-800 uppercase leading-tight group-hover:text-gray-600 transition-colors">
-                        {item.pelaksana}
-                    </span>
-                  </td>
-                  {hasDihadiriData && (
-                    <td className="px-4 border-r border-gray-50 flex-1 flex items-center min-w-0">
-                      <span className="text-[13px] font-black text-gray-800 uppercase leading-tight">
-                          {item.dihadiri || "-"}
-                      </span>
+        <div className="bg-white rounded-[1.2rem] shadow-xl overflow-hidden border border-gray-100 w-full flex-1 flex flex-col relative">
+          {currentSlide?.type === 'AGENDA' ? (
+            <table className="w-full border-collapse flex-1 flex flex-col items-stretch">
+              <thead>
+                <tr className="bg-orange-500 text-white flex w-full">
+                  <th className="py-2 px-2 text-center text-sm font-black w-16 flex items-center justify-center">NO</th>
+                  <th className="py-2 px-4 text-left text-sm font-black flex-1 flex items-center">HARI / TANGGAL</th>
+                  <th className="py-2 px-4 text-left text-sm font-black flex-1 flex items-center">TEMPAT</th>
+                  <th className="py-2 px-4 text-center text-sm font-black w-32 flex items-center justify-center">PUKUL</th>
+                  <th className="py-2 px-6 text-left text-sm font-black flex-[2] flex items-center">ACARA</th>
+                  <th className="py-2 px-4 text-left text-sm font-black flex-1 flex items-center">PELAKSANA</th>
+                  <th className="py-2 px-4 text-center text-sm font-black w-32 flex items-center justify-center">STATUS</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-gray-100 flex-1 flex flex-col w-full overflow-hidden">
+                {currentSlide.data.map((item, idx) => (
+                  <tr key={idx} className="hover:bg-orange-50/40 transition-all duration-300 flex w-full flex-1 items-stretch min-h-0 animate-in fade-in slide-in-from-right-4">
+                    <td className="px-2 text-base font-black text-gray-400 text-center w-16 flex items-center justify-center">{idx + 1}</td>
+                    <td className="px-4 flex-1 flex flex-col justify-center min-w-0">
+                      <span className="text-sm font-black text-gray-800 uppercase leading-none mb-1">{item.hari}</span>
+                      <span className="text-[11px] font-bold text-gray-400 uppercase tracking-wider">{item.tanggal.split(', ')[1] || item.tanggal}</span>
                     </td>
-                  )}
-                  <td className="px-4 w-32 flex items-center justify-center">
-                    <span
-                      className={`
-                        inline-block w-32 py-2 rounded-xl text-sm font-black text-white text-center shadow-lg transition-all duration-300 group-hover:scale-105
-                        ${
-                          item.status === "Berlangsung"
-                            ? "bg-[#10b981] shadow-green-100"
-                            : "bg-[#3b82f6] shadow-blue-100"
-                        }
-                      `}
-                    >
-                      {item.status}
-                    </span>
-                  </td>
-                </tr>
-              ))}
-              {/* Fill empty rows if needed to keep height consistent */}
-              {currentAgendas.length < itemsPerPageCount && Array.from({ length: itemsPerPageCount - currentAgendas.length }).map((_, i) => (
-                <tr key={`empty-${i}`} className="flex w-full flex-1 items-stretch min-h-0">
-                  <td className="w-full"></td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+                    <td className="px-4 flex-1 flex items-center min-w-0 font-black text-sm text-gray-800 uppercase">{item.tempat}</td>
+                    <td className="px-4 w-32 flex items-center justify-center"><span className="text-base font-black text-orange-500 bg-orange-50 px-2.5 py-1 rounded-md">{item.pukul}</span></td>
+                    <td className="px-6 flex-[2] flex items-center min-w-0 font-black text-sm text-gray-800 uppercase leading-tight">{item.acara}</td>
+                    <td className="px-4 flex-1 flex items-center min-w-0 font-black text-[13px] text-gray-800 uppercase">{item.pelaksana}</td>
+                    <td className="px-4 w-32 flex items-center justify-center">
+                      <span className={`inline-block w-32 py-2 rounded-xl text-sm font-black text-white text-center ${item.status === 'Berlangsung' ? 'bg-[#10b981]' : 'bg-[#3b82f6]'}`}>{item.status}</span>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          ) : currentSlide?.type === 'CERTIFICATE' ? (
+            <div className="flex-1 flex flex-col md:flex-row p-8 gap-8 items-center bg-gray-50/50">
+              <div className="w-full md:w-1/2 h-full flex items-center justify-center">
+                <div className="relative group w-full h-full max-h-[500px]">
+                  <img src={currentSlide.data.foto} alt="Sertifikat" className="w-full h-full object-contain rounded-xl shadow-2xl border-4 border-white transition-transform duration-500 group-hover:scale-[1.02]" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent rounded-xl"></div>
+                </div>
+              </div>
+              <div className="w-full md:w-1/2 flex flex-col justify-center gap-6">
+                 <div>
+                    <span className="inline-block px-4 py-1.5 bg-yellow-500 text-white text-sm font-black rounded-lg mb-4 shadow-lg shadow-yellow-200 uppercase tracking-widest">Penghargaan</span>
+                    <h2 className="text-5xl md:text-6xl font-black text-gray-900 leading-[1.1] uppercase tracking-tight">{currentSlide.data.nama_penerima}</h2>
+                 </div>
+                 <div className="space-y-4">
+                    <p className="text-2xl font-bold text-orange-500 uppercase tracking-wider flex items-center gap-3">
+                       <span className="w-12 h-1 bg-orange-500 rounded-full"></span>
+                       {currentSlide.data.penghargaan}
+                    </p>
+                    <p className="text-lg font-medium text-gray-400 uppercase flex items-center gap-2">
+                       <span className="font-black text-gray-600">Terbit:</span> 
+                       {currentSlide.data.tanggal}
+                    </p>
+                 </div>
+                 <div className="mt-8">
+                    <p className="text-sm font-bold text-gray-400 uppercase tracking-widest bg-white p-4 rounded-xl border-l-4 border-orange-500 shadow-sm leading-relaxed">
+                      Selamat atas prestasi yang telah diraih. Terus berikan kontribusi terbaik untuk instansi dan masyarakat.
+                    </p>
+                 </div>
+              </div>
+            </div>
+          ) : null}
         </div>
       </div>
     </div>
