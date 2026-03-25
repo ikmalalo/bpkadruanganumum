@@ -8,6 +8,7 @@ import Preview from "./pages/Preview"
 import PreviewHorizontal from "./pages/PreviewHorizontal"
 import PreviewVertikal from "./pages/PreviewVertikal"
 import Riwayat from "./pages/Riwayat"
+import UploadSertifikat from "./pages/UploadSertifikat"
 import DashboardLayout from "./components/DashboardComponents/DashboardLayout"
 
 export default function App() {
@@ -23,6 +24,7 @@ export default function App() {
         <Route path="/peminjaman" element={<Peminjaman />} />
         <Route path="/preview" element={<Preview />} />
         <Route path="/riwayat" element={<Riwayat />} />
+        <Route path="/upload-sertifikat" element={<UploadSertifikat />} />
         <Route path="/konfirmasipeminjaman" element={<KonfirmasiPeminjaman />} />
       </Route>
 

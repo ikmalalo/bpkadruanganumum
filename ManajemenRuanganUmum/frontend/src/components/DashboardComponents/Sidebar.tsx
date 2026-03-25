@@ -1,4 +1,4 @@
-import { LayoutDashboard, PlusCircle, History, LogOut, Eye, X } from "lucide-react"
+import { LayoutDashboard, PlusCircle, History, LogOut, Eye, X, Award } from "lucide-react"
 import { useNavigate, useLocation } from "react-router-dom"
 import { useEffect, useRef } from "react"
 
@@ -11,7 +11,8 @@ const menuItems = [
   { path: "/rooms",      icon: LayoutDashboard, label: "Dashboard" },
   { path: "/peminjaman", icon: PlusCircle,       label: "Buat Peminjaman" },
   { path: "/preview",    icon: Eye,              label: "Preview Ruangan" },
-  { path: "/riwayat",    icon: History,          label: "Riwayat" },
+  { path: "/riwayat",          icon: History,          label: "Riwayat" },
+  { path: "/upload-sertifikat", icon: Award,            label: "Upload Sertifikat" },
 ]
 
 export default function Sidebar({ isOpen, onClose }: SidebarProps) {
