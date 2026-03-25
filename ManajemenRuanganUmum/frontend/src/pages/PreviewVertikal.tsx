@@ -110,6 +110,11 @@ export default function PreviewVertikal() {
     return () => clearInterval(timer)
   }, [pages.length])
 
+  const handlePageClick = (index: number) => {
+    setCurrentPage(index);
+    setProgress(0);
+  };
+
   const currentSlide = pages[currentPage]
 
   const pageTitle = useMemo(() => {
@@ -157,7 +162,11 @@ export default function PreviewVertikal() {
           <h1 className="text-base md:text-lg font-black text-gray-800 tracking-tight uppercase leading-tight mb-2 min-h-[1.5em]">{pageTitle}</h1>
           <div className="flex gap-1">
             {pages.map((_, i) => (
-              <div key={i} className={`w-1.5 h-1.5 rounded-full transition-all duration-300 ${i === currentPage ? "bg-orange-500 scale-110" : "bg-gray-300"}`}></div>
+              <div 
+                key={i} 
+                onClick={() => handlePageClick(i)}
+                className={`w-1.5 h-1.5 rounded-full transition-all duration-300 cursor-pointer hover:scale-150 ${i === currentPage ? "bg-orange-500 scale-110 shadow-lg shadow-orange-200" : "bg-gray-300 shadow-sm"}`}
+              ></div>
             ))}
           </div>
         </div>

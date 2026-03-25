@@ -110,6 +110,11 @@ export default function PreviewHorizontal() {
     return () => clearInterval(timer)
   }, [pages.length])
 
+  const handlePageClick = (index: number) => {
+    setCurrentPage(index);
+    setProgress(0); // Reset progress when manually changing page
+  };
+
   const currentSlide = pages[currentPage]
 
   const pageTitle = useMemo(() => {
@@ -157,7 +162,11 @@ export default function PreviewHorizontal() {
           <h1 className="text-xl md:text-2xl font-black text-gray-800 tracking-tight uppercase leading-none">{pageTitle}</h1>
           <div className="flex gap-2">
             {pages.map((_, i) => (
-              <div key={i} className={`w-2.5 h-2.5 rounded-full transition-all duration-300 ${i === currentPage ? "bg-orange-500 scale-125" : "bg-gray-300"}`}></div>
+              <div 
+                key={i} 
+                onClick={() => handlePageClick(i)}
+                className={`w-2.5 h-2.5 rounded-full transition-all duration-300 cursor-pointer hover:scale-150 ${i === currentPage ? "bg-orange-500 scale-125 shadow-lg shadow-orange-200" : "bg-gray-300 shadow-sm"}`}
+              ></div>
             ))}
           </div>
         </div>
