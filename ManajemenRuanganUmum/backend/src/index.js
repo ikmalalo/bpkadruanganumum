@@ -4,6 +4,7 @@ require('dotenv').config();
 
 const agendaRoutes = require('./routes/agendaRoutes');
 const authRoutes = require('./routes/authRoutes');
+const certificateRoutes = require('./routes/certificateRoutes');
 
 const app = express();
 const PORT = process.env.PORT || 59489;
@@ -14,6 +15,7 @@ app.use(express.json());
 // Routes
 app.use('/api/agendas', agendaRoutes);
 app.use('/api/auth', authRoutes);
+app.use('/api/certificates', certificateRoutes);
 
 app.get('/', (req, res) => {
   res.send('API Agenda Ruangan is running...');

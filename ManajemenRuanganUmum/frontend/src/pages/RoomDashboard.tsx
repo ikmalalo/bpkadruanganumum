@@ -5,6 +5,8 @@ import DashboardFilter from "../components/DashboardComponents/DashboardFilter"
 import "../index.css"
 import { apiUrl } from "../lib/api"
 
+import CertificateTable from "../components/DashboardComponents/CertificateTable"
+
 export default function RoomDashboard() {
 
 const [statusFilter,setStatusFilter] = useState("Semua")
@@ -13,7 +15,7 @@ const [hariFilter,setHariFilter] = useState("Terdekat")
 
 const [bpkadData,setBpkadData] = useState<any[]>([])
 const [pemkotData,setPemkotData] = useState<any[]>([])
-const [loading, setLoading] = useState(true)
+const [certificates, setCertificates] = useState<any[]>([])
 const [selectedAgenda, setSelectedAgenda] = useState<any | null>(null)
 
 /* =========================
@@ -22,22 +24,43 @@ const [selectedAgenda, setSelectedAgenda] = useState<any | null>(null)
 useEffect(() => {
   const fetchData = async () => {
     try {
-      const response = await fetch(apiUrl('/api/agendas'))
-      const data = await response.json()
+      const respAgendas = await fetch(apiUrl('/api/agendas'))
+      const agendas = await respAgendas.json()
       
-      const bpkad = data.filter((item: any) => item.type === 'BPKAD')
-      const pemkot = data.filter((item: any) => item.type === 'PEMKOT')
+      const bpkad = agendas.filter((item: any) => item.type === 'BPKAD')
+      const pemkot = agendas.filter((item: any) => item.type === 'PEMKOT')
       
       setBpkadData(bpkad)
       setPemkotData(pemkot)
-      setLoading(false)
+
+      // Fetch Certificates
+      const respCerts = await fetch(apiUrl('/api/certificates'))
+      const certs = await respCerts.json()
+      setCertificates(certs)
     } catch (error) {
       console.error('Error fetching dashboard data:', error)
-      setLoading(false)
     }
   }
   fetchData()
 }, [])
+
+const handleDeleteCertificate = async (id: number) => {
+  if (!confirm("Apakah Anda yakin ingin menghapus sertifikat ini?")) return;
+  
+  try {
+    const response = await fetch(apiUrl(`/api/certificates/${id}`), {
+      method: 'DELETE',
+    });
+
+    if (response.ok) {
+      setCertificates(prev => prev.filter(c => c.id !== id));
+    } else {
+      alert("Gagal menghapus sertifikat");
+    }
+  } catch (error) {
+    console.error('Error deleting certificate:', error);
+  }
+};
 
 /* =========================
    STAT CARD
@@ -57,7 +80,7 @@ pemkotData.filter(d=>d.status==="Terjadwal").length
 return(
   <div className="flex flex-col">
 
-    <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4 mb-10">
+    <div className="grid grid-cols-2 lg:grid-cols-5 gap-3 md:gap-4 mb-10">
       <StatCard
         number={totalBpkad.toString()}
         label="PEMINJAMAN BPKAD"
@@ -68,6 +91,12 @@ return(
         number={totalPemkot.toString()}
         label="PEMINJAMAN PEMKOT"
         color="border-indigo-500 text-indigo-500"
+      />
+
+       <StatCard
+        number={certificates.length.toString()}
+        label="TOTAL SERTIFIKAT"
+        color="border-yellow-500 text-yellow-500"
       />
 
       <StatCard
@@ -100,6 +129,11 @@ return(
       setPemkotData={setPemkotData}
       selectedAgenda={selectedAgenda}
       setSelectedAgenda={setSelectedAgenda}
+    />
+
+    <CertificateTable 
+      certificates={certificates}
+      onDelete={handleDeleteCertificate}
     />
   </div>
 )

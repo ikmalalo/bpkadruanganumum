@@ -1,6 +1,7 @@
 import "../index.css"
 import { useState, useRef, useEffect } from "react"
 import { useNavigate } from "react-router-dom"
+import { apiUrl } from "../lib/api"
 import { format } from "date-fns"
 import { id } from "date-fns/locale"
 import { DayPicker } from "react-day-picker"
@@ -68,10 +69,32 @@ export default function UploadSertifikat() {
     }
   }, [])
 
-  const handleSubmit = () => {
-    // For now, just show a success message or navigate
-    alert("Sertifikat berhasil diupload (Simulasi)")
-    navigate("/riwayat")
+  const handleSubmit = async () => {
+    try {
+      const response = await fetch(apiUrl('/api/certificates'), {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          namaPenerima: form.namaPenerima,
+          penghargaan: form.penghargaan,
+          tanggal: form.tanggal,
+          foto: preview, // Send the base64 string
+        }),
+      });
+
+      if (response.ok) {
+        alert("Sertifikat berhasil diupload!");
+        navigate("/riwayat");
+      } else {
+        const errorData = await response.json();
+        alert(`Gagal upload sertifikat: ${errorData.message}`);
+      }
+    } catch (error) {
+      console.error('Error uploading certificate:', error);
+      alert("Terjadi kesalahan saat upload sertifikat.");
+    }
   }
 
   return (
