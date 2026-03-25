@@ -205,33 +205,13 @@ export default function PreviewHorizontal() {
               </tbody>
             </table>
           ) : currentSlide?.type === 'CERTIFICATE' ? (
-            <div className="flex-1 flex flex-col md:flex-row p-8 gap-8 items-center bg-gray-50/50">
-              <div className="w-full md:w-1/2 h-full flex items-center justify-center">
-                <div className="relative group w-full h-full max-h-[500px]">
-                  <img src={currentSlide.data.foto} alt="Sertifikat" className="w-full h-full object-contain rounded-xl shadow-2xl border-4 border-white transition-transform duration-500 group-hover:scale-[1.02]" />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent rounded-xl"></div>
-                </div>
-              </div>
-              <div className="w-full md:w-1/2 flex flex-col justify-center gap-6">
-                 <div>
-                    <span className="inline-block px-4 py-1.5 bg-yellow-500 text-white text-sm font-black rounded-lg mb-4 shadow-lg shadow-yellow-200 uppercase tracking-widest">Penghargaan</span>
-                    <h2 className="text-5xl md:text-6xl font-black text-gray-900 leading-[1.1] uppercase tracking-tight">{currentSlide.data.nama_penerima}</h2>
-                 </div>
-                 <div className="space-y-4">
-                    <p className="text-2xl font-bold text-orange-500 uppercase tracking-wider flex items-center gap-3">
-                       <span className="w-12 h-1 bg-orange-500 rounded-full"></span>
-                       {currentSlide.data.penghargaan}
-                    </p>
-                    <p className="text-lg font-medium text-gray-400 uppercase flex items-center gap-2">
-                       <span className="font-black text-gray-600">Terbit:</span> 
-                       {currentSlide.data.tanggal}
-                    </p>
-                 </div>
-                 <div className="mt-8">
-                    <p className="text-sm font-bold text-gray-400 uppercase tracking-widest bg-white p-4 rounded-xl border-l-4 border-orange-500 shadow-sm leading-relaxed">
-                      Selamat atas prestasi yang telah diraih. Terus berikan kontribusi terbaik untuk instansi dan masyarakat.
-                    </p>
-                 </div>
+            <div className="flex-1 flex items-center justify-center p-4 bg-white">
+              <div className="relative w-full h-full flex items-center justify-center">
+                <img 
+                  src={currentSlide.data.foto} 
+                  alt="Sertifikat" 
+                  className="max-w-full max-h-full object-contain rounded-xl shadow-[0_20px_50px_rgba(0,0,0,0.15)] border-8 border-white" 
+                />
               </div>
             </div>
           ) : null}

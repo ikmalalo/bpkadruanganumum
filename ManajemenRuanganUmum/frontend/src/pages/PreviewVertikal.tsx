@@ -207,16 +207,13 @@ export default function PreviewVertikal() {
               ))}
             </div>
           ) : currentSlide?.type === 'CERTIFICATE' ? (
-            <div className="h-full flex flex-col gap-6 p-4 animate-in fade-in slide-in-from-bottom-4 duration-500">
-               <div className="flex-1 flex items-center justify-center overflow-hidden">
-                  <img src={currentSlide.data.foto} alt="Sertifikat" className="max-w-full max-h-full w-auto h-auto object-contain rounded-2xl shadow-2xl border-4 border-white" />
-               </div>
-               <div className="bg-white rounded-[2rem] p-8 shadow-xl border border-gray-100 text-center flex flex-col items-center">
-                  <span className="px-4 py-1.5 bg-yellow-500 text-white text-xs font-black rounded-lg mb-4 uppercase tracking-widest shadow-lg shadow-yellow-100">Penghargaan</span>
-                  <h2 className="text-3xl font-black text-gray-900 leading-tight uppercase mb-4">{currentSlide.data.nama_penerima}</h2>
-                  <div className="w-12 h-1 bg-orange-500 rounded-full mb-4"></div>
-                  <p className="text-xl font-bold text-orange-500 uppercase tracking-wider mb-2">{currentSlide.data.penghargaan}</p>
-                  <p className="text-sm font-medium text-gray-400 uppercase">Terbit: <span className="font-black text-gray-600 ml-1">{currentSlide.data.tanggal}</span></p>
+            <div className="h-full flex flex-col p-2 animate-in fade-in slide-in-from-bottom-4 duration-500 bg-white rounded-3xl overflow-hidden">
+               <div className="flex-1 flex items-center justify-center relative">
+                  <img 
+                    src={currentSlide.data.foto} 
+                    alt="Sertifikat" 
+                    className="max-w-full max-h-full w-auto h-auto object-contain rounded-2xl shadow-[0_20px_50px_rgba(0,0,0,0.15)] border-4 border-white" 
+                  />
                </div>
             </div>
           ) : null}
