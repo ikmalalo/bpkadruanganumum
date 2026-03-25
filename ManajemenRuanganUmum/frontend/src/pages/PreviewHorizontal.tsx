@@ -192,60 +192,60 @@ export default function PreviewHorizontal() {
           <table className="w-full border-collapse flex-1 flex flex-col items-stretch">
             <thead className="w-full">
               <tr className="bg-orange-500 text-white flex w-full">
-                <th className="py-3 px-2 text-center text-base font-black border-r border-orange-400/30 w-16 flex items-center justify-center">NO</th>
-                <th className="py-3 px-4 text-left text-base font-black border-r border-orange-400/30 flex-1 flex items-center">HARI / TANGGAL</th>
-                <th className="py-3 px-4 text-left text-base font-black border-r border-orange-400/30 flex-1 flex items-center">TEMPAT</th>
-                <th className="py-3 px-4 text-center text-base font-black border-r border-orange-400/30 w-36 flex items-center justify-center">PUKUL</th>
-                <th className="py-3 px-6 text-left text-base font-black border-r border-orange-400/30 flex-[1.5] flex items-center">ACARA</th>
-                <th className="py-3 px-4 text-left text-base font-black border-r border-orange-400/30 flex-1 flex items-center">PELAKSANA</th>
+                <th className="py-2 px-2 text-center text-sm font-black border-r border-orange-400/30 w-16 flex items-center justify-center">NO</th>
+                <th className="py-2 px-4 text-left text-sm font-black border-r border-orange-400/30 flex-1 flex items-center">HARI / TANGGAL</th>
+                <th className="py-2 px-4 text-left text-sm font-black border-r border-orange-400/30 flex-1 flex items-center">TEMPAT</th>
+                <th className="py-2 px-4 text-center text-sm font-black border-r border-orange-400/30 w-32 flex items-center justify-center">PUKUL</th>
+                <th className="py-2 px-6 text-left text-sm font-black border-r border-orange-400/30 flex-[2] flex items-center">ACARA</th>
+                <th className="py-2 px-4 text-left text-sm font-black border-r border-orange-400/30 flex-1 flex items-center">PELAKSANA</th>
                 {hasDihadiriData && (
-                  <th className="py-3 px-4 text-left text-base font-black border-r border-orange-400/30 flex-1 flex items-center">DIHADIRI</th>
+                  <th className="py-2 px-4 text-left text-sm font-black border-r border-orange-400/30 flex-1 flex items-center">DIHADIRI</th>
                 )}
-                <th className="py-3 px-4 text-center text-base font-black w-36 flex items-center justify-center">STATUS</th>
+                <th className="py-2 px-4 text-center text-sm font-black w-32 flex items-center justify-center">STATUS</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-100 flex-1 flex flex-col w-full overflow-hidden">
               {currentAgendas.map((item, idx) => (
                 <tr key={`${currentPage}-${idx}`} className="hover:bg-orange-50/40 transition-all duration-300 group flex w-full flex-1 items-stretch min-h-0 animate-in fade-in slide-in-from-right-4 duration-500">
-                  <td className="px-2 text-lg font-black text-gray-400 text-center border-r border-gray-50 group-hover:text-orange-500 transition-colors w-16 flex items-center justify-center">
+                  <td className="px-2 text-base font-black text-gray-400 text-center border-r border-gray-50 group-hover:text-orange-500 transition-colors w-16 flex items-center justify-center">
                     {item.no}
                   </td>
                   <td className="px-4 border-r border-gray-50 flex-1 flex flex-col justify-center min-w-0">
-                    <span className="text-base font-black text-gray-800 uppercase leading-none mb-1 truncate">
+                    <span className="text-sm font-black text-gray-800 uppercase leading-none mb-1 block">
                       {item.hari}
                     </span>
-                    <span className="text-xs font-bold text-gray-400 uppercase tracking-wider truncate">
+                    <span className="text-[11px] font-bold text-gray-400 uppercase tracking-wider block leading-tight">
                       {item.tanggal.includes(', ') ? item.tanggal.split(', ')[1] : item.tanggal}
                     </span>
                   </td>
                   <td className="px-4 border-r border-gray-50 flex-1 flex items-center min-w-0">
-                    <span className="text-lg font-black text-gray-800 uppercase leading-tight line-clamp-2">
+                    <span className="text-sm font-black text-gray-800 uppercase leading-tight">
                         {item.tempat}
                     </span>
                   </td>
-                  <td className="px-4 border-r border-gray-50 w-36 flex items-center justify-center">
-                    <span className="text-lg font-black text-orange-500 bg-orange-50 px-3 py-1 rounded-md">
+                  <td className="px-4 border-r border-gray-50 w-32 flex items-center justify-center">
+                    <span className="text-base font-black text-orange-500 bg-orange-50 px-2.5 py-1 rounded-md">
                         {item.pukul}
                     </span>
                   </td>
-                  <td className="px-6 border-r border-gray-50 flex-[1.5] flex items-center min-w-0">
-                    <span className="text-base font-black text-gray-800 uppercase leading-[1.1] block line-clamp-2">
+                  <td className="px-6 border-r border-gray-50 flex-[2] flex items-center min-w-0">
+                    <span className="text-sm font-black text-gray-800 uppercase leading-[1.2] block">
                         {item.acara}
                     </span>
                   </td>
                   <td className="px-4 border-r border-gray-50 flex-1 flex items-center min-w-0">
-                    <span className="text-base font-black text-gray-800 uppercase leading-tight group-hover:text-gray-600 transition-colors line-clamp-2">
+                    <span className="text-[13px] font-black text-gray-800 uppercase leading-tight group-hover:text-gray-600 transition-colors">
                         {item.pelaksana}
                     </span>
                   </td>
                   {hasDihadiriData && (
                     <td className="px-4 border-r border-gray-50 flex-1 flex items-center min-w-0">
-                      <span className="text-base font-black text-gray-800 uppercase leading-tight line-clamp-2">
+                      <span className="text-[13px] font-black text-gray-800 uppercase leading-tight">
                           {item.dihadiri || "-"}
                       </span>
                     </td>
                   )}
-                  <td className="px-4 w-36 flex items-center justify-center">
+                  <td className="px-4 w-32 flex items-center justify-center">
                     <span
                       className={`
                         inline-block w-32 py-2 rounded-xl text-sm font-black text-white text-center shadow-lg transition-all duration-300 group-hover:scale-105
