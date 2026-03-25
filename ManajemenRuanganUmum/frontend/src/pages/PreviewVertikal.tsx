@@ -212,7 +212,7 @@ export default function PreviewVertikal() {
                   src={currentSlide.data.foto} 
                   alt="Sertifikat" 
                   style={{ maxHeight: '78vh', maxWidth: '85vw' }}
-                  className="w-auto h-auto object-contain shadow-[0_35px_60px_-15px_rgba(0,0,0,0.3)] border-4 border-white rounded-lg" 
+                  className="w-auto h-auto object-contain border-4 border-white rounded-lg" 
                 />
             </div>
           ) : null}

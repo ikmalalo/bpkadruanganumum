@@ -210,7 +210,7 @@ export default function PreviewHorizontal() {
                   src={currentSlide.data.foto} 
                   alt="Sertifikat" 
                   style={{ maxHeight: '72vh', maxWidth: '85vw' }}
-                  className="w-auto h-auto object-contain shadow-[0_35px_60px_-15px_rgba(0,0,0,0.3)] border-[12px] border-white rounded-lg" 
+                  className="w-auto h-auto object-contain border-[12px] border-white rounded-lg" 
                 />
             </div>
           ) : null}
