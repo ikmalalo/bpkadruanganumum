@@ -6,7 +6,7 @@ const agendaRoutes = require('./routes/agendaRoutes');
 const authRoutes = require('./routes/authRoutes');
 
 const app = express();
-const PORT = process.env.PORT || 59489;
+const PORT = 9000;
 
 app.use(cors());
 app.use(express.json());
