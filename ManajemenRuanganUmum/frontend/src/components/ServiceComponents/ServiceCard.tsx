@@ -14,7 +14,9 @@ export default function ServiceCard({ title, description, icon, color, onClick }
     bg-white
     rounded-xl
     p-8
-    h-[250px]
+    h-auto
+    min-h-[220px]
+    md:h-[250px]
     shadow-lg
     hover:shadow-xl
     transition

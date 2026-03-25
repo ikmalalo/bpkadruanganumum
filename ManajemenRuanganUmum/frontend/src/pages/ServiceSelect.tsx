@@ -5,7 +5,7 @@ import "../index.css"
 
 export default function ServiceSelect() {
   return (
-    <div className="min-h-screen bg-gray-100 flex flex-col items-center">
+    <div className="min-h-screen bg-gray-100 flex flex-col items-center px-6 md:px-0">
 
       <ServiceHeader />
 

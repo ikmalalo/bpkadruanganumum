@@ -6,9 +6,9 @@ export default function ServiceContainer() {
   const navigate = useNavigate()
 
   return (
-    <div className="flex gap-10 mt-16">
+    <div className="flex flex-col md:flex-row flex-wrap justify-center gap-6 md:gap-10 mt-10 md:mt-16 w-full max-w-6xl mx-auto">
 
-      <div className="w-[420px]">
+      <div className="w-full md:w-[420px]">
         <ServiceCard
           title="Peminjaman Ruangan"
           description="Sistem pengelola jadwal dan reservasi fasilitas ruangan."
@@ -18,7 +18,7 @@ export default function ServiceContainer() {
         />
       </div>
 
-      <div className="w-[420px]">
+      <div className="w-full md:w-[420px]">
         <ServiceCard
           title="Kenaikan Gaji"
           description="Sistem informasi penggajian pegawai BPKAD."
