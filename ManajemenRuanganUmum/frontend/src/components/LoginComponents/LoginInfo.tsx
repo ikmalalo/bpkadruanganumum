@@ -2,9 +2,8 @@ import gedung from "../../assets/images/gedung.jpg"
 
 export default function LoginInfo() {
   return (
-    
     <div
-      className="w-full md:w-1/2 bg-cover bg-center flex items-end justify-center pb-10 md:pb-32 relative min-h-[400px] md:min-h-0"
+      className="hidden md:flex md:w-1/2 bg-cover bg-center items-end justify-center pb-32 relative overflow-hidden"
       style={{ backgroundImage: `url(${gedung})` }}
     >
 
