@@ -2,6 +2,7 @@ import { useState, useEffect } from "react"
 import { ChevronLeft, ChevronRight, Check, Calendar, MapPin, Clock, User, Users } from "lucide-react"
 import ConfirmModal from "./ConfirmModal"
 import Toast from "./Toast"
+import { apiUrl } from "../../lib/api"
 
 interface Props {
 statusFilter:string
@@ -194,7 +195,7 @@ const applyStatusChange=async ()=>{
   const targetData = type === "bpkad" ? bpkadData[index] : pemkotData[index];
 
   try {
-    const response = await fetch(`/api/agendas/${targetData.id}/status`, {
+    const response = await fetch(apiUrl(`/api/agendas/${targetData.id}/status`), {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ status }),

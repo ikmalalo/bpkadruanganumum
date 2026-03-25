@@ -3,6 +3,7 @@ import "../index.css"
 import { ArrowLeft, ArrowRight, FileText } from "lucide-react"
 import { useNavigate, useLocation } from "react-router-dom"
 import AppNotification from "../components/Common/Notification"
+import { apiUrl } from "../lib/api"
 
 export default function KonfirmasiPeminjaman() {
   const navigate = useNavigate()
@@ -84,8 +85,8 @@ export default function KonfirmasiPeminjaman() {
             onClick={async () => {
               const isEdit = (data as any).isEdit;
               const url = isEdit 
-                ? `/api/agendas/${(data as any).id}` 
-                : '/api/agendas';
+                ? apiUrl(`/api/agendas/${(data as any).id}`) 
+                : apiUrl('/api/agendas');
               const method = isEdit ? 'PUT' : 'POST';
 
               try {
