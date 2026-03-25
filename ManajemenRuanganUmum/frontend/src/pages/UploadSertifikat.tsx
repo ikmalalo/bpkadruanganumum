@@ -1,5 +1,5 @@
 import "../index.css"
-import { useState, useRef } from "react"
+import { useState, useRef, useEffect } from "react"
 import { useNavigate } from "react-router-dom"
 import { format } from "date-fns"
 import { id } from "date-fns/locale"
