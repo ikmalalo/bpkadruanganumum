@@ -207,14 +207,12 @@ export default function PreviewVertikal() {
               ))}
             </div>
           ) : currentSlide?.type === 'CERTIFICATE' ? (
-            <div className="h-full flex flex-col p-4 animate-in fade-in slide-in-from-bottom-4 duration-500 bg-white rounded-3xl overflow-visible">
-               <div className="flex-1 flex items-center justify-center relative">
-                  <img 
-                    src={currentSlide.data.foto} 
-                    alt="Sertifikat" 
-                    className="max-w-full max-h-full w-auto h-auto object-contain shadow-[0_25px_60px_-15px_rgba(0,0,0,0.2)] border-4 border-white rounded-lg" 
-                  />
-               </div>
+            <div className="h-full flex items-center justify-center p-6 bg-white rounded-3xl overflow-hidden animate-in fade-in slide-in-from-bottom-4 duration-500">
+                <img 
+                  src={currentSlide.data.foto} 
+                  alt="Sertifikat" 
+                  className="max-w-[90%] max-h-[90%] w-auto h-auto object-contain shadow-[0_35px_60px_-15px_rgba(0,0,0,0.3)] border-4 border-white rounded-lg" 
+                />
             </div>
           ) : null}
         </div>
