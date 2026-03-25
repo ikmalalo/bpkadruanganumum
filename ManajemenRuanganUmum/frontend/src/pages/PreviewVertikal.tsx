@@ -138,7 +138,7 @@ export default function PreviewVertikal() {
           
           <div className="flex flex-col items-center">
             <div className="flex items-baseline gap-1.5 mb-0">
-              <span className="text-3xl md:text-4xl font-black text-gray-800 leading-none">
+              <span className="text-2xl md:text-3xl font-black text-gray-800 leading-none">
                 {format(time, "HH:mm")}
               </span>
               <span className="text-base md:text-lg font-bold text-orange-500">WITA</span>
@@ -159,7 +159,7 @@ export default function PreviewVertikal() {
 
         {/* DYNAMIC PAGE TITLE */}
         <div className="flex flex-col items-center mb-3 text-center">
-            <h1 className="text-lg md:text-xl font-black text-gray-800 tracking-tight uppercase leading-tight mb-2 min-h-[1.5em]">
+            <h1 className="text-base md:text-lg font-black text-gray-800 tracking-tight uppercase leading-tight mb-2 min-h-[1.5em]">
               {pageTitle}
             </h1>
             
@@ -191,7 +191,7 @@ export default function PreviewVertikal() {
 
                 {/* TOP SECTION: NO & TIME */}
                 <div className="bg-gray-50/50 p-4 border-b border-gray-100 flex items-center gap-4">
-                  <div className="w-10 h-10 rounded-xl bg-orange-500 flex items-center justify-center text-white font-black text-xl shadow-orange-200 shadow-lg">
+                  <div className="w-10 h-10 rounded-xl bg-orange-500 flex items-center justify-center text-white font-black text-lg shadow-orange-200 shadow-lg">
                     {item.no}
                   </div>
                   <div>
@@ -201,7 +201,7 @@ export default function PreviewVertikal() {
                     <div className="text-xs font-black text-gray-600 uppercase mt-0.5">
                       {item.tanggal.includes(', ') ? item.tanggal.split(', ')[1] : item.tanggal}
                     </div>
-                    <div className="text-lg font-black text-orange-500 leading-none mt-1">{item.pukul}</div>
+                    <div className="text-base font-black text-orange-500 leading-none mt-1">{item.pukul}</div>
                   </div>
                 </div>
 
@@ -210,7 +210,7 @@ export default function PreviewVertikal() {
                   {/* ACARA */}
                   <div>
                     <div className="text-[10px] font-bold text-orange-500 uppercase tracking-widest mb-1">ACARA / AGENDA</div>
-                    <h3 className="text-xl font-black text-gray-800 leading-tight uppercase line-clamp-3">
+                    <h3 className="text-lg font-black text-gray-800 leading-tight uppercase line-clamp-3">
                       {item.acara}
                     </h3>
                   </div>

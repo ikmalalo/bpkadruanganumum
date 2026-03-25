@@ -143,12 +143,12 @@ export default function PreviewHorizontal() {
         <div className="flex justify-between items-center mb-2 pl-8 md:pl-0">
           <div className="flex flex-col">
             <div className="flex items-baseline gap-2">
-              <span className="text-5xl md:text-6xl font-black text-gray-800 leading-none">
+              <span className="text-4xl md:text-5xl font-black text-gray-800 leading-none">
                 {format(time, "HH:mm")}
               </span>
               <span className="text-xl md:text-2xl font-bold text-orange-500">WITA</span>
             </div>
-            <span className="text-lg md:text-xl font-bold text-orange-500 uppercase tracking-widest leading-none mt-1">
+            <span className="text-base md:text-lg font-bold text-orange-500 uppercase tracking-widest leading-none mt-1">
               {format(time, "EEEE, dd MMMM yyyy", { locale: id })}
             </span>
           </div>
@@ -168,7 +168,7 @@ export default function PreviewHorizontal() {
 
         {/* DYNAMIC PAGE TITLE */}
         <div className="flex items-center justify-between mb-2">
-            <h1 className="text-2xl md:text-3xl font-black text-gray-800 tracking-tight uppercase leading-none min-h-[1em]">
+            <h1 className="text-xl md:text-2xl font-black text-gray-800 tracking-tight uppercase leading-none min-h-[1em]">
               {pageTitle}
             </h1>
             
@@ -192,26 +192,26 @@ export default function PreviewHorizontal() {
           <table className="w-full border-collapse flex-1 flex flex-col items-stretch">
             <thead className="w-full">
               <tr className="bg-orange-500 text-white flex w-full">
-                <th className="py-3 px-2 text-center text-lg font-black border-r border-orange-400/30 w-16 flex items-center justify-center">NO</th>
-                <th className="py-3 px-4 text-left text-lg font-black border-r border-orange-400/30 flex-1 flex items-center">HARI / TANGGAL</th>
-                <th className="py-3 px-4 text-left text-lg font-black border-r border-orange-400/30 flex-1 flex items-center">TEMPAT</th>
-                <th className="py-3 px-4 text-center text-lg font-black border-r border-orange-400/30 w-36 flex items-center justify-center">PUKUL</th>
-                <th className="py-3 px-6 text-left text-lg font-black border-r border-orange-400/30 flex-[1.5] flex items-center">ACARA</th>
-                <th className="py-3 px-4 text-left text-lg font-black border-r border-orange-400/30 flex-1 flex items-center">PELAKSANA</th>
+                <th className="py-3 px-2 text-center text-base font-black border-r border-orange-400/30 w-16 flex items-center justify-center">NO</th>
+                <th className="py-3 px-4 text-left text-base font-black border-r border-orange-400/30 flex-1 flex items-center">HARI / TANGGAL</th>
+                <th className="py-3 px-4 text-left text-base font-black border-r border-orange-400/30 flex-1 flex items-center">TEMPAT</th>
+                <th className="py-3 px-4 text-center text-base font-black border-r border-orange-400/30 w-36 flex items-center justify-center">PUKUL</th>
+                <th className="py-3 px-6 text-left text-base font-black border-r border-orange-400/30 flex-[1.5] flex items-center">ACARA</th>
+                <th className="py-3 px-4 text-left text-base font-black border-r border-orange-400/30 flex-1 flex items-center">PELAKSANA</th>
                 {hasDihadiriData && (
-                  <th className="py-3 px-4 text-left text-lg font-black border-r border-orange-400/30 flex-1 flex items-center">DIHADIRI</th>
+                  <th className="py-3 px-4 text-left text-base font-black border-r border-orange-400/30 flex-1 flex items-center">DIHADIRI</th>
                 )}
-                <th className="py-3 px-4 text-center text-lg font-black w-36 flex items-center justify-center">STATUS</th>
+                <th className="py-3 px-4 text-center text-base font-black w-36 flex items-center justify-center">STATUS</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-100 flex-1 flex flex-col w-full overflow-hidden">
               {currentAgendas.map((item, idx) => (
                 <tr key={`${currentPage}-${idx}`} className="hover:bg-orange-50/40 transition-all duration-300 group flex w-full flex-1 items-stretch min-h-0 animate-in fade-in slide-in-from-right-4 duration-500">
-                  <td className="px-2 text-xl font-black text-gray-400 text-center border-r border-gray-50 group-hover:text-orange-500 transition-colors w-16 flex items-center justify-center">
+                  <td className="px-2 text-lg font-black text-gray-400 text-center border-r border-gray-50 group-hover:text-orange-500 transition-colors w-16 flex items-center justify-center">
                     {item.no}
                   </td>
                   <td className="px-4 border-r border-gray-50 flex-1 flex flex-col justify-center min-w-0">
-                    <span className="text-lg font-black text-gray-800 uppercase leading-none mb-1 truncate">
+                    <span className="text-base font-black text-gray-800 uppercase leading-none mb-1 truncate">
                       {item.hari}
                     </span>
                     <span className="text-xs font-bold text-gray-400 uppercase tracking-wider truncate">
@@ -224,23 +224,23 @@ export default function PreviewHorizontal() {
                     </span>
                   </td>
                   <td className="px-4 border-r border-gray-50 w-36 flex items-center justify-center">
-                    <span className="text-xl font-black text-orange-500 bg-orange-50 px-3 py-1 rounded-md">
+                    <span className="text-lg font-black text-orange-500 bg-orange-50 px-3 py-1 rounded-md">
                         {item.pukul}
                     </span>
                   </td>
                   <td className="px-6 border-r border-gray-50 flex-[1.5] flex items-center min-w-0">
-                    <span className="text-lg font-black text-gray-800 uppercase leading-[1.1] block line-clamp-2">
+                    <span className="text-base font-black text-gray-800 uppercase leading-[1.1] block line-clamp-2">
                         {item.acara}
                     </span>
                   </td>
                   <td className="px-4 border-r border-gray-50 flex-1 flex items-center min-w-0">
-                    <span className="text-lg font-black text-gray-800 uppercase leading-tight group-hover:text-gray-600 transition-colors line-clamp-2">
+                    <span className="text-base font-black text-gray-800 uppercase leading-tight group-hover:text-gray-600 transition-colors line-clamp-2">
                         {item.pelaksana}
                     </span>
                   </td>
                   {hasDihadiriData && (
                     <td className="px-4 border-r border-gray-50 flex-1 flex items-center min-w-0">
-                      <span className="text-lg font-black text-gray-800 uppercase leading-tight line-clamp-2">
+                      <span className="text-base font-black text-gray-800 uppercase leading-tight line-clamp-2">
                           {item.dihadiri || "-"}
                       </span>
                     </td>
