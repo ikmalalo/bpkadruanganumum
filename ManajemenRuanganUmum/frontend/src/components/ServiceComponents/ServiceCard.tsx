@@ -1,49 +1,44 @@
+import { ReactNode } from "react"
+import { ArrowRight } from "lucide-react"
+
 interface Props {
+  tag: string
   title: string
   description: string
-  icon: string
-  color: string
+  icon: ReactNode
+  buttonText: string
   onClick?: () => void
 }
 
-export default function ServiceCard({ title, description, icon, color, onClick }: Props) {
+export default function ServiceCard({ tag, title, description, icon, buttonText, onClick }: Props) {
   return (
-    <div
-    onClick={onClick}
-    className="
-    bg-white
-    rounded-xl
-    p-8
-    h-auto
-    min-h-[220px]
-    md:h-[250px]
-    shadow-lg
-    hover:shadow-xl
-    transition
-    hover:scale-[1.02]
-    cursor-pointer
-    flex
-    flex-col
-    justify-between
-    ">
-
-      <div>
-        <div className={`w-12 h-12 flex items-center justify-center rounded-lg mb-4 ${color}`}>
-          <span className="text-xl">{icon}</span>
+    <div className="bg-white rounded-[40px] p-10 md:p-14 shadow-[0_20px_60px_-15px_rgba(0,0,0,0.05)] border border-gray-50 flex flex-col h-full transition-all duration-500 hover:shadow-[0_40px_80px_-20px_rgba(0,0,0,0.08)] hover:-translate-y-2 group">
+      
+      <div className="flex justify-between items-start mb-10">
+        <span className="bg-orange-100 text-orange-600 text-[10px] font-black tracking-[0.2em] px-4 py-1.5 rounded-full uppercase">
+          {tag}
+        </span>
+        <div className="w-16 h-16 bg-gray-50 rounded-2xl flex items-center justify-center text-orange-500 group-hover:bg-orange-500 group-hover:text-white transition-colors duration-500 shadow-sm">
+          {icon}
         </div>
+      </div>
 
-        <h2 className="text-xl font-semibold mb-2">
+      <div className="flex-grow">
+        <h2 className="text-3xl md:text-4xl font-light text-gray-800 mb-6 tracking-tight">
           {title}
         </h2>
-
-        <p className="text-gray-500 mb-4">
+        <p className="text-gray-400 text-sm md:text-lg leading-relaxed mb-8 max-w-[280px]">
           {description}
         </p>
       </div>
 
-      {/* <p className="text-blue-600 font-medium flex items-center gap-2">
-        Buka Layanan →
-      </p> */}
+      <button
+        onClick={onClick}
+        className="w-full bg-orange-500 hover:bg-orange-600 text-white font-bold py-5 px-8 rounded-3xl flex items-center justify-center gap-3 transition-all duration-300 shadow-[0_10px_30px_-5px_rgba(249,115,22,0.4)] hover:shadow-[0_15px_40px_-5px_rgba(249,115,22,0.5)] active:scale-[0.98]"
+      >
+        <span className="text-lg">{buttonText}</span>
+        {buttonText.includes("Login") ? <span className="opacity-80">🔒</span> : <ArrowRight className="w-5 h-5" />}
+      </button>
 
     </div>
   )

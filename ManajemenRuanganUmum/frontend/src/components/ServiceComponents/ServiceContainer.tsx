@@ -1,30 +1,32 @@
 import ServiceCard from "./ServiceCard"
 import { useNavigate } from "react-router-dom"
+import { User, ShieldCheck } from "lucide-react"
 
 export default function ServiceContainer() {
-
   const navigate = useNavigate()
 
   return (
-    <div className="flex flex-col md:flex-row flex-wrap justify-center gap-6 md:gap-10 mt-10 md:mt-16 w-full max-w-6xl mx-auto">
+    <div className="flex flex-col md:flex-row items-stretch justify-center gap-8 md:gap-14 mt-16 md:mt-24 w-full max-w-7xl mx-auto px-6 pb-20">
 
-      <div className="w-full md:w-[420px]">
+      <div className="w-full md:w-[500px]">
         <ServiceCard
-          title="Peminjaman Ruangan"
-          description="Sistem pengelola jadwal dan reservasi fasilitas ruangan."
-          icon="🏛"
-          color="bg-blue-100 text-blue-600"
-          onClick={() => navigate("/rooms")}
+          tag="PUBLIK"
+          title="Pengunjung"
+          description="Akses informasi publik dan layanan umum tanpa perlu autentikasi khusus untuk melihat transparansi anggaran."
+          icon={<User className="w-8 h-8" />}
+          buttonText="Mulai Akses"
+          onClick={() => navigate("/preview-horizontal")} // Assuming public goes to preview
         />
       </div>
 
-      <div className="w-full md:w-[420px]">
+      <div className="w-full md:w-[500px]">
         <ServiceCard
-          title="Kenaikan Gaji"
-          description="Sistem informasi penggajian pegawai BPKAD."
-          icon="$"
-          color="bg-green-100 text-green-600"
-          onClick={() => navigate("/payroll")}
+          tag="INTERNAL"
+          title="Administrator"
+          description="Login khusus staf internal BPKAD untuk mengelola data keuangan dan aset daerah kota Samarinda."
+          icon={<ShieldCheck className="w-8 h-8" />}
+          buttonText="Login Petugas"
+          onClick={() => navigate("/login")}
         />
       </div>
 
