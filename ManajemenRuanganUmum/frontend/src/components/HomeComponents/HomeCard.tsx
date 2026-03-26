@@ -24,7 +24,10 @@ export default function HomeCard({
   delay = "delay-0"
 }: Props) {
   return (
-    <div className={`bg-white rounded-[1.5rem] p-4 md:p-6 lg:p-7 shadow-xl border border-gray-100 flex flex-col h-full relative overflow-hidden group hover:shadow-2xl hover:shadow-[#ff6b00]/20 hover:border-[#ff6b00]/30 transition-all duration-300 animate-in fade-in slide-in-from-bottom-10 fill-mode-both ${delay}`}>
+    <div 
+      onClick={onClick}
+      className={`bg-white rounded-[1.5rem] p-4 md:p-6 lg:p-7 shadow-xl border border-gray-100 flex flex-col h-full relative overflow-hidden group hover:shadow-2xl hover:shadow-[#ff6b00]/40 hover:border-[#ff6b00]/40 hover:-translate-y-2 hover:scale-[1.02] cursor-pointer transition-all duration-300 animate-in fade-in slide-in-from-bottom-10 fill-mode-both ${delay}`}
+    >
       
       {/* Subtle Bottom Accent Line */}
       <div className="absolute bottom-0 left-0 right-0 h-1 bg-[#ff6b00]/10" />
@@ -51,13 +54,10 @@ export default function HomeCard({
       </div>
 
       {/* Button */}
-      <button 
-        onClick={onClick}
-        className="w-full bg-[#111827] hover:bg-[#ff6b00] text-white font-black py-3 md:py-4 px-5 rounded-lg flex items-center justify-center gap-2.5 transition-all duration-300 shadow-md hover:shadow-orange-500/15 active:scale-95"
-      >
+      <div className="w-full bg-[#111827] group-hover:bg-[#ff6b00] text-white font-black py-3 md:py-4 px-5 rounded-lg flex items-center justify-center gap-2.5 transition-all duration-300 shadow-md group-hover:shadow-orange-500/15">
         <span className="tracking-tight uppercase text-[8px] md:text-[10px] font-bold">{buttonText}</span>
         {ButtonIcon && <ButtonIcon size={14} />}
-      </button>
+      </div>
       
     </div>
   )
