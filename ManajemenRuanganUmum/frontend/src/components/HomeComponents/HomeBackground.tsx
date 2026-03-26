@@ -1,36 +1,80 @@
+import { useEffect, useState } from "react";
+import Particles, { initParticlesEngine } from "@tsparticles/react";
+import { loadSlim } from "@tsparticles/slim";
+
 export default function HomeBackground() {
+  const [init, setInit] = useState(false);
+
+  useEffect(() => {
+    initParticlesEngine(async (engine) => {
+      await loadSlim(engine);
+    }).then(() => {
+      setInit(true);
+    });
+  }, []);
+
   return (
     <div className="absolute inset-0 overflow-hidden pointer-events-none z-0">
       
-      {/* Performance-Optimized Background Globs (Statik/Low-Animation) */}
-      <div 
-        className="absolute top-[-10%] left-[-10%] w-[50rem] h-[50rem] bg-[radial-gradient(circle_at_center,rgba(255,146,60,0.06),transparent_70%)]" 
-      />
-      <div 
-        className="absolute bottom-[-15%] right-[-15%] w-[60rem] h-[60rem] bg-[radial-gradient(circle_at_center,rgba(191,219,254,0.08),transparent_70%)]" 
-      />
-      <div 
-        className="absolute top-[20%] right-[5%] w-[40rem] h-[40rem] bg-[radial-gradient(circle_at_center,rgba(255,107,0,0.04),transparent_70%)] animate-pulse-slow" 
-      />
-      
-      {/* Minimal Micro-Particles (8 particles only) */}
-      {[...Array(8)].map((_, i) => (
-        <div
-          key={i}
-          className="particle opacity-10"
-          style={{
-            left: `${Math.random() * 100}%`,
-            top: `${Math.random() * 100}%`,
-            width: `${Math.random() * 2 + 1}px`,
-            height: `${Math.random() * 2 + 1}px`,
-            animationDelay: `${Math.random() * 5}s`,
-            animationDuration: `${Math.random() * 8 + 4}s`,
+      {/* Premium Particles Effect */}
+      {init && (
+        <Particles
+          id="tsparticles"
+          className="absolute inset-0 z-0 pointer-events-none"
+          options={{
+            background: {
+              color: { value: "transparent" },
+            },
+            fpsLimit: 120,
+            interactivity: {
+              events: {
+                onClick: { enable: false },
+                onHover: { enable: false },
+              },
+            },
+            particles: {
+              color: { value: "#fb923c" },
+              links: {
+                color: "#fdba74",
+                distance: 150,
+                enable: true,
+                opacity: 0.2,
+                width: 1,
+              },
+              move: {
+                direction: "none",
+                enable: true,
+                outModes: { default: "bounce" },
+                random: false,
+                speed: 1.5,
+                straight: false,
+              },
+              number: {
+                density: { enable: true },
+                value: 60,
+              },
+              opacity: { value: 0.3 },
+              shape: { type: "circle" },
+              size: { value: { min: 1, max: 2.5 } },
+            },
+            detectRetina: true,
           }}
         />
-      ))}
+      )}
 
+      {/* Performance-Optimized Background Globs (Statik/Low-Animation) */}
+      <div 
+        className="absolute top-[-10%] left-[-10%] w-[50rem] h-[50rem] bg-[radial-gradient(circle_at_center,rgba(255,146,60,0.06),transparent_70%)] pointer-events-none" 
+      />
+      <div 
+        className="absolute bottom-[-15%] right-[-15%] w-[60rem] h-[60rem] bg-[radial-gradient(circle_at_center,rgba(191,219,254,0.08),transparent_70%)] pointer-events-none" 
+      />
+      <div 
+        className="absolute top-[20%] right-[5%] w-[40rem] h-[40rem] bg-[radial-gradient(circle_at_center,rgba(255,107,0,0.04),transparent_70%)] animate-pulse-slow pointer-events-none" 
+      />
+      
       {/* Static Overlay */}
-      <div className="absolute inset-0 bg-gradient-to-b from-white/10 via-transparent to-white/40" />
+      <div className="absolute inset-0 bg-gradient-to-b from-white/10 via-transparent to-white/40 pointer-events-none" />
 
     </div>
   )
