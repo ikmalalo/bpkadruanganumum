@@ -1,6 +1,6 @@
 export default function ServiceHeader() {
   return (
-    <div className="flex flex-col items-center text-center mt-12 md:mt-24 px-4 overflow-hidden">
+    <div className="flex flex-col items-center text-center mt-6 md:mt-12 px-4 overflow-hidden">
       <p className="text-[10px] md:text-sm tracking-[0.3em] text-gray-500 uppercase font-bold mb-4 drop-shadow-sm">
         SELAMAT DATANG DI PORTAL RESMI
       </p>

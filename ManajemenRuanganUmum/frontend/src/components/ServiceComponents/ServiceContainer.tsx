@@ -6,7 +6,7 @@ export default function ServiceContainer() {
   const navigate = useNavigate()
 
   return (
-    <div className="flex flex-col md:flex-row items-stretch justify-center gap-8 md:gap-14 mt-16 md:mt-24 w-full max-w-7xl mx-auto px-6 pb-20">
+    <div className="flex flex-col md:flex-row items-stretch justify-center gap-8 md:gap-14 mt-10 md:mt-12 w-full max-w-7xl mx-auto px-6 overflow-hidden">
 
       <div className="w-full md:w-[500px]">
         <ServiceCard

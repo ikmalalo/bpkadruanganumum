@@ -5,11 +5,11 @@ import "../index.css"
 
 export default function ServiceSelect() {
   return (
-    <div className="min-h-screen bg-white flex flex-col items-center px-6 md:px-0 relative overflow-hidden">
+    <div className="h-screen bg-white flex flex-col items-center px-6 md:px-0 relative overflow-hidden">
       {/* Subtle Background Elements */}
       <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[1000px] h-[600px] bg-gradient-to-b from-orange-50/20 to-transparent rounded-full blur-3xl -z-10 animate-pulse"></div>
       
-      <div className="flex-grow flex flex-col items-center w-full">
+      <div className="flex-grow flex flex-col items-center justify-center w-full">
         <ServiceHeader />
         <ServiceContainer />
       </div>
