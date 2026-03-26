@@ -26,7 +26,7 @@ export default function HomeCard({
   return (
     <div 
       onClick={onClick}
-      className={`bg-white rounded-[1.5rem] p-4 md:p-6 lg:p-7 shadow-xl border border-gray-100 flex flex-col h-full relative overflow-hidden group hover:shadow-2xl hover:shadow-[#ff6b00]/40 hover:border-[#ff6b00]/40 hover:-translate-y-2 hover:scale-[1.02] cursor-pointer transition-all duration-300 animate-in fade-in slide-in-from-bottom-10 fill-mode-both ${delay}`}
+      className={`bg-white rounded-[1.5rem] p-4 md:p-6 lg:p-7 shadow-xl border border-gray-100 flex flex-col h-full relative overflow-hidden group hover:shadow-2xl hover:shadow-[#ff6b00]/40 hover:border-[#ff6b00]/40 hover:-translate-y-2 hover:scale-[1.02] cursor-pointer transition-all duration-200 animate-in fade-in slide-in-from-bottom-10 fill-mode-both ${delay}`}
     >
       
       {/* Subtle Bottom Accent Line */}
@@ -37,7 +37,7 @@ export default function HomeCard({
         <span className={`${badgeColor} text-[7px] md:text-[9px] font-black tracking-[0.2em] px-2.5 py-1 md:px-3 md:py-1 rounded-full uppercase border border-black/5`}>
           {badge}
         </span>
-        <div className="w-8 h-8 md:w-10 md:h-10 lg:w-12 lg:h-12 bg-gray-50 group-hover:bg-[#ff6b00] rounded-lg border border-gray-100 group-hover:border-[#ff6b00] flex items-center justify-center text-[#ff6b00] group-hover:text-white group-hover:scale-105 group-hover:rotate-3 transition-all duration-300">
+        <div className="w-8 h-8 md:w-10 md:h-10 lg:w-12 lg:h-12 bg-gray-50 group-hover:bg-[#ff6b00] rounded-lg border border-gray-100 group-hover:border-[#ff6b00] flex items-center justify-center text-[#ff6b00] group-hover:text-white group-hover:scale-105 group-hover:rotate-3 transition-all duration-200">
           <Icon size={16} className="md:size-[20px]" strokeWidth={1.5} />
         </div>
       </div>
@@ -54,7 +54,7 @@ export default function HomeCard({
       </div>
 
       {/* Button */}
-      <div className="w-full bg-[#111827] group-hover:bg-[#ff6b00] text-white font-black py-3 md:py-4 px-5 rounded-lg flex items-center justify-center gap-2.5 transition-all duration-300 shadow-md group-hover:shadow-orange-500/15">
+      <div className="w-full bg-[#111827] group-hover:bg-[#ff6b00] text-white font-black py-3 md:py-4 px-5 rounded-lg flex items-center justify-center gap-2.5 transition-all duration-200 shadow-md group-hover:shadow-orange-500/15">
         <span className="tracking-tight uppercase text-[8px] md:text-[10px] font-bold">{buttonText}</span>
         {ButtonIcon && <ButtonIcon size={14} />}
       </div>
