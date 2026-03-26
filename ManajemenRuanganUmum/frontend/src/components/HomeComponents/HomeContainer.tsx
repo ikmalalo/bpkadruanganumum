@@ -6,14 +6,15 @@ export default function HomeContainer() {
   const navigate = useNavigate()
 
   return (
-    <div className="flex flex-col md:flex-row flex-wrap justify-center gap-10 mt-16 w-full max-w-7xl mx-auto px-6 pb-20">
+    <div className="flex flex-col md:flex-row flex-wrap justify-center gap-12 mt-16 w-full max-w-7xl mx-auto px-8 pb-32">
 
-      <div className="w-full md:w-[500px] h-full flex items-stretch">
+      {/* Pengunjung Card */}
+      <div className="w-full md:w-[520px] h-auto flex flex-col items-stretch">
         <HomeCard
           badge="Akses Publik"
           badgeColor="bg-blue-50 text-blue-600"
           title="Pengunjung"
-          description="Akses cepat untuk melihat agenda dan jadwal penggunaan ruangan rapat secara real-time melalui panel informasi."
+          description="Akses cepat untuk melihat agenda dan jadwal penggunaan ruangan rapat secara real-time melalui panel informasi yang transparan."
           Icon={User}
           buttonText="Mulai Akses"
           buttonIcon={ArrowRight}
@@ -22,12 +23,13 @@ export default function HomeContainer() {
         />
       </div>
 
-      <div className="w-full md:w-[500px] h-full flex items-stretch">
+      {/* Administrator Card */}
+      <div className="w-full md:w-[520px] h-auto flex flex-col items-stretch">
         <HomeCard
           badge="Internal Staf"
           badgeColor="bg-orange-50 text-orange-600"
           title="Administrator"
-          description="Masuk ke dashboard manajemen BPKAD untuk mengelola reservasi, jadwal, dan inventaris ruangan."
+          description="Masuk ke dashboard manajemen BPKAD untuk mengelola reservasi, jadwal, dan koordinasi penggunaan ruangan rapat internal."
           Icon={ShieldCheck}
           buttonText="Login Sistem"
           buttonIcon={Lock}
