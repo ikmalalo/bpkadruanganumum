@@ -7,7 +7,7 @@ if (THREE.ColorManagement) {
 }
 
 // @ts-ignore
-import NET from "../../lib/vanta.net.js";
+import NET from "vanta/dist/vanta.net.min";
 
 export default function HomeBackground() {
   const [vantaEffect, setVantaEffect] = useState<any>(null);
