@@ -1,6 +1,6 @@
 export default function HomeHeader() {
   return (
-    <div className="mt-16 text-center max-w-2xl px-4 flex flex-col items-center">
+    <div className="mt-10 text-center max-w-2xl px-4 flex flex-col items-center">
       <p className="text-xs md:text-sm font-bold tracking-[0.2em] text-[#ff6b00] mb-4 uppercase animate-in fade-in slide-in-from-top-4 duration-700 delay-300 fill-mode-both">
         Selamat Datang di Portal Resmi
       </p>

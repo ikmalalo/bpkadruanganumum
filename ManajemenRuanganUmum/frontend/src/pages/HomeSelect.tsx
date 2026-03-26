@@ -6,15 +6,19 @@ import "../index.css"
 
 export default function HomeSelect() {
   return (
-    <div className="min-h-screen bg-white flex flex-col items-center relative overflow-hidden">
+    <div className="h-screen bg-white flex flex-col items-center relative overflow-hidden">
       
       {/* Premium Animated Background */}
       <HomeBackground />
 
       {/* Main Content with Entrance Animation */}
-      <div className="relative z-10 w-full flex flex-col items-center animate-in fade-in slide-in-from-bottom-8 duration-1000 ease-out fill-mode-forwards">
+      <div className="relative z-10 w-full h-full flex flex-col items-center justify-between animate-in fade-in slide-in-from-bottom-8 duration-1000 ease-out fill-mode-forwards overflow-hidden">
         <HomeHeader />
-        <HomeContainer />
+        
+        <div className="flex-grow flex items-center justify-center w-full">
+          <HomeContainer />
+        </div>
+        
         <HomeFooter />
       </div>
 

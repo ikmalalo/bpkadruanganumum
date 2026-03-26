@@ -1,6 +1,6 @@
 export default function HomeFooter() {
   return (
-    <div className="w-full max-w-6xl mx-auto px-4 mt-auto mb-12">
+    <div className="w-full max-w-6xl mx-auto px-4 mt-auto mb-6">
       <div className="border-t border-gray-200 pt-8 flex flex-col md:flex-row justify-between items-center gap-4">
         <p className="text-gray-400 font-bold text-sm tracking-tight text-center md:text-left">
           BPKAD Kota Samarinda
