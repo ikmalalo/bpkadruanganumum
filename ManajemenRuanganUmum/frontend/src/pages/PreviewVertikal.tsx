@@ -88,6 +88,8 @@ export default function PreviewVertikal() {
 
   const [currentPage, setCurrentPage] = useState(0)
   const [progress, setProgress] = useState(0)
+  const [touchStart, setTouchStart] = useState<number | null>(null)
+  const MIN_SWIPE_DISTANCE = 50
 
   useEffect(() => {
     const timer = setInterval(() => setTime(new Date()), 1000)
@@ -115,6 +117,30 @@ export default function PreviewVertikal() {
     setProgress(0);
   };
 
+  const onTouchStart = (e: React.TouchEvent) => {
+    setTouchStart(e.targetTouches[0].clientX)
+  }
+
+  const onTouchEnd = (e: React.TouchEvent) => {
+    if (!touchStart) return
+    const touchEnd = e.changedTouches[0].clientX
+    const distance = touchStart - touchEnd
+    const isLeftSwipe = distance > MIN_SWIPE_DISTANCE
+    const isRightSwipe = distance < -MIN_SWIPE_DISTANCE
+
+    if (isLeftSwipe) {
+      // Next Page
+      setCurrentPage((prev) => (prev + 1) % pages.length)
+      setProgress(0)
+    } else if (isRightSwipe) {
+      // Prev Page
+      setCurrentPage((prev) => (prev - 1 + pages.length) % pages.length)
+      setProgress(0)
+    }
+
+    setTouchStart(null)
+  }
+
   const currentSlide = pages[currentPage]
 
   const pageTitle = useMemo(() => {
@@ -133,7 +159,11 @@ export default function PreviewVertikal() {
   }
 
   return (
-    <div className="bg-[#f3f4f6] h-screen relative overflow-hidden flex flex-col">
+    <div 
+      className="bg-[#f3f4f6] h-screen relative overflow-hidden flex flex-col"
+      onTouchStart={onTouchStart}
+      onTouchEnd={onTouchEnd}
+    >
       <div className="fixed top-0 left-0 w-20 h-20 z-50 group flex items-start justify-start p-3">
         <button onClick={() => navigate('/preview')} className="bg-white p-2 rounded-full shadow-2xl border border-gray-100 text-orange-500 transition-all duration-300 opacity-0 group-hover:opacity-100 scale-75 group-hover:scale-100 active:scale-90">
           <ArrowLeft size={18} strokeWidth={3} />
