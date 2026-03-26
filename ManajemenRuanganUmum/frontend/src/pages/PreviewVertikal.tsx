@@ -2,7 +2,7 @@ import { useState, useEffect, useMemo } from "react"
 import logo from "../assets/images/logo.png"
 import { format } from "date-fns"
 import { id } from "date-fns/locale"
-import { ArrowLeft } from "lucide-react"
+import { ArrowLeft, ChevronLeft, ChevronRight } from "lucide-react"
 import { useNavigate } from "react-router-dom"
 import { apiUrl } from "../lib/api"
 
@@ -89,7 +89,14 @@ export default function PreviewVertikal() {
   const [currentPage, setCurrentPage] = useState(0)
   const [progress, setProgress] = useState(0)
   const [touchStart, setTouchStart] = useState<number | null>(null)
+  const [swipeArrow, setSwipeArrow] = useState<'left' | 'right' | null>(null)
   const MIN_SWIPE_DISTANCE = 50
+
+  useEffect(() => {
+    if (!swipeArrow) return
+    const timer = setTimeout(() => setSwipeArrow(null), 800)
+    return () => clearTimeout(timer)
+  }, [swipeArrow])
 
   useEffect(() => {
     const timer = setInterval(() => setTime(new Date()), 1000)
@@ -132,10 +139,12 @@ export default function PreviewVertikal() {
       // Next Page
       setCurrentPage((prev) => (prev + 1) % pages.length)
       setProgress(0)
+      setSwipeArrow('right')
     } else if (isRightSwipe) {
       // Prev Page
       setCurrentPage((prev) => (prev - 1 + pages.length) % pages.length)
       setProgress(0)
+      setSwipeArrow('left')
     }
 
     setTouchStart(null)
@@ -248,6 +257,19 @@ export default function PreviewVertikal() {
           ) : null}
         </div>
       </div>
+
+      {/* Swipe Feedback Overlay */}
+      {swipeArrow && (
+        <div className={`fixed inset-0 pointer-events-none flex items-center justify-center z-[100] animate-in fade-in zoom-in duration-300 ${swipeArrow === 'left' ? 'pr-20' : 'pl-20'}`}>
+          <div className="bg-orange-500/90 text-white p-8 rounded-full shadow-2xl backdrop-blur-sm">
+            {swipeArrow === 'left' ? (
+              <ChevronLeft size={100} strokeWidth={3} className="animate-in slide-in-from-right-8 duration-300" />
+            ) : (
+              <ChevronRight size={100} strokeWidth={3} className="animate-in slide-in-from-left-8 duration-300" />
+            )}
+          </div>
+        </div>
+      )}
     </div>
   )
 }
