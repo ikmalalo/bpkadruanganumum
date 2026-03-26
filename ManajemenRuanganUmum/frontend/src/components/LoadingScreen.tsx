@@ -32,17 +32,14 @@ const LoadingScreen: React.FC = () => {
             </div>
 
             {/* Center Content */}
-            <div className="flex flex-col items-center gap-12 max-w-sm w-full px-8">
+            <div className="flex flex-col items-center gap-12 max-w-lg w-full px-8">
                 {/* Logo Box */}
                 <div className="relative group">
-                    {/* Glowing effect background - subtle for light mode */}
-                    <div className="absolute -inset-4 bg-orange-500/10 rounded-full blur-3xl opacity-30 animate-pulse"></div>
-                    
-                    <div className="relative w-48 h-48 bg-[#0a0c10] border border-gray-100 rounded-2xl flex items-center justify-center shadow-2xl overflow-hidden">
+                    <div className="relative w-64 h-64 bg-white flex items-center justify-center overflow-hidden">
                         <img 
                             src={logo} 
                             alt="Logo BPKAD" 
-                            className="w-32 h-32 object-contain filter drop-shadow-[0_0_15px_rgba(251,146,60,0.3)]"
+                            className="w-56 h-56 object-contain"
                         />
                     </div>
                 </div>
