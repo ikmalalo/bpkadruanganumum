@@ -53,9 +53,9 @@ export default function HomeBackground() {
                 density: { enable: true },
                 value: 60,
               },
-              opacity: { value: 0.3 },
+              opacity: { value: 0.5 },
               shape: { type: "circle" },
-              size: { value: { min: 1, max: 2.5 } },
+              size: { value: { min: 3, max: 7 } },
             },
             detectRetina: true,
           }}
