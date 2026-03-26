@@ -12,6 +12,7 @@ import Riwayat from "./pages/Riwayat"
 import UploadSertifikat from "./pages/UploadSertifikat"
 import LoadingScreen from "./components/LoadingScreen"
 import DashboardLayout from "./components/DashboardComponents/DashboardLayout"
+import ConditionalPreviewLayout from "./layouts/ConditionalPreviewLayout"
 import { useState, useEffect } from "react"
 
 export default function App() {
@@ -36,8 +37,12 @@ export default function App() {
       <Route path="/login" element={<LoginPage />} />
       <Route path="/services" element={<ServiceSelect />} />
       
-      {/* Standalone Route (Visitor) */}
-      <Route path="/preview" element={<Preview />} />
+      {/* Standalone Route (Visitor or Admin conditionally) */}
+      <Route element={<ConditionalPreviewLayout />}>
+        <Route path="/preview" element={<Preview />} />
+      </Route>
+
+      {/* Fullscreen Previews (Never show sidebar, even if logged in) */}
       <Route path="/preview-horizontal" element={<PreviewHorizontal />} />
       <Route path="/preview-vertikal" element={<PreviewVertikal />} />
 
