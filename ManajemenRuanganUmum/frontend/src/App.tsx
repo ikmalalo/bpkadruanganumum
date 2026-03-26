@@ -30,8 +30,8 @@ export default function App() {
 
   return (
     <Routes>
-      <Route path="/" element={<ServiceSelect />} />
-      <Route path="/login" element={<LoginPage />} />
+      <Route path="/" element={<LoginPage />} />
+      <Route path="/services" element={<ServiceSelect />} />
       <Route element={<DashboardLayout />}>
         <Route path="/rooms" element={<RoomDashboard />} />
         <Route path="/peminjaman" element={<Peminjaman />} />
