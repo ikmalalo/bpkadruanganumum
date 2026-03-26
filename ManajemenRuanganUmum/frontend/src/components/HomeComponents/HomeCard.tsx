@@ -24,7 +24,7 @@ export default function HomeCard({
   delay = "delay-0"
 }: Props) {
   return (
-    <div className={`bg-white rounded-[1.5rem] p-4 md:p-6 lg:p-7 shadow-xl border border-gray-100 flex flex-col h-full relative overflow-hidden group hover:shadow-2xl hover:shadow-orange-500/10 transition-all duration-300 animate-in fade-in slide-in-from-bottom-10 fill-mode-both ${delay}`}>
+    <div className={`bg-white rounded-[1.5rem] p-4 md:p-6 lg:p-7 shadow-xl border border-gray-100 flex flex-col h-full relative overflow-hidden group hover:shadow-2xl hover:shadow-[#ff6b00]/20 hover:border-[#ff6b00]/30 transition-all duration-300 animate-in fade-in slide-in-from-bottom-10 fill-mode-both ${delay}`}>
       
       {/* Subtle Bottom Accent Line */}
       <div className="absolute bottom-0 left-0 right-0 h-1 bg-[#ff6b00]/10" />
