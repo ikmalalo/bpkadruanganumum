@@ -6,28 +6,28 @@ body {
   font-family: 'Poppins', sans-serif;
 }
 
+@keyframes pulseSlow {
+  0%, 100% { opacity: 0.3; transform: scale(1); }
+  50% { opacity: 0.6; transform: scale(1.05); }
+}
+
+.animate-pulse-slow {
+  animation: pulseSlow 12s ease-in-out infinite;
+}
+
 @keyframes floatParticle {
-  0% {
-    transform: translateY(120%);
-    opacity: 0;
-  }
-
-  10% {
-    opacity: 1;
-  }
-
-  100% {
-    transform: translateY(-60vh) translateX(30px);
-    opacity: 0;
-  }
+  0% { transform: translateY(110vh) translateX(0); opacity: 0; }
+  20% { opacity: 0.3; }
+  80% { opacity: 0.3; }
+  100% { transform: translateY(-10vh) translateX(20px); opacity: 0; }
 }
 
 .particle {
   position: absolute;
   border-radius: 9999px;
-  background: rgba(251,146,60,0.9);
-  box-shadow: 0 0 20px rgba(251,146,60,0.9);
-  animation: floatParticle 8s linear infinite;
+  background: rgba(251,146,60,0.4);
+  animation: floatParticle 10s linear infinite;
+  will-change: transform, opacity;
 }
 
 @keyframes slideStatus {
