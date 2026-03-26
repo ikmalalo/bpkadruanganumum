@@ -26,7 +26,7 @@ export default function HomeCard({
   return (
     <div 
       onClick={onClick}
-      className={`bg-white rounded-[1.5rem] p-4 md:p-6 lg:p-7 shadow-xl border border-gray-100 flex flex-col h-full relative overflow-hidden group hover:shadow-2xl hover:shadow-[#ff6b00]/40 hover:border-[#ff6b00]/40 hover:-translate-y-2 hover:scale-[1.02] cursor-pointer transition-all duration-200 animate-in fade-in slide-in-from-bottom-10 fill-mode-both ${delay}`}
+      className={`bg-white rounded-[1.5rem] p-4 md:p-6 lg:p-7 shadow-xl border border-gray-100 flex flex-col h-full relative overflow-hidden group hover:shadow-2xl hover:shadow-[#ff6b00]/40 hover:border-[#ff6b00]/40 hover:-translate-y-2 hover:scale-[1.02] cursor-pointer transition-all duration-100 ease-out animate-in fade-in slide-in-from-bottom-10 fill-mode-both ${delay}`}
     >
       
       {/* Subtle Bottom Accent Line */}
