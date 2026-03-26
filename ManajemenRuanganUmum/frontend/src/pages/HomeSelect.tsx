@@ -12,7 +12,7 @@ export default function HomeSelect() {
       <HomeBackground />
 
       {/* Main Content with Entrance Animation */}
-      <div className="relative z-10 w-full h-full flex flex-col items-center justify-between animate-in fade-in slide-in-from-bottom-8 duration-1000 ease-out fill-mode-forwards overflow-hidden">
+      <div className="relative z-10 w-full h-full flex flex-col items-center justify-between py-[2vh] md:py-0 animate-in fade-in slide-in-from-bottom-8 duration-1000 ease-out fill-mode-forwards overflow-hidden">
         <HomeHeader />
         
         <div className="flex-grow flex items-center justify-center w-full">

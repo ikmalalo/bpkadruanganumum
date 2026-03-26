@@ -6,10 +6,10 @@ export default function HomeContainer() {
   const navigate = useNavigate()
 
   return (
-    <div className="flex flex-col md:flex-row flex-wrap justify-center gap-12 mt-8 w-full max-w-7xl mx-auto px-8 pb-10">
+    <div className="flex flex-col md:flex-row flex-wrap justify-center gap-6 md:gap-10 lg:gap-12 mt-[2vh] md:mt-8 w-full max-w-7xl mx-auto px-6 md:px-8 pb-10">
 
       {/* Pengunjung Card */}
-      <div className="w-full md:w-[500px] h-auto flex flex-col items-stretch">
+      <div className="w-full md:w-[460px] lg:w-[500px] h-auto flex flex-col items-stretch">
         <HomeCard
           badge="Akses Publik"
           badgeColor="bg-blue-50 text-blue-600"
@@ -24,7 +24,7 @@ export default function HomeContainer() {
       </div>
 
       {/* Administrator Card */}
-      <div className="w-full md:w-[500px] h-auto flex flex-col items-stretch">
+      <div className="w-full md:w-[460px] lg:w-[500px] h-auto flex flex-col items-stretch">
         <HomeCard
           badge="Internal Staf"
           badgeColor="bg-orange-50 text-orange-600"
