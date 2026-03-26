@@ -20,7 +20,7 @@ export default function HomeBackground() {
           minWidth: 200.00,
           scale: 1.00,
           scaleMobile: 1.00,
-          color: 0xfb923c, // Tailwind orange-400
+          color: 0xff6a00, // BPKAD Orange
           backgroundColor: 0xf9fafb, // Tailwind gray-50
           points: 12.00,
           maxDistance: 20.00,
