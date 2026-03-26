@@ -37,7 +37,7 @@ export default function HomeCard({
         <span className={`${badgeColor} text-[7px] md:text-[9px] font-black tracking-[0.2em] px-2.5 py-1 md:px-3 md:py-1 rounded-full uppercase border border-black/5`}>
           {badge}
         </span>
-        <div className="w-8 h-8 md:w-10 md:h-10 lg:w-12 lg:h-12 bg-gray-50 rounded-lg border border-gray-100 flex items-center justify-center text-[#ff6b00] group-hover:scale-105 group-hover:rotate-3 transition-transform duration-300">
+        <div className="w-8 h-8 md:w-10 md:h-10 lg:w-12 lg:h-12 bg-gray-50 group-hover:bg-[#ff6b00] rounded-lg border border-gray-100 group-hover:border-[#ff6b00] flex items-center justify-center text-[#ff6b00] group-hover:text-white group-hover:scale-105 group-hover:rotate-3 transition-all duration-300">
           <Icon size={16} className="md:size-[20px]" strokeWidth={1.5} />
         </div>
       </div>
