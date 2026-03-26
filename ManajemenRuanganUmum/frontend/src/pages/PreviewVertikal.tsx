@@ -89,12 +89,13 @@ export default function PreviewVertikal() {
   const [currentPage, setCurrentPage] = useState(0)
   const [progress, setProgress] = useState(0)
   const [touchStart, setTouchStart] = useState<number | null>(null)
+  const [touchCurrent, setTouchCurrent] = useState<number | null>(null)
   const [swipeArrow, setSwipeArrow] = useState<'left' | 'right' | null>(null)
   const MIN_SWIPE_DISTANCE = 50
 
   useEffect(() => {
     if (!swipeArrow) return
-    const timer = setTimeout(() => setSwipeArrow(null), 800)
+    const timer = setTimeout(() => setSwipeArrow(null), 500)
     return () => clearTimeout(timer)
   }, [swipeArrow])
 
@@ -126,6 +127,11 @@ export default function PreviewVertikal() {
 
   const onTouchStart = (e: React.TouchEvent) => {
     setTouchStart(e.targetTouches[0].clientX)
+    setTouchCurrent(e.targetTouches[0].clientX)
+  }
+
+  const onTouchMove = (e: React.TouchEvent) => {
+    setTouchCurrent(e.targetTouches[0].clientX)
   }
 
   const onTouchEnd = (e: React.TouchEvent) => {
@@ -148,6 +154,7 @@ export default function PreviewVertikal() {
     }
 
     setTouchStart(null)
+    setTouchCurrent(null)
   }
 
   const currentSlide = pages[currentPage]
@@ -171,6 +178,7 @@ export default function PreviewVertikal() {
     <div 
       className="bg-[#f3f4f6] h-screen relative overflow-hidden flex flex-col"
       onTouchStart={onTouchStart}
+      onTouchMove={onTouchMove}
       onTouchEnd={onTouchEnd}
     >
       <div className="fixed top-0 left-0 w-20 h-20 z-50 group flex items-start justify-start p-3">
@@ -258,18 +266,49 @@ export default function PreviewVertikal() {
         </div>
       </div>
 
-      {/* Swipe Feedback Overlay */}
-      {swipeArrow && (
-        <div className={`fixed inset-0 pointer-events-none flex items-center justify-center z-[100] animate-in fade-in zoom-in duration-300 ${swipeArrow === 'left' ? 'pr-20' : 'pl-20'}`}>
-          <div className="bg-orange-500/90 text-white p-8 rounded-full shadow-2xl backdrop-blur-sm">
-            {swipeArrow === 'left' ? (
-              <ChevronLeft size={100} strokeWidth={3} className="animate-in slide-in-from-right-8 duration-300" />
-            ) : (
-              <ChevronRight size={100} strokeWidth={3} className="animate-in slide-in-from-left-8 duration-300" />
-            )}
-          </div>
+      {/* Swipe Feedback Overlay (Dynamic Pull & Post-Swipe) */}
+      {(touchStart !== null && touchCurrent !== null) || swipeArrow ? (
+        <div className="fixed inset-0 pointer-events-none flex items-center justify-center z-[100]">
+          {/* Pulling Feedback */}
+          {touchStart !== null && touchCurrent !== null && !swipeArrow && (
+            <>
+              {touchStart - touchCurrent > 20 && (
+                <div 
+                  className="fixed right-0 bg-orange-500/10 text-orange-500 p-4 rounded-l-3xl backdrop-blur-sm transition-all duration-75 flex items-center justify-center border-l-2 border-y-2 border-orange-500/20"
+                  style={{ 
+                    opacity: Math.min((touchStart - touchCurrent) / 150, 0.8),
+                    transform: `translateX(${Math.max(40 - (touchStart - touchCurrent) / 3, 0)}px)`
+                  }}
+                >
+                  <ChevronRight size={60} strokeWidth={4} />
+                </div>
+              )}
+              {touchCurrent - touchStart > 20 && (
+                <div 
+                  className="fixed left-0 bg-orange-500/10 text-orange-500 p-4 rounded-r-3xl backdrop-blur-sm transition-all duration-75 flex items-center justify-center border-r-2 border-y-2 border-orange-500/20"
+                  style={{ 
+                    opacity: Math.min((touchCurrent - touchStart) / 150, 0.8),
+                    transform: `translateX(${Math.min(-40 + (touchCurrent - touchStart) / 3, 0)}px)`
+                  }}
+                >
+                  <ChevronLeft size={60} strokeWidth={4} />
+                </div>
+              )}
+            </>
+          )}
+
+          {/* Post-Swipe Confirmation - Only shown after release */}
+          {swipeArrow && (
+            <div className="bg-orange-500 text-white p-6 rounded-full shadow-2xl animate-in fade-in zoom-in duration-300">
+              {swipeArrow === 'left' ? (
+                <ChevronLeft size={60} strokeWidth={4} className="animate-in slide-in-from-right-4 duration-300" />
+              ) : (
+                <ChevronRight size={60} strokeWidth={4} className="animate-in slide-in-from-left-4 duration-300" />
+              )}
+            </div>
+          )}
         </div>
-      )}
+      ) : null}
     </div>
   )
 }
