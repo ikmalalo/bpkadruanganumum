@@ -6,31 +6,33 @@ export default function HomeContainer() {
   const navigate = useNavigate()
 
   return (
-    <div className="flex flex-col md:flex-row flex-wrap justify-center gap-10 mt-16 w-full max-w-6xl mx-auto px-4 pb-20">
+    <div className="flex flex-col md:flex-row flex-wrap justify-center gap-10 mt-16 w-full max-w-7xl mx-auto px-6 pb-20">
 
-      <div className="w-full md:w-[480px]">
+      <div className="w-full md:w-[500px] h-full flex items-stretch">
         <HomeCard
-          badge="Publik"
-          badgeColor="bg-orange-100 text-[#ff6b00]"
+          badge="Akses Publik"
+          badgeColor="bg-blue-50 text-blue-600"
           title="Pengunjung"
-          description="Akses informasi publik dan layanan umum tanpa perlu autentikasi khusus untuk melihat transparansi anggaran."
+          description="Akses cepat untuk melihat agenda dan jadwal penggunaan ruangan rapat secara real-time melalui panel informasi."
           Icon={User}
           buttonText="Mulai Akses"
           buttonIcon={ArrowRight}
           onClick={() => navigate("/preview")}
+          delay="delay-[800ms]"
         />
       </div>
 
-      <div className="w-full md:w-[480px]">
+      <div className="w-full md:w-[500px] h-full flex items-stretch">
         <HomeCard
-          badge="Internal"
-          badgeColor="bg-orange-100 text-[#ff6b00]"
+          badge="Internal Staf"
+          badgeColor="bg-orange-50 text-orange-600"
           title="Administrator"
-          description="Login khusus staf internal BPKAD untuk mengelola data keuangan dan aset daerah kota Samarinda."
+          description="Masuk ke dashboard manajemen BPKAD untuk mengelola reservasi, jadwal, dan inventaris ruangan."
           Icon={ShieldCheck}
-          buttonText="Login Petugas"
+          buttonText="Login Sistem"
           buttonIcon={Lock}
           onClick={() => navigate("/login")}
+          delay="delay-[1000ms]"
         />
       </div>
 
