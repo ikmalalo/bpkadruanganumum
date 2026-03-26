@@ -41,10 +41,6 @@ export default function ServiceCard({ title, description, icon, color, onClick }
         </p>
       </div>
 
-      {/* <p className="text-blue-600 font-medium flex items-center gap-2">
-        Buka Layanan →
-      </p> */}
-
     </div>
   )
 }

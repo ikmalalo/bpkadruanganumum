@@ -1,6 +1,7 @@
 import { Routes, Route } from "react-router-dom"
 import LoginPage from "./pages/LoginPage"
 import ServiceSelect from "./pages/ServiceSelect"
+import HomeSelect from "./pages/HomeSelect"
 import RoomDashboard from "./pages/RoomDashboard"
 import Peminjaman from "./pages/Peminjaman"
 import KonfirmasiPeminjaman from "./pages/KonfirmasiPeminjaman"
@@ -30,7 +31,8 @@ export default function App() {
 
   return (
     <Routes>
-      <Route path="/" element={<LoginPage />} />
+      <Route path="/" element={<HomeSelect />} />
+      <Route path="/login" element={<LoginPage />} />
       <Route path="/services" element={<ServiceSelect />} />
       <Route element={<DashboardLayout />}>
         <Route path="/rooms" element={<RoomDashboard />} />
