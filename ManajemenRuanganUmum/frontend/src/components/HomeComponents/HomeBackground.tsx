@@ -1,5 +1,11 @@
 import { useEffect, useRef, useState } from "react";
 import * as THREE from "three";
+
+// Fix for recent three.js versions turning hex colors dark/muddy in Vanta
+if (THREE.ColorManagement) {
+  THREE.ColorManagement.enabled = false;
+}
+
 // @ts-ignore
 import NET from "vanta/dist/vanta.net.min";
 
