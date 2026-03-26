@@ -17,7 +17,7 @@ export default function HomeContainer() {
           Icon={User}
           buttonText="Mulai Akses"
           buttonIcon={ArrowRight}
-          onClick={() => navigate("/rooms")}
+          onClick={() => navigate("/preview")}
         />
       </div>
 

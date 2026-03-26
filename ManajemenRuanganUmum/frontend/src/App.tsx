@@ -31,19 +31,25 @@ export default function App() {
 
   return (
     <Routes>
+      {/* Portals */}
       <Route path="/" element={<HomeSelect />} />
       <Route path="/login" element={<LoginPage />} />
       <Route path="/services" element={<ServiceSelect />} />
+      
+      {/* Standalone Route (Visitor) */}
+      <Route path="/preview" element={<Preview />} />
+      <Route path="/preview-horizontal" element={<PreviewHorizontal />} />
+      <Route path="/preview-vertikal" element={<PreviewVertikal />} />
+
+      {/* Admin Dashboard */}
       <Route element={<DashboardLayout />}>
         <Route path="/rooms" element={<RoomDashboard />} />
         <Route path="/peminjaman" element={<Peminjaman />} />
-        <Route path="/preview" element={<Preview />} />
         <Route path="/riwayat" element={<Riwayat />} />
         <Route path="/upload-sertifikat" element={<UploadSertifikat />} />
         <Route path="/konfirmasipeminjaman" element={<KonfirmasiPeminjaman />} />
       </Route>
-      <Route path="/preview-horizontal" element={<PreviewHorizontal />} />
-      <Route path="/preview-vertikal" element={<PreviewVertikal />} />
+
     </Routes>
   )
 }

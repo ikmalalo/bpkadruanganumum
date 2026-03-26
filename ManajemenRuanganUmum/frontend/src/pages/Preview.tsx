@@ -1,6 +1,6 @@
 import { useState } from "react"
 import { useNavigate } from "react-router-dom"
-import { ArrowRight } from "lucide-react"
+import { ArrowRight, ArrowLeft } from "lucide-react"
 import "../index.css"
 
 export default function Preview() {
@@ -11,9 +11,26 @@ export default function Preview() {
   >(null)
 
   return (
-    <div className="flex flex-col pt-4">
+    <div className="min-h-screen bg-gray-50 flex flex-col pt-10 px-4 md:px-0">
+      
+      {/* Header for Standalone View */}
+      <div className="max-w-5xl mx-auto w-full mb-12 flex items-center justify-between">
+        <div>
+          <h1 className="text-3xl font-bold text-gray-900 tracking-tight">Pilih Mode Tampilan</h1>
+          <p className="text-gray-500 mt-1 text-sm">Silakan pilih orientasi layar untuk melanjutkan ke preview agenda.</p>
+        </div>
+        
+        <button 
+          onClick={() => navigate("/")}
+          className="flex items-center gap-2 text-sm font-semibold text-gray-400 hover:text-[#ff6b00] transition-all group"
+        >
+          <ArrowLeft size={18} className="transition-transform group-hover:-translate-x-1" />
+          <span>Kembali ke Beranda</span>
+        </button>
+      </div>
+
       {/* Cards */}
-      <div className="flex flex-col md:flex-row justify-center items-stretch gap-6 max-w-5xl mx-auto w-full mb-8">
+      <div className="flex flex-col md:flex-row justify-center items-stretch gap-8 max-w-5xl mx-auto w-full mb-12">
 
         {/* Landscape */}
         <button
