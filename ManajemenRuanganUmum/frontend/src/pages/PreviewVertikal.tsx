@@ -90,14 +90,7 @@ export default function PreviewVertikal() {
   const [progress, setProgress] = useState(0)
   const [touchStart, setTouchStart] = useState<number | null>(null)
   const [touchCurrent, setTouchCurrent] = useState<number | null>(null)
-  const [swipeArrow, setSwipeArrow] = useState<'left' | 'right' | null>(null)
-  const MIN_SWIPE_DISTANCE = 50
-
-  useEffect(() => {
-    if (!swipeArrow) return
-    const timer = setTimeout(() => setSwipeArrow(null), 500)
-    return () => clearTimeout(timer)
-  }, [swipeArrow])
+  const MIN_SWIPE_DISTANCE = 120
 
   useEffect(() => {
     const timer = setInterval(() => setTime(new Date()), 1000)
@@ -145,12 +138,10 @@ export default function PreviewVertikal() {
       // Next Page
       setCurrentPage((prev) => (prev + 1) % pages.length)
       setProgress(0)
-      setSwipeArrow('right')
     } else if (isRightSwipe) {
       // Prev Page
       setCurrentPage((prev) => (prev - 1 + pages.length) % pages.length)
       setProgress(0)
-      setSwipeArrow('left')
     }
 
     setTouchStart(null)
@@ -266,45 +257,30 @@ export default function PreviewVertikal() {
         </div>
       </div>
 
-      {/* Swipe Feedback Overlay (Dynamic Pull & Post-Swipe) */}
-      {(touchStart !== null && touchCurrent !== null) || swipeArrow ? (
+      {/* Swipe Feedback Overlay (Dynamic Pull Only) */}
+      {touchStart !== null && touchCurrent !== null ? (
         <div className="fixed inset-0 pointer-events-none flex items-center justify-center z-[100]">
           {/* Pulling Feedback */}
-          {touchStart !== null && touchCurrent !== null && !swipeArrow && (
-            <>
-              {touchStart - touchCurrent > 20 && (
-                <div 
-                  className="fixed right-0 bg-orange-500/10 text-orange-500 p-4 rounded-l-3xl backdrop-blur-sm transition-all duration-75 flex items-center justify-center border-l-2 border-y-2 border-orange-500/20"
-                  style={{ 
-                    opacity: Math.min((touchStart - touchCurrent) / 150, 0.8),
-                    transform: `translateX(${Math.max(40 - (touchStart - touchCurrent) / 3, 0)}px)`
-                  }}
-                >
-                  <ChevronRight size={60} strokeWidth={4} />
-                </div>
-              )}
-              {touchCurrent - touchStart > 20 && (
-                <div 
-                  className="fixed left-0 bg-orange-500/10 text-orange-500 p-4 rounded-r-3xl backdrop-blur-sm transition-all duration-75 flex items-center justify-center border-r-2 border-y-2 border-orange-500/20"
-                  style={{ 
-                    opacity: Math.min((touchCurrent - touchStart) / 150, 0.8),
-                    transform: `translateX(${Math.min(-40 + (touchCurrent - touchStart) / 3, 0)}px)`
-                  }}
-                >
-                  <ChevronLeft size={60} strokeWidth={4} />
-                </div>
-              )}
-            </>
+          {touchStart - touchCurrent > 20 && (
+            <div 
+              className="fixed right-0 bg-orange-500/10 text-orange-500 p-4 rounded-l-3xl backdrop-blur-sm transition-all duration-75 flex items-center justify-center border-l-2 border-y-2 border-orange-500/20"
+              style={{ 
+                opacity: Math.min((touchStart - touchCurrent) / 200, 0.8),
+                transform: `translateX(${Math.max(40 - (touchStart - touchCurrent) / 4, 0)}px)`
+              }}
+            >
+              <ChevronRight size={60} strokeWidth={4} />
+            </div>
           )}
-
-          {/* Post-Swipe Confirmation - Only shown after release */}
-          {swipeArrow && (
-            <div className="bg-orange-500 text-white p-6 rounded-full shadow-2xl animate-in fade-in zoom-in duration-300">
-              {swipeArrow === 'left' ? (
-                <ChevronLeft size={60} strokeWidth={4} className="animate-in slide-in-from-right-4 duration-300" />
-              ) : (
-                <ChevronRight size={60} strokeWidth={4} className="animate-in slide-in-from-left-4 duration-300" />
-              )}
+          {touchCurrent - touchStart > 20 && (
+            <div 
+              className="fixed left-0 bg-orange-500/10 text-orange-500 p-4 rounded-r-3xl backdrop-blur-sm transition-all duration-75 flex items-center justify-center border-r-2 border-y-2 border-orange-500/20"
+              style={{ 
+                opacity: Math.min((touchCurrent - touchStart) / 200, 0.8),
+                transform: `translateX(${Math.min(-40 + (touchCurrent - touchStart) / 4, 0)}px)`
+              }}
+            >
+              <ChevronLeft size={60} strokeWidth={4} />
             </div>
           )}
         </div>
