@@ -9,16 +9,29 @@ import PreviewHorizontal from "./pages/PreviewHorizontal"
 import PreviewVertikal from "./pages/PreviewVertikal"
 import Riwayat from "./pages/Riwayat"
 import UploadSertifikat from "./pages/UploadSertifikat"
+import LoadingScreen from "./components/LoadingScreen"
 import DashboardLayout from "./components/DashboardComponents/DashboardLayout"
+import { useState, useEffect } from "react"
 
 export default function App() {
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setLoading(false)
+    }, 3000)
+
+    return () => clearTimeout(timer)
+  }, [])
+
+  if (loading) {
+    return <LoadingScreen />
+  }
+
   return (
     <Routes>
-
       <Route path="/" element={<LoginPage />} />
-
       <Route path="/services" element={<ServiceSelect />} />
-
       <Route element={<DashboardLayout />}>
         <Route path="/rooms" element={<RoomDashboard />} />
         <Route path="/peminjaman" element={<Peminjaman />} />
@@ -27,10 +40,8 @@ export default function App() {
         <Route path="/upload-sertifikat" element={<UploadSertifikat />} />
         <Route path="/konfirmasipeminjaman" element={<KonfirmasiPeminjaman />} />
       </Route>
-
       <Route path="/preview-horizontal" element={<PreviewHorizontal />} />
       <Route path="/preview-vertikal" element={<PreviewVertikal />} />
-
     </Routes>
   )
 }
