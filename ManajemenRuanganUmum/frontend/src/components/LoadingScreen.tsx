@@ -28,29 +28,33 @@ const LoadingScreen: React.FC = () => {
 
     useEffect(() => {
         if (!vantaEffect && vantaRef.current && window.VANTA) {
-            setVantaEffect(
-                window.VANTA.BIRDS({
-                    el: vantaRef.current,
-                    mouseControls: true,
-                    touchControls: true,
-                    gyroControls: false,
-                    minHeight: 200.00,
-                    minWidth: 200.00,
-                    scale: 1.00,
-                    scaleMobile: 1.00,
-                    backgroundColor: 0xffffff,
-                    color1: 0xff6a00,
-                    color2: 0xff9d00,
-                    colorMode: "lerp",
-                    birdSize: 1.20,
-                    wingSpan: 25.00,
-                    separation: 60.00,
-                    alignment: 50.00,
-                    cohesion: 50.00,
-                    quantity: 3.00,
-                    speed: 3.00,
-                })
-            );
+            try {
+                setVantaEffect(
+                    window.VANTA.BIRDS({
+                        el: vantaRef.current,
+                        mouseControls: true,
+                        touchControls: true,
+                        gyroControls: false,
+                        minHeight: 200.00,
+                        minWidth: 200.00,
+                        scale: 1.00,
+                        scaleMobile: 1.00,
+                        backgroundColor: 0xffffff,
+                        color1: 0xff6a00,
+                        color2: 0xff9d00,
+                        colorMode: "lerp",
+                        birdSize: 1.20,
+                        wingSpan: 25.00,
+                        separation: 60.00,
+                        alignment: 50.00,
+                        cohesion: 50.00,
+                        quantity: 3.00,
+                        speed: 3.00,
+                    })
+                );
+            } catch (error) {
+                console.warn("Vanta.js failed to initialize:", error);
+            }
         }
         return () => {
             if (vantaEffect) vantaEffect.destroy();

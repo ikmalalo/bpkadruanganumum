@@ -44,21 +44,25 @@ export default function PreviewVertikal() {
 
   useEffect(() => {
     if (!vantaEffect && vantaRef.current && window.VANTA) {
-      setVantaEffect(
-        window.VANTA.DOTS({
-          el: vantaRef.current,
-          mouseControls: true,
-          touchControls: true,
-          gyroControls: false,
-          minHeight: 200.00,
-          minWidth: 200.00,
-          scale: 1.00,
-          scaleMobile: 1.00,
-          color: 0xff6a00,
-          color2: 0xff6a00,
-          backgroundColor: 0xffffff
-        })
-      )
+      try {
+        setVantaEffect(
+          window.VANTA.DOTS({
+            el: vantaRef.current,
+            mouseControls: true,
+            touchControls: true,
+            gyroControls: false,
+            minHeight: 200.00,
+            minWidth: 200.00,
+            scale: 1.00,
+            scaleMobile: 1.00,
+            color: 0xff6a00,
+            color2: 0xff6a00,
+            backgroundColor: 0xffffff
+          })
+        )
+      } catch (error) {
+        console.warn("Vanta.js failed to initialize:", error);
+      }
     }
     return () => {
       if (vantaEffect) vantaEffect.destroy()

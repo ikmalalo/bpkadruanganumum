@@ -27,14 +27,16 @@ const urlArg = args.find(a => a.startsWith('--url='))?.split('=')[1]
 
 const TARGET_URL = urlArg || 'http://localhost:5173/preview-vertikal';
 const SLIDE_DURATION_MS = 5000;     // durasi per slide dalam rekaman
-const CAPTURE_INTERVAL_MS = 200;    // interval antar screenshot (dalam ms)
-const OUTPUT_FPS = 25;              // fps output video
+const OUTPUT_FPS = 30;              // fps output video -> 30 fps supaya smooth
+const CAPTURE_INTERVAL_MS = Math.floor(1000 / OUTPUT_FPS); // ~33ms per frame
 const WIDTH = 450;                  // portrait 9:16 width
 const HEIGHT = 800;                 // portrait 9:16 height
 // -----------------
 
 const framesPerSlide = Math.round(SLIDE_DURATION_MS / CAPTURE_INTERVAL_MS);
-const outputFile = path.join(process.cwd(), `preview-portrait-${new Date().toISOString().slice(0,10)}.mp4`);
+const downloadsFolder = path.join(os.homedir(), 'Downloads');
+const timestamp = new Date().toISOString().slice(0, 10) + '-' + new Date().getHours() + new Date().getMinutes();
+const outputFile = path.join(downloadsFolder, `preview-portrait-${timestamp}.mp4`);
 
 async function main() {
   const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), 'portrait-record-'));
@@ -42,6 +44,7 @@ async function main() {
   console.log(`📄 URL: ${TARGET_URL}`);
   console.log(`📁 Temp dir: ${tmpDir}`);
   console.log(`⏱  Durasi per slide: ${SLIDE_DURATION_MS}ms`);
+  console.log(`🎥 Target FPS: ${OUTPUT_FPS} (interval ${CAPTURE_INTERVAL_MS}ms)`);
   console.log('─'.repeat(50));
 
   let browser;
@@ -77,7 +80,7 @@ async function main() {
       console.log('  ⚠️  Loading timeout / tidak ada spinner, lanjut...');
     });
 
-    // Tunggu ekstra untuk render React & Fetch API network idle
+    // Tunggu ekstra agar animasi masuknya selesai (jika ada)
     await new Promise(r => setTimeout(r, 6000));
 
     // Hitung jumlah slide via window.__SLIDE_COUNT__ atau dots
@@ -96,10 +99,9 @@ async function main() {
 
     console.log(`✅ Total slide: ${totalSlides}`);
     console.log(`🎞  Frames per slide: ${framesPerSlide}`);
-    console.log(`📸 Total frame: ${totalSlides * framesPerSlide}`);
+    console.log(`📸 Total capture: ${totalSlides * framesPerSlide} frames`);
     console.log('─'.repeat(50));
 
-    // Capture frame per slide
     let frameIndex = 0;
 
     for (let slideIdx = 0; slideIdx < totalSlides; slideIdx++) {
@@ -109,20 +111,28 @@ async function main() {
         if (dots[idx]) dots[idx].click();
       }, slideIdx);
 
-      // Tunggu animasi slide
-      await new Promise(r => setTimeout(r, 600));
+      // Tunggu transisi masuk agar sinkron dengan durasi awal
+      await new Promise(r => setTimeout(r, 500));
 
-      process.stdout.write(`  📷 Slide ${slideIdx + 1}/${totalSlides} `);
+      process.stdout.write(`  📷 Catching Slide ${slideIdx + 1}/${totalSlides} `);
 
       for (let f = 0; f < framesPerSlide; f++) {
-        const framePath = path.join(tmpDir, `frame_${String(frameIndex).padStart(6, '0')}.png`);
-        await page.screenshot({ path: framePath, type: 'png' });
+        const startCap = Date.now();
+        
+        // Gunakan JPEG kualitas 90 agar speed capture kencang (lebih mulus)
+        const framePath = path.join(tmpDir, `frame_${String(frameIndex).padStart(6, '0')}.jpg`);
+        await page.screenshot({ path: framePath, type: 'jpeg', quality: 90 });
         frameIndex++;
-        await new Promise(r => setTimeout(r, CAPTURE_INTERVAL_MS));
+        
+        const elapsed = Date.now() - startCap;
+        const remainder = Math.max(0, CAPTURE_INTERVAL_MS - elapsed);
+        if (remainder > 0) {
+          await new Promise(r => setTimeout(r, remainder));
+        }
 
-        if ((f + 1) % 10 === 0) process.stdout.write('.');
+        if ((f + 1) % 15 === 0) process.stdout.write('.');
       }
-      console.log(` ✓ (${framesPerSlide} frames)`);
+      console.log(` ✓`);
     }
 
     await browser.close();
@@ -131,10 +141,11 @@ async function main() {
     console.log('─'.repeat(50));
     console.log(`\n🎬 Encoding ${frameIndex} frames → MP4...`);
 
+    // Tambahan fps flag supaya input fps dan output fps match dan konsisten
     await new Promise((resolve, reject) => {
       ffmpeg()
-        .input(path.join(tmpDir, 'frame_%06d.png'))
-        .inputFPS(1000 / CAPTURE_INTERVAL_MS)
+        .input(path.join(tmpDir, 'frame_%06d.jpg'))
+        .inputFPS(OUTPUT_FPS)
         .outputOptions([
           `-vf scale=${WIDTH * 2}:${HEIGHT * 2}`,
           '-c:v libx264',
