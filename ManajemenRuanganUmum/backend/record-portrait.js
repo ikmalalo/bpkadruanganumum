@@ -71,13 +71,14 @@ async function main() {
     // Tunggu loading spinner hilang
     console.log(`⏳ Menunggu data dimuat...`);
     await page.waitForFunction(() => {
-      return !document.querySelector('.animate-spin');
-    }, { timeout: 20000 }).catch(() => {
-      console.log('  ⚠️  Loading timeout, lanjut...');
+      const spinner = document.querySelector('.animate-spin');
+      return !spinner;
+    }, { timeout: 45000 }).catch(() => {
+      console.log('  ⚠️  Loading timeout / tidak ada spinner, lanjut...');
     });
 
-    // Tunggu ekstra untuk Vanta + font
-    await new Promise(r => setTimeout(r, 2500));
+    // Tunggu ekstra untuk render React & Fetch API network idle
+    await new Promise(r => setTimeout(r, 6000));
 
     // Hitung jumlah slide via window.__SLIDE_COUNT__ atau dots
     const totalSlides = await page.evaluate(() => {
@@ -105,7 +106,7 @@ async function main() {
       // Klik dot untuk pindah ke slide ini
       await page.evaluate((idx) => {
         const dots = document.querySelectorAll('[data-slide-dot]');
-        if (dots[idx]) (dots[idx] as HTMLElement).click();
+        if (dots[idx]) dots[idx].click();
       }, slideIdx);
 
       // Tunggu animasi slide
