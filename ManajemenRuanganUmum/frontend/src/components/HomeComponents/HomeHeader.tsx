@@ -9,8 +9,8 @@ export default function HomeHeader() {
         Pilih <span className="text-[#ff6b00]">Akses Layanan</span> Anda
       </h1>
       
-      <p className="hidden md:block text-xs md:text-sm lg:text-base text-gray-500 leading-relaxed max-w-lg mx-auto animate-in fade-in zoom-in-95 duration-1000 delay-700 fill-mode-both opacity-60">
-        Silakan pilih kategori pengguna untuk melanjutkan akses ke sistem 
+      <p className="hidden md:block text-xs md:text-sm lg:text-base text-gray-800 leading-relaxed max-w-lg mx-auto animate-in fade-in zoom-in-95 duration-1000 delay-700 fill-mode-both opacity-60">
+        Silahkan pilih kategori pengguna untuk melanjutkan akses ke sistem 
         informasi dan pelayanan publik pemerintah kota Samarinda.
       </p>
     </div>
