@@ -1,11 +1,12 @@
 import { useState, useEffect } from "react"
-import { Outlet } from "react-router-dom"
+import { Outlet, useLocation } from "react-router-dom"
 import Sidebar from "../components/DashboardComponents/Sidebar"
 import { Menu } from "lucide-react"
 
 export default function ConditionalPreviewLayout() {
   const [sidebarOpen, setSidebarOpen] = useState(false)
   const [isLoggedIn, setIsLoggedIn] = useState(false)
+  const location = useLocation()
 
   // Check login status on mount
   useEffect(() => {
@@ -16,12 +17,15 @@ export default function ConditionalPreviewLayout() {
   const toggleSidebar = () => setSidebarOpen(!sidebarOpen)
   const closeSidebar = () => setSidebarOpen(false)
 
-  // If NOT logged in, return just the content (full screen, no sidebar)
-  if (!isLoggedIn) {
+  // Visitors are explicitly flagged via navigation state — never show sidebar
+  const isVisitor = location.state?.visitor === true
+
+  // If NOT logged in OR explicitly a visitor, render full screen without sidebar
+  if (!isLoggedIn || isVisitor) {
     return <Outlet />
   }
 
-  // If LOGGED IN, wrap the content with the Sidebar layout
+  // If LOGGED IN as admin/petugas, wrap the content with the Sidebar layout
   return (
     <div className="flex min-h-screen relative bg-gray-100">
       
