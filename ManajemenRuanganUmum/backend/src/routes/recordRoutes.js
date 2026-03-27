@@ -20,10 +20,12 @@ router.get('/portrait', async (req, res) => {
   const CAPTURE_INTERVAL_MS = Math.floor(1000 / OUTPUT_FPS);
   const framesPerSlide = Math.round(slideDurationMs / CAPTURE_INTERVAL_MS);
 
+  // Buat temp dir di server cloud
   const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), 'portrait-record-'));
   const timestamp = new Date().toISOString().slice(0, 10) + '-' + new Date().getHours() + new Date().getMinutes();
-  const downloadsFolder = path.join(os.homedir(), 'Downloads');
-  const outputPath = path.join(downloadsFolder, `preview-portrait-${timestamp}.mp4`);
+  
+  // File sementara disimpan di server
+  const outputPath = path.join(tmpDir, `preview-portrait-${timestamp}.mp4`);
 
   let browser;
   try {
@@ -93,12 +95,12 @@ router.get('/portrait', async (req, res) => {
         .run();
     });
 
-    // Cleanup framestmp
-    fs.rmSync(tmpDir, { recursive: true, force: true });
-    
-    // Return success to trigger UI changes without sending the heavy 20MB file over network
-    // Because the file is directly saved to the user's Downloads folder!
-    res.json({ success: true, file: outputPath, message: `Berhasil disimpan di folder Downloads: preview-portrait-${timestamp}.mp4` });
+    // KIRIM FILE DARI SERVER CLOUD KE MAC/WINDOWS/HP KLIENT
+    res.download(outputPath, `Preview-Portrait-${timestamp}.mp4`, (err) => {
+      if (err) console.error('[API] Download Stream Error:', err);
+      // Hapus sampah frame dan video di server agar tidak bocor
+      fs.rmSync(tmpDir, { recursive: true, force: true });
+    });
 
   } catch (err) {
     console.error('[RECORD] Error:', err);

@@ -151,8 +151,8 @@ export default function PreviewVertikal() {
     setRecordDone(false)
     try {
       const frontendUrl = window.location.origin + '/preview-vertikal'
-      const LOCAL_BACKEND = 'http://localhost:59489'
-      const recordUrl = `${LOCAL_BACKEND}/api/record/portrait?url=${encodeURIComponent(frontendUrl)}`
+      // Tembak backend Railway (cloud) agar tidak usah jalan lokal
+      const recordUrl = `${apiUrl('/api/record/portrait')}?url=${encodeURIComponent(frontendUrl)}`
 
       const response = await fetch(recordUrl)
       if (!response.ok) {
@@ -163,16 +163,21 @@ export default function PreviewVertikal() {
         return
       }
 
+      // Terima video MP4 dari Cloud sebagai file dan simpan ke Downloads user
+      const blob = await response.blob()
+      const downloadUrl = window.URL.createObjectURL(blob)
+      const a = document.createElement('a')
+      a.href = downloadUrl
+      a.download = `Preview-Portrait-9-16.mp4`
+      document.body.appendChild(a)
+      a.click()
+      a.remove()
+      window.URL.revokeObjectURL(downloadUrl)
+
       setRecordDone(true)
-      const resData = await response.json()
-      alert('✅ ' + resData.message)
       setTimeout(() => setRecordDone(false), 4000)
     } catch (e: any) {
-      if (e.message?.includes('fetch') || e.message?.includes('Failed')) {
-        alert('❌ Backend lokal tidak menyala atau Diblokir Chrome.\n\nJika Anda mengakses dari Vercel/Website, Anda harus menekan ikon 🔒 (Gembok) di kolom URL Browser -> Site Settings -> Ubah Insecure Content menjadi Allow agar Vercel dapat menghubungi Puppeteer lokal Anda.\nPastikan backend juga menyala (npm run dev)')
-      } else {
-        alert('Error: ' + e.message)
-      }
+      alert('Error: ' + e.message + '\n\nPerekaman butuh proses berat di server (sekitar 30-40 detik). Mohon ulangi jika gagal.')
     } finally {
       setIsRecording(false)
     }
