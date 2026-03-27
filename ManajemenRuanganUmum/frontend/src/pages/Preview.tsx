@@ -1,6 +1,9 @@
-import { useState } from "react"
+import { useState, useEffect, useRef } from "react"
 import { useNavigate } from "react-router-dom"
 import { ArrowRight, ArrowLeft } from "lucide-react"
+import * as THREE from "three"
+// @ts-ignore
+import DOTS from "vanta/dist/vanta.dots.min"
 import "../index.css"
 
 export default function Preview() {
@@ -10,8 +13,46 @@ export default function Preview() {
     "landscape" | "portrait" | null
   >(null)
 
+  const [vantaEffect, setVantaEffect] = useState<any>(null)
+  const vantaRef = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    if (!vantaEffect && vantaRef.current) {
+      if (THREE.ColorManagement) {
+        THREE.ColorManagement.enabled = false;
+      }
+      setVantaEffect(
+        DOTS({
+          el: vantaRef.current,
+          THREE: { ...THREE, VertexColors: 2 },
+          mouseControls: true,
+          touchControls: true,
+          gyroControls: false,
+          minHeight: 200.00,
+          minWidth: 200.00,
+          scale: 1.00,
+          scaleMobile: 1.00,
+          color: 0xff6a00,
+          color2: 0xff6a00,
+          backgroundColor: 0xf9fafb,
+          size: 4.00,
+          spacing: 30.00,
+          showLines: false
+        })
+      )
+    }
+    return () => {
+      if (vantaEffect) vantaEffect.destroy()
+    }
+  }, [vantaEffect])
+
   return (
-    <div className="min-h-screen bg-gray-50 flex flex-col pt-10 px-4 md:px-0">
+    <div className="relative min-h-screen bg-gray-50 overflow-hidden">
+      {/* Vanta DOTS Background */}
+      <div ref={vantaRef} className="absolute inset-0 z-0 opacity-70"></div>
+
+      {/* Main Content */}
+      <div className="relative z-10 flex flex-col pt-10 px-4 md:px-0 min-h-screen">
       
       {/* Header for Standalone View */}
       <div className="max-w-5xl mx-auto w-full mb-12 flex items-center justify-between">
@@ -125,6 +166,7 @@ export default function Preview() {
         </button>
       </div>
 
+      </div>
     </div>
   )
 }
