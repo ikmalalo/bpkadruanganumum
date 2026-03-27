@@ -18,7 +18,8 @@ export default function HomeBackground() {
       setVantaEffect(
         NET({
           el: vantaRef.current,
-          THREE: THREE,
+          // Inject VertexColors because it was deprecated in Three.js and Vanta NET requires it for line colors
+          THREE: { ...THREE, VertexColors: 2 },
           mouseControls: true,
           touchControls: true,
           gyroControls: false,
