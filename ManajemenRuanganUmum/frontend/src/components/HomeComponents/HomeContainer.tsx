@@ -18,7 +18,10 @@ export default function HomeContainer() {
           Icon={User}
           buttonText="Mulai Akses"
           buttonIcon={ArrowRight}
-          onClick={() => navigate("/preview", { state: { visitor: true } })}
+          onClick={() => {
+            sessionStorage.setItem('isVisitor', 'true')
+            navigate("/preview")
+          }}
           delay="delay-[800ms]"
         />
       </div>

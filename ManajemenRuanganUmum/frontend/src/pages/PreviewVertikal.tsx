@@ -37,7 +37,7 @@ type SlideItem = { type: 'AGENDA'; data: AgendaItem[]; category: 'BPKAD' | 'PEMK
 
 export default function PreviewVertikal() {
   const navigate = useNavigate()
-  const isAdmin = !!localStorage.getItem('user')
+  const isVisitor = sessionStorage.getItem('isVisitor') === 'true'
   const [time, setTime] = useState(new Date())
   const [allAgendas, setAllAgendas] = useState<AgendaItem[]>([])
   const [allCertificates, setAllCertificates] = useState<CertificateItem[]>([])
@@ -209,7 +209,7 @@ export default function PreviewVertikal() {
       <div ref={vantaRef} className="absolute inset-0 z-0"></div>
       <div className="relative z-10 h-full flex flex-col">
       <div className="fixed top-0 left-0 w-20 h-20 z-50 group flex items-start justify-start p-3">
-        <button onClick={() => isAdmin ? navigate('/preview') : navigate('/')} className="bg-white p-2 rounded-full shadow-2xl border border-gray-100 text-orange-500 transition-all duration-300 opacity-0 group-hover:opacity-100 scale-75 group-hover:scale-100 active:scale-90">
+        <button onClick={() => isVisitor ? navigate('/') : navigate('/preview')} className="bg-white p-2 rounded-full shadow-2xl border border-gray-100 text-orange-500 transition-all duration-300 opacity-0 group-hover:opacity-100 scale-75 group-hover:scale-100 active:scale-90">
           <ArrowLeft size={18} strokeWidth={3} />
         </button>
       </div>

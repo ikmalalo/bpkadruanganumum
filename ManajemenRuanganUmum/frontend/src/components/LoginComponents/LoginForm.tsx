@@ -49,6 +49,7 @@ export default function LoginForm() {
 
       if (response.ok) {
         localStorage.setItem('user', JSON.stringify(data.user))
+        sessionStorage.removeItem('isVisitor') // clear visitor flag on admin login
         setNotification({
           show: true,
           type: "success",
