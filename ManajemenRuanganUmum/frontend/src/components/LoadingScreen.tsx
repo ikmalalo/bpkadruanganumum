@@ -65,10 +65,7 @@ const LoadingScreen: React.FC = () => {
                 <span className="text-[12px] font-semibold text-gray-600">BPKAD Samarinda</span>
             </div>
             
-            <div className="absolute top-8 right-8 flex flex-col items-end gap-1">
-                <span className="text-[10px] tracking-[0.2em] text-gray-400 uppercase font-medium">SECURITY</span>
-                <span className="text-[12px] font-semibold text-gray-600 italic">SSL Encrypted</span>
-            </div>
+            
 
             {/* Center Content */}
             <div className="flex flex-col items-center gap-12 max-w-lg w-full px-8">
