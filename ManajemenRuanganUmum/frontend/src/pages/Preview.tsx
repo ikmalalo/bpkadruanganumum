@@ -30,7 +30,10 @@ export default function Preview() {
           minHeight: 200.00,
           minWidth: 200.00,
           scale: 1.00,
-          scaleMobile: 1.00
+          scaleMobile: 1.00,
+          color: 0xff6a00,
+          color2: 0xff6a00,
+          backgroundColor: 0xffffff
         })
       )
     }
@@ -40,9 +43,9 @@ export default function Preview() {
   }, [vantaEffect])
 
   return (
-    <div className="relative min-h-screen bg-gray-50 overflow-hidden">
+    <div className="relative min-h-screen bg-white overflow-hidden">
       {/* Vanta DOTS Background */}
-      <div ref={vantaRef} className="absolute inset-0 z-0 opacity-70"></div>
+      <div ref={vantaRef} className="absolute inset-0 z-0"></div>
 
       {/* Main Content */}
       <div className="relative z-10 flex flex-col pt-10 px-4 md:px-0 min-h-screen">
