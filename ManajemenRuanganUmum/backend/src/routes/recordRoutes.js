@@ -37,8 +37,8 @@ router.get('/portrait', async (req, res) => {
     const page = await browser.newPage();
     // Samarkan Puppeteer sebagai browser Chrome asli agar tidak diblokir sistem anti-bot (seperti Vercel Edge / Cloudflare)
     await page.setUserAgent('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36');
-    // deviceScaleFactor 1.5 agar memory tidak meledak di Railway (resolusi 675x1200)
-    await page.setViewport({ width: WIDTH, height: HEIGHT, deviceScaleFactor: 1.5 });
+    // deviceScaleFactor 1.6 menghasilkan resolusi tepat HD (720x1280) yang angka genap (habis dibagi 2), syarat libx264 FFmpeg
+    await page.setViewport({ width: WIDTH, height: HEIGHT, deviceScaleFactor: 1.6 });
 
     // Dengarkan log console browser untuk debugging Vercel jika gagal
     page.on('console', msg => console.log('💻 [Browser Log]:', msg.type().toUpperCase(), msg.text()));
@@ -109,7 +109,9 @@ router.get('/portrait', async (req, res) => {
         .input(path.join(tmpDir, 'frame_%06d.jpg'))
         .inputFPS(OUTPUT_FPS)
         .outputOptions([
-          `-vf scale=${Math.round(WIDTH * 1.5)}:${Math.round(HEIGHT * 1.5)}`,
+          // FFmpeg libx264 me-wajibkan lebar x tinggi habis dibagi 2! 
+          // WIDTH 450 * 1.6 = 720. HEIGHT 800 * 1.6 = 1280. Ini genap & sesuai rasio HD standard.
+          `-vf scale=720:1280`,
           '-c:v libx264', 
           '-preset ultrafast', // Sangat butuh agar CPU/RAM limit railway tdk ngos-ngosan
           '-crf 26', 
@@ -120,7 +122,11 @@ router.get('/portrait', async (req, res) => {
         ])
         .output(outputPath)
         .on('end', resolve)
-        .on('error', reject)
+        .on('error', (err, stdout, stderr) => {
+          console.error('[API] FFmpeg Error:', err.message);
+          console.error('[API] FFmpeg Stderr:', stderr);
+          reject(err);
+        })
         .run();
     });
 
