@@ -1,4 +1,10 @@
-import { useState, useEffect, useMemo } from "react"
+import { useState, useEffect, useMemo, useRef } from "react"
+
+declare global {
+  interface Window {
+    VANTA: any;
+  }
+}
 import logo from "../assets/images/logo.png"
 import { format } from "date-fns"
 import { id } from "date-fns/locale"
@@ -35,6 +41,32 @@ export default function PreviewVertikal() {
   const [allAgendas, setAllAgendas] = useState<AgendaItem[]>([])
   const [allCertificates, setAllCertificates] = useState<CertificateItem[]>([])
   const [loading, setLoading] = useState(true)
+
+  const vantaRef = useRef<HTMLDivElement>(null)
+  const [vantaEffect, setVantaEffect] = useState<any>(null)
+
+  useEffect(() => {
+    if (!vantaEffect && vantaRef.current && window.VANTA) {
+      setVantaEffect(
+        window.VANTA.DOTS({
+          el: vantaRef.current,
+          mouseControls: true,
+          touchControls: true,
+          gyroControls: false,
+          minHeight: 200.00,
+          minWidth: 200.00,
+          scale: 1.00,
+          scaleMobile: 1.00,
+          color: 0xff6a00,
+          color2: 0xff6a00,
+          backgroundColor: 0xffffff
+        })
+      )
+    }
+    return () => {
+      if (vantaEffect) vantaEffect.destroy()
+    }
+  }, [vantaEffect])
 
   const fetchData = async () => {
     try {
@@ -167,11 +199,14 @@ export default function PreviewVertikal() {
 
   return (
     <div 
-      className="bg-[#f3f4f6] h-screen relative overflow-hidden flex flex-col"
+      className="bg-white h-screen relative overflow-hidden flex flex-col"
       onTouchStart={onTouchStart}
       onTouchMove={onTouchMove}
       onTouchEnd={onTouchEnd}
     >
+      {/* Vanta DOTS Background */}
+      <div ref={vantaRef} className="absolute inset-0 z-0"></div>
+      <div className="relative z-10 h-full flex flex-col">
       <div className="fixed top-0 left-0 w-20 h-20 z-50 group flex items-start justify-start p-3">
         <button onClick={() => navigate('/preview')} className="bg-white p-2 rounded-full shadow-2xl border border-gray-100 text-orange-500 transition-all duration-300 opacity-0 group-hover:opacity-100 scale-75 group-hover:scale-100 active:scale-90">
           <ArrowLeft size={18} strokeWidth={3} />
@@ -285,6 +320,7 @@ export default function PreviewVertikal() {
           )}
         </div>
       ) : null}
+      </div>
     </div>
   )
 }
