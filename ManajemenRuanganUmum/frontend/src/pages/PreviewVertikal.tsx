@@ -10,7 +10,7 @@ declare global {
 import logo from "../assets/images/logo.png"
 import { format } from "date-fns"
 import { id } from "date-fns/locale"
-import { ArrowLeft, ChevronLeft, ChevronRight, Video, Loader2, Download } from "lucide-react"
+import { ArrowLeft, ChevronLeft, ChevronRight, Video } from "lucide-react"
 import { useNavigate } from "react-router-dom"
 import { apiUrl } from "../lib/api"
 
@@ -37,8 +37,7 @@ export default function PreviewVertikal() {
   const [time, setTime] = useState(new Date())
   const [allAgendas, setAllAgendas] = useState<AgendaItem[]>([])
   const [loading, setLoading] = useState(true)
-  const [isRecording, setIsRecording] = useState(false)
-  const [recordDone, setRecordDone] = useState(false)
+  const [showRecordModal, setShowRecordModal] = useState(false)
 
   const vantaRef = useRef<HTMLDivElement>(null)
   const [vantaEffect, setVantaEffect] = useState<any>(null)
@@ -142,41 +141,8 @@ export default function PreviewVertikal() {
     setProgress(0);
   };
 
-  const handleRecord = async () => {
-    setIsRecording(true)
-    setRecordDone(false)
-    try {
-      const frontendUrl = window.location.origin + '/preview-vertikal'
-      // Use relative URL in dev (Vite proxy → localhost:59489)
-      // or absolute Railway URL in production
-      const isDev = import.meta.env.DEV
-      const recordEndpoint = isDev
-        ? `/api/record/portrait`
-        : `${apiUrl('/api/record/portrait')}`
-      const recordUrl = `${recordEndpoint}?url=${encodeURIComponent(frontendUrl)}&slideDuration=5000&fps=25`
-
-      const response = await fetch(recordUrl)
-      if (!response.ok) {
-        const err = await response.json()
-        alert('Gagal merekam: ' + (err.error || 'Unknown error'))
-        return
-      }
-      const blob = await response.blob()
-      const url = URL.createObjectURL(blob)
-      const a = document.createElement('a')
-      a.href = url
-      a.download = `preview-portrait-${new Date().toISOString().slice(0,10)}.mp4`
-      document.body.appendChild(a)
-      a.click()
-      document.body.removeChild(a)
-      URL.revokeObjectURL(url)
-      setRecordDone(true)
-      setTimeout(() => setRecordDone(false), 4000)
-    } catch (e: any) {
-      alert('Error: ' + e.message)
-    } finally {
-      setIsRecording(false)
-    }
+  const handleRecord = () => {
+    setShowRecordModal(true)
   }
 
   const onTouchStart = (e: React.TouchEvent) => {
@@ -251,28 +217,63 @@ export default function PreviewVertikal() {
           <button
             id="btn-record-portrait"
             onClick={handleRecord}
-            disabled={isRecording || pages.length === 0}
+            disabled={pages.length === 0}
             title="Rekam semua halaman sebagai MP4 Portrait 9:16"
             className={`flex items-center gap-2 px-4 py-2 rounded-full text-xs font-bold shadow-xl border transition-all duration-300
               ${
-                recordDone
-                  ? 'bg-green-500 border-green-400 text-white shadow-green-300/50 scale-95'
-                  : isRecording
-                  ? 'bg-orange-100 border-orange-300 text-orange-500 cursor-wait'
-                  : pages.length === 0
+                pages.length === 0
                   ? 'bg-gray-100 border-gray-200 text-gray-400 cursor-not-allowed'
                   : 'bg-white border-orange-300 text-orange-500 hover:bg-orange-500 hover:text-white hover:border-orange-500 hover:shadow-orange-300/50'
               }`
             }
           >
-            {isRecording ? (
-              <><Loader2 size={14} className="animate-spin" /><span>Merekam...</span></>
-            ) : recordDone ? (
-              <><Download size={14} /><span>Tersimpan!</span></>
-            ) : (
-              <><Video size={14} /><span>Rekam MP4</span></>
-            )}
+            <Video size={14} /><span>Rekam MP4</span>
           </button>
+        </div>
+      )}
+
+      {/* Record Instructions Modal */}
+      {showRecordModal && (
+        <div className="fixed inset-0 z-[200] flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm" onClick={() => setShowRecordModal(false)}>
+          <div className="bg-white rounded-2xl shadow-2xl max-w-sm w-full p-6 border border-orange-100" onClick={e => e.stopPropagation()}>
+            <div className="flex items-center gap-3 mb-4">
+              <div className="w-10 h-10 rounded-xl bg-orange-500 flex items-center justify-center text-white shadow-lg shadow-orange-200">
+                <Video size={20} />
+              </div>
+              <div>
+                <h2 className="text-base font-black text-gray-800">Rekam Preview MP4</h2>
+                <p className="text-xs text-gray-400">Portrait 9:16 · Semua Slide</p>
+              </div>
+            </div>
+            <p className="text-xs text-gray-500 mb-3 leading-relaxed">
+              Rekaman menggunakan Puppeteer yang berjalan di komputer lokal. Jalankan perintah berikut di terminal:
+            </p>
+            <div className="bg-gray-900 rounded-xl p-3 mb-4 font-mono text-xs text-green-400 leading-relaxed">
+              <div className="text-gray-500 mb-1"># Masuk ke folder backend</div>
+              <div>cd ManajemenRuanganUmum/backend</div>
+              <div className="mt-2 text-gray-500"># Rekam dari Vercel</div>
+              <div className="break-all">node record-portrait.js --url {window.location.origin}/preview-vertikal</div>
+            </div>
+            <p className="text-[10px] text-gray-400 mb-4">
+              File MP4 akan tersimpan otomatis di folder backend. Pastikan backend sudah running (<code className="bg-gray-100 px-1 rounded">npm run dev</code>).
+            </p>
+            <button
+              onClick={() => {
+                navigator.clipboard.writeText(`node record-portrait.js --url ${window.location.origin}/preview-vertikal`)
+                  .then(() => alert('✅ Perintah disalin ke clipboard!'))
+                  .catch(() => {})
+              }}
+              className="w-full py-2.5 rounded-xl bg-orange-500 text-white text-xs font-bold hover:bg-orange-600 transition-colors mb-2"
+            >
+              📋 Salin Perintah
+            </button>
+            <button
+              onClick={() => setShowRecordModal(false)}
+              className="w-full py-2 rounded-xl border border-gray-200 text-gray-400 text-xs font-bold hover:bg-gray-50 transition-colors"
+            >
+              Tutup
+            </button>
+          </div>
         </div>
       )}
 
