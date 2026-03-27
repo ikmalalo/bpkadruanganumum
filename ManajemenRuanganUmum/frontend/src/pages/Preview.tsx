@@ -1,10 +1,13 @@
 import { useState, useEffect, useRef } from "react"
 import { useNavigate } from "react-router-dom"
 import { ArrowRight, ArrowLeft } from "lucide-react"
-import * as THREE from "three"
-// @ts-ignore
-import DOTS from "vanta/dist/vanta.dots.min"
 import "../index.css"
+
+declare global {
+  interface Window {
+    VANTA: any;
+  }
+}
 
 export default function Preview() {
   const navigate = useNavigate()
@@ -17,27 +20,17 @@ export default function Preview() {
   const vantaRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
-    if (!vantaEffect && vantaRef.current) {
-      if (THREE.ColorManagement) {
-        THREE.ColorManagement.enabled = false;
-      }
+    if (!vantaEffect && vantaRef.current && window.VANTA) {
       setVantaEffect(
-        DOTS({
+        window.VANTA.DOTS({
           el: vantaRef.current,
-          THREE: { ...THREE, VertexColors: 2 },
           mouseControls: true,
           touchControls: true,
           gyroControls: false,
           minHeight: 200.00,
           minWidth: 200.00,
           scale: 1.00,
-          scaleMobile: 1.00,
-          color: 0xff6a00,
-          color2: 0xff6a00,
-          backgroundColor: 0xf9fafb,
-          size: 4.00,
-          spacing: 30.00,
-          showLines: false
+          scaleMobile: 1.00
         })
       )
     }

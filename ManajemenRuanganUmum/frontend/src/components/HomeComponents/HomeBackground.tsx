@@ -1,25 +1,20 @@
 import { useEffect, useRef, useState } from "react";
-import * as THREE from "three";
 
-// Fix for recent three.js versions turning hex colors dark/muddy in Vanta
-if (THREE.ColorManagement) {
-  THREE.ColorManagement.enabled = false;
+declare global {
+  interface Window {
+    VANTA: any;
+  }
 }
-
-// @ts-ignore
-import NET from "vanta/dist/vanta.net.min";
 
 export default function HomeBackground() {
   const [vantaEffect, setVantaEffect] = useState<any>(null);
   const vantaRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    if (!vantaEffect && vantaRef.current) {
+    if (!vantaEffect && vantaRef.current && window.VANTA) {
       setVantaEffect(
-        NET({
+        window.VANTA.NET({
           el: vantaRef.current,
-          // Inject VertexColors because it was deprecated in Three.js and Vanta NET requires it for line colors
-          THREE: { ...THREE, VertexColors: 2 },
           mouseControls: true,
           touchControls: true,
           gyroControls: false,
