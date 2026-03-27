@@ -112,8 +112,8 @@ router.get('/portrait', async (req, res) => {
           // Full HD Portrait! 1080 x 1920 (Habis dibagi 2 dengan sempurna)
           `-vf scale=1080:1920`,
           '-c:v libx264', 
-          '-preset ultrafast', // Sangat butuh agar CPU/RAM limit railway tdk ngos-ngosan
-          '-crf 26', 
+          '-preset medium', // Sangat butuh agar CPU/RAM limit railway tdk ngos-ngosan
+          '-crf 16', 
           '-pix_fmt yuv420p', 
           `-r ${OUTPUT_FPS}`, 
           '-movflags +faststart',
