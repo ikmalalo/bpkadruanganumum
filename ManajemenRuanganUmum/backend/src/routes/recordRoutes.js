@@ -37,7 +37,8 @@ router.get('/portrait', async (req, res) => {
     const page = await browser.newPage();
     // Samarkan Puppeteer sebagai browser Chrome asli agar tidak diblokir sistem anti-bot (seperti Vercel Edge / Cloudflare)
     await page.setUserAgent('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36');
-    await page.setViewport({ width: WIDTH, height: HEIGHT, deviceScaleFactor: 2 });
+    // deviceScaleFactor 1.5 agar memory tidak meledak di Railway (resolusi 675x1200)
+    await page.setViewport({ width: WIDTH, height: HEIGHT, deviceScaleFactor: 1.5 });
 
     // Dengarkan log console browser untuk debugging Vercel jika gagal
     page.on('console', msg => console.log('💻 [Browser Log]:', msg.type().toUpperCase(), msg.text()));
@@ -86,7 +87,8 @@ router.get('/portrait', async (req, res) => {
       for (let f = 0; f < framesPerSlide; f++) {
         const startCap = Date.now();
         const framePath = path.join(tmpDir, `frame_${String(frameIndex).padStart(6, '0')}.jpg`);
-        await page.screenshot({ path: framePath, type: 'jpeg', quality: 90 });
+        // quality 80 memperkecil ukuran gambar per frame agar memori lebih longgar
+        await page.screenshot({ path: framePath, type: 'jpeg', quality: 80 });
         frameIndex++;
         
         const elapsed = Date.now() - startCap;
@@ -97,6 +99,9 @@ router.get('/portrait', async (req, res) => {
 
     await browser.close();
     browser = null;
+    
+    // Opsional: tunggu 1 detik agar linux membebaskan RAM chromesense
+    await new Promise(r => setTimeout(r, 1000));
 
     // Encode
     await new Promise((resolve, reject) => {
@@ -104,8 +109,14 @@ router.get('/portrait', async (req, res) => {
         .input(path.join(tmpDir, 'frame_%06d.jpg'))
         .inputFPS(OUTPUT_FPS)
         .outputOptions([
-          `-vf scale=${WIDTH * 2}:${HEIGHT * 2}`,
-          '-c:v libx264', '-preset fast', '-crf 22', '-pix_fmt yuv420p', `-r ${OUTPUT_FPS}`, '-movflags +faststart'
+          `-vf scale=${Math.round(WIDTH * 1.5)}:${Math.round(HEIGHT * 1.5)}`,
+          '-c:v libx264', 
+          '-preset ultrafast', // Sangat butuh agar CPU/RAM limit railway tdk ngos-ngosan
+          '-crf 26', 
+          '-pix_fmt yuv420p', 
+          `-r ${OUTPUT_FPS}`, 
+          '-movflags +faststart',
+          '-threads 1' // BATASI 1 THREAD AGAR TIDAK OOM (Out Of Memory) SIGNAL KILL
         ])
         .output(outputPath)
         .on('end', resolve)
