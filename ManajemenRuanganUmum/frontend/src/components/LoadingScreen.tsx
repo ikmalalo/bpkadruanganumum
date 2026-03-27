@@ -1,8 +1,16 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import logo from '../assets/images/logo.png';
+
+declare global {
+  interface Window {
+    VANTA: any;
+  }
+}
 
 const LoadingScreen: React.FC = () => {
     const [progress, setProgress] = useState(0);
+    const vantaRef = useRef<HTMLDivElement>(null);
+    const [vantaEffect, setVantaEffect] = useState<any>(null);
 
     useEffect(() => {
         const interval = setInterval(() => {
@@ -18,8 +26,39 @@ const LoadingScreen: React.FC = () => {
         return () => clearInterval(interval);
     }, []);
 
+    useEffect(() => {
+        if (!vantaEffect && vantaRef.current && window.VANTA) {
+            setVantaEffect(
+                window.VANTA.BIRDS({
+                    el: vantaRef.current,
+                    mouseControls: true,
+                    touchControls: true,
+                    gyroControls: false,
+                    minHeight: 200.00,
+                    minWidth: 200.00,
+                    scale: 1.00,
+                    scaleMobile: 1.00,
+                    backgroundColor: 0xffffff,
+                    color1: 0xff6a00,
+                    color2: 0xff9d00,
+                    colorMode: "lerp",
+                    birdSize: 1.20,
+                    wingSpan: 25.00,
+                    separation: 60.00,
+                    alignment: 50.00,
+                    cohesion: 50.00,
+                    quantity: 3.00,
+                    speed: 3.00,
+                })
+            );
+        }
+        return () => {
+            if (vantaEffect) vantaEffect.destroy();
+        };
+    }, [vantaEffect]);
+
     return (
-        <div className="fixed inset-0 z-[9999] flex flex-col items-center justify-center bg-white text-gray-900 font-poppins select-none transition-opacity duration-1000">
+        <div ref={vantaRef} className="fixed inset-0 z-[9999] flex flex-col items-center justify-center font-poppins select-none">
             {/* Top Information */}
             <div className="absolute top-8 left-8 flex flex-col gap-1">
                 <span className="text-[10px] tracking-[0.2em] text-gray-400 uppercase font-medium">AUTHORITY</span>
@@ -35,7 +74,7 @@ const LoadingScreen: React.FC = () => {
             <div className="flex flex-col items-center gap-12 max-w-lg w-full px-8">
                 {/* Logo Box */}
                 <div className="relative group">
-                    <div className="relative w-64 h-64 bg-white flex items-center justify-center overflow-hidden">
+                    <div className="relative w-64 h-64 bg-white/80 backdrop-blur-sm rounded-3xl flex items-center justify-center overflow-hidden shadow-xl shadow-orange-100">
                         <img 
                             src={logo} 
                             alt="Logo BPKAD" 
