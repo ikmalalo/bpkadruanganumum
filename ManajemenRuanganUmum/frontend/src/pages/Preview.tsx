@@ -16,13 +16,14 @@ export default function Preview() {
     "landscape" | "portrait" | null
   >(null)
 
-  const [vantaEffect, setVantaEffect] = useState<any>(null)
   const vantaRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
-    if (!vantaEffect && vantaRef.current && window.VANTA) {
-      setVantaEffect(
-        window.VANTA.DOTS({
+    let effect: any = null
+
+    const init = () => {
+      if (vantaRef.current && window.VANTA?.DOTS) {
+        effect = window.VANTA.DOTS({
           el: vantaRef.current,
           mouseControls: true,
           touchControls: true,
@@ -35,12 +36,21 @@ export default function Preview() {
           color2: 0xff6a00,
           backgroundColor: 0xffffff
         })
-      )
+        return true
+      }
+      return false
     }
-    return () => {
-      if (vantaEffect) vantaEffect.destroy()
+
+    if (!init()) {
+      // Retry polling until VANTA is ready
+      const poll = setInterval(() => {
+        if (init()) clearInterval(poll)
+      }, 100)
+      return () => { clearInterval(poll); if (effect) effect.destroy() }
     }
-  }, [vantaEffect])
+
+    return () => { if (effect) effect.destroy() }
+  }, [])
 
   return (
     <div className="relative min-h-screen bg-white overflow-hidden">
