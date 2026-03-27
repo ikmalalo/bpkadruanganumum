@@ -1,14 +1,16 @@
 import { useState, useEffect, useMemo, useRef } from "react"
+import { useLocation } from "react-router-dom"
 
 declare global {
   interface Window {
     VANTA: any;
+    __SLIDE_COUNT__: number;
   }
 }
 import logo from "../assets/images/logo.png"
 import { format } from "date-fns"
 import { id } from "date-fns/locale"
-import { ArrowLeft, ChevronLeft, ChevronRight } from "lucide-react"
+import { ArrowLeft, ChevronLeft, ChevronRight, Video, Loader2, Download } from "lucide-react"
 import { useNavigate } from "react-router-dom"
 import { apiUrl } from "../lib/api"
 
@@ -25,23 +27,18 @@ interface AgendaItem {
   type: "BPKAD" | "PEMKOT"
 }
 
-interface CertificateItem {
-  id: number
-  nama_penerima: string
-  penghargaan: string
-  tanggal: string
-  foto: string // base64
-}
-
-type SlideItem = { type: 'AGENDA'; data: AgendaItem[]; category: 'BPKAD' | 'PEMKOT' } | { type: 'CERTIFICATE'; data: CertificateItem }
+type SlideItem = { type: 'AGENDA'; data: AgendaItem[]; category: 'BPKAD' | 'PEMKOT' }
 
 export default function PreviewVertikal() {
   const navigate = useNavigate()
+  const location = useLocation()
+  const isPuppet = new URLSearchParams(location.search).get('puppet') === '1'
   const isVisitor = sessionStorage.getItem('isVisitor') === 'true'
   const [time, setTime] = useState(new Date())
   const [allAgendas, setAllAgendas] = useState<AgendaItem[]>([])
-  const [allCertificates, setAllCertificates] = useState<CertificateItem[]>([])
   const [loading, setLoading] = useState(true)
+  const [isRecording, setIsRecording] = useState(false)
+  const [recordDone, setRecordDone] = useState(false)
 
   const vantaRef = useRef<HTMLDivElement>(null)
   const [vantaEffect, setVantaEffect] = useState<any>(null)
@@ -71,14 +68,9 @@ export default function PreviewVertikal() {
 
   const fetchData = async () => {
     try {
-      const [respAgendas, respCerts] = await Promise.all([
-        fetch(apiUrl('/api/agendas')),
-        fetch(apiUrl('/api/certificates'))
-      ])
-      const agendas = await respAgendas.json()
-      const certs = await respCerts.json()
+      const resp = await fetch(apiUrl('/api/agendas'))
+      const agendas = await resp.json()
       setAllAgendas(agendas)
-      setAllCertificates(certs)
       setLoading(false)
     } catch (error) {
       console.error('Error fetching data:', error)
@@ -97,8 +89,7 @@ export default function PreviewVertikal() {
 
   const pages = useMemo(() => {
     const slides: SlideItem[] = []
-    
-    // Group Agendas
+
     const bpkad = allAgendas.filter(item => item.type === "BPKAD")
     const pemkot = allAgendas.filter(item => item.type === "PEMKOT")
 
@@ -111,13 +102,13 @@ export default function PreviewVertikal() {
     chunk(bpkad, itemsPerPageCount, 'BPKAD')
     chunk(pemkot, itemsPerPageCount, 'PEMKOT')
 
-    // Add Certificates
-    allCertificates.forEach(cert => {
-      slides.push({ type: 'CERTIFICATE', data: cert })
-    })
-
     return slides
-  }, [allAgendas, allCertificates])
+  }, [allAgendas])
+
+  // Expose slide count to window so Puppeteer can read it
+  useEffect(() => {
+    window.__SLIDE_COUNT__ = pages.length
+  }, [pages.length])
 
   const [currentPage, setCurrentPage] = useState(0)
   const [progress, setProgress] = useState(0)
@@ -150,6 +141,43 @@ export default function PreviewVertikal() {
     setCurrentPage(index);
     setProgress(0);
   };
+
+  const handleRecord = async () => {
+    setIsRecording(true)
+    setRecordDone(false)
+    try {
+      const frontendUrl = window.location.origin + '/preview-vertikal'
+      // Use relative URL in dev (Vite proxy → localhost:59489)
+      // or absolute Railway URL in production
+      const isDev = import.meta.env.DEV
+      const recordEndpoint = isDev
+        ? `/api/record/portrait`
+        : `${apiUrl('/api/record/portrait')}`
+      const recordUrl = `${recordEndpoint}?url=${encodeURIComponent(frontendUrl)}&slideDuration=5000&fps=25`
+
+      const response = await fetch(recordUrl)
+      if (!response.ok) {
+        const err = await response.json()
+        alert('Gagal merekam: ' + (err.error || 'Unknown error'))
+        return
+      }
+      const blob = await response.blob()
+      const url = URL.createObjectURL(blob)
+      const a = document.createElement('a')
+      a.href = url
+      a.download = `preview-portrait-${new Date().toISOString().slice(0,10)}.mp4`
+      document.body.appendChild(a)
+      a.click()
+      document.body.removeChild(a)
+      URL.revokeObjectURL(url)
+      setRecordDone(true)
+      setTimeout(() => setRecordDone(false), 4000)
+    } catch (e: any) {
+      alert('Error: ' + e.message)
+    } finally {
+      setIsRecording(false)
+    }
+  }
 
   const onTouchStart = (e: React.TouchEvent) => {
     setTouchStart(e.targetTouches[0].clientX)
@@ -185,8 +213,7 @@ export default function PreviewVertikal() {
 
   const pageTitle = useMemo(() => {
     if (!currentSlide) return "AGENDA RUANG RAPAT"
-    if (currentSlide.type === 'AGENDA') return `AGENDA RUANG RAPAT ${currentSlide.category}`
-    return "PENGHARGAAN & SERTIFIKAT"
+    return `AGENDA RUANG RAPAT ${currentSlide.category}`
   }, [currentSlide])
 
   if (loading && allAgendas.length === 0) {
@@ -208,11 +235,46 @@ export default function PreviewVertikal() {
       {/* Vanta DOTS Background */}
       <div ref={vantaRef} className="absolute inset-0 z-0"></div>
       <div className="relative z-10 h-full flex flex-col">
-      <div className="fixed top-0 left-0 w-20 h-20 z-50 group flex items-start justify-start p-3">
-        <button onClick={() => isVisitor ? navigate('/') : navigate('/preview')} className="bg-white p-2 rounded-full shadow-2xl border border-gray-100 text-orange-500 transition-all duration-300 opacity-0 group-hover:opacity-100 scale-75 group-hover:scale-100 active:scale-90">
-          <ArrowLeft size={18} strokeWidth={3} />
-        </button>
-      </div>
+
+      {/* Back button — hidden in puppet mode */}
+      {!isPuppet && (
+        <div className="fixed top-0 left-0 w-20 h-20 z-50 group flex items-start justify-start p-3">
+          <button onClick={() => isVisitor ? navigate('/') : navigate('/preview')} className="bg-white p-2 rounded-full shadow-2xl border border-gray-100 text-orange-500 transition-all duration-300 opacity-0 group-hover:opacity-100 scale-75 group-hover:scale-100 active:scale-90">
+            <ArrowLeft size={18} strokeWidth={3} />
+          </button>
+        </div>
+      )}
+
+      {/* Record button — hidden in puppet mode */}
+      {!isPuppet && (
+        <div className="fixed top-3 right-3 z-50">
+          <button
+            id="btn-record-portrait"
+            onClick={handleRecord}
+            disabled={isRecording || pages.length === 0}
+            title="Rekam semua halaman sebagai MP4 Portrait 9:16"
+            className={`flex items-center gap-2 px-4 py-2 rounded-full text-xs font-bold shadow-xl border transition-all duration-300
+              ${
+                recordDone
+                  ? 'bg-green-500 border-green-400 text-white shadow-green-300/50 scale-95'
+                  : isRecording
+                  ? 'bg-orange-100 border-orange-300 text-orange-500 cursor-wait'
+                  : pages.length === 0
+                  ? 'bg-gray-100 border-gray-200 text-gray-400 cursor-not-allowed'
+                  : 'bg-white border-orange-300 text-orange-500 hover:bg-orange-500 hover:text-white hover:border-orange-500 hover:shadow-orange-300/50'
+              }`
+            }
+          >
+            {isRecording ? (
+              <><Loader2 size={14} className="animate-spin" /><span>Merekam...</span></>
+            ) : recordDone ? (
+              <><Download size={14} /><span>Tersimpan!</span></>
+            ) : (
+              <><Video size={14} /><span>Rekam MP4</span></>
+            )}
+          </button>
+        </div>
+      )}
 
       <div className="flex-1 p-3 md:p-4 flex flex-col w-full max-w-full mx-auto overflow-hidden">
         <div className="flex flex-col items-center mb-3 text-center">
@@ -238,6 +300,7 @@ export default function PreviewVertikal() {
             {pages.map((_, i) => (
               <div 
                 key={i} 
+                data-slide-dot={i}
                 onClick={() => handlePageClick(i)}
                 className={`w-1.5 h-1.5 rounded-full transition-all duration-300 cursor-pointer hover:scale-150 ${i === currentPage ? "bg-orange-500 scale-110 shadow-lg shadow-orange-200" : "bg-gray-300 shadow-sm"}`}
               ></div>
@@ -279,15 +342,6 @@ export default function PreviewVertikal() {
                   </div>
                 </div>
               ))}
-            </div>
-          ) : currentSlide?.type === 'CERTIFICATE' ? (
-            <div className="h-full flex items-center justify-center bg-white rounded-3xl overflow-hidden p-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
-                <img 
-                  src={currentSlide.data.foto} 
-                  alt="Sertifikat" 
-                  style={{ maxHeight: '78vh', maxWidth: '85vw' }}
-                  className="w-auto h-auto object-contain border-4 border-white rounded-lg" 
-                />
             </div>
           ) : null}
         </div>
