@@ -217,7 +217,7 @@ export default function PreviewHorizontal() {
           </div>
         </div>
 
-        <div className="bg-white rounded-[1.2rem] shadow-xl overflow-hidden border border-gray-100 w-full flex-1 flex flex-col relative">
+        <div className="bg-white/80 backdrop-blur-md rounded-[1.2rem] shadow-xl overflow-hidden border border-white/20 w-full flex-1 flex flex-col relative">
           <div 
             key={currentPage} 
             className="flex-1 flex flex-col w-full"
