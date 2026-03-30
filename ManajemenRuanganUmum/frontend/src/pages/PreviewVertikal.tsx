@@ -240,7 +240,7 @@ export default function PreviewVertikal() {
 
   return (
     <div 
-      className="bg-white/60 h-screen relative overflow-hidden flex flex-col"
+      className="bg-white h-screen relative overflow-hidden flex flex-col"
       onTouchStart={onTouchStart}
       onTouchMove={onTouchMove}
       onTouchEnd={onTouchEnd}
@@ -329,7 +329,7 @@ export default function PreviewVertikal() {
               {currentSlide.data.map((item, idx) => (
                 <div 
                   key={`${currentPage}-${idx}`} 
-                  className="bg-white/60 backdrop-blur-sm rounded-2xl shadow-md border border-gray-100 overflow-hidden flex flex-col relative translate-y-0 hover:-translate-y-1 transition-transform animate-slide-right opacity-0"
+                  className="bg-white rounded-2xl shadow-md border border-gray-100 overflow-hidden flex flex-col relative translate-y-0 hover:-translate-y-1 transition-transform animate-slide-right opacity-0"
                   style={{ animationDelay: `${0.1 + idx * 0.2}s` }}
                 >
                   {!isPuppet && (
