@@ -229,7 +229,7 @@ export default function PreviewHorizontal() {
                 {currentSlide.data.map((item, idx) => (
                   <tr 
                     key={`${currentPage}-${idx}`} 
-                    className="hover:bg-orange-50/40 transition-all duration-300 flex w-full flex-1 items-stretch min-h-0 animate-slide-right opacity-0"
+                    className="hover:bg-orange-50/40 transition-all duration-300 flex w-full min-h-[80px] items-stretch animate-slide-right opacity-0"
                     style={{ animationDelay: `${0.1 + idx * 0.15}s` }}
                   >
                     <td className="px-2 text-[10px] md:text-sm font-black text-gray-400 text-center w-[5%] min-w-[40px] hidden md:flex items-center justify-center">{idx + 1}</td>
