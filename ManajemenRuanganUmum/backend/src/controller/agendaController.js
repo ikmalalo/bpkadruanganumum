@@ -61,19 +61,26 @@ const autoUpdateStatuses = async () => {
 const checkConflict = async (ruangan, tanggal, waktuMulai, waktuSelesai, excludeId = null) => {
   const timeToMin = (t) => {
     if (!t) return 0;
-    if (t === 'Selesai') return 1439; // 23:59 (End of day)
-    const parts = t.split(':');
+    const clean = t.toString().trim().toLowerCase();
+    if (clean === 'selesai') return 1439; // 23:59
+    const parts = clean.split(':');
     if (parts.length < 2) return 0;
-    const h = parseInt(parts[0]);
-    const m = parseInt(parts[1]);
+    const h = parseInt(parts[0]) || 0;
+    const m = parseInt(parts[1]) || 0;
     return h * 60 + m;
   };
   
   const sm = timeToMin(waktuMulai);
   const se = timeToMin(waktuSelesai);
   
-  let query = 'SELECT id, pukul FROM agenda_ruangan WHERE tempat = ? AND tanggal = ?';
-  let params = [ruangan, tanggal];
+  // Normalisasi input untuk pencarian
+  const searchRuangan = ruangan.trim();
+  const searchTanggal = tanggal.trim();
+
+  console.log(`[CHECK CONFLICT] Checking: "${searchRuangan}" | "${searchTanggal}" | ${waktuMulai}-${waktuSelesai} (Mins: ${sm}-${se})`);
+  
+  let query = 'SELECT id, pukul, acara FROM agenda_ruangan WHERE TRIM(tempat) = ? AND TRIM(tanggal) = ?';
+  let params = [searchRuangan, searchTanggal];
   
   if (excludeId) {
     query += ' AND id != ?';
@@ -81,15 +88,23 @@ const checkConflict = async (ruangan, tanggal, waktuMulai, waktuSelesai, exclude
   }
   
   const [existing] = await db.query(query, params);
+  console.log(`[CHECK CONFLICT] Found ${existing.length} existing agendas for this room/date.`);
   
   for (const row of existing) {
-    const [exStartStr, exEndStr] = row.pukul.split(' - ');
-    const exs = timeToMin(exStartStr);
-    const exe = timeToMin(exEndStr);
+    const timeParts = row.pukul.split(' - ');
+    const exs = timeToMin(timeParts[0]);
+    const exe = timeToMin(timeParts[1]);
+    
+    console.log(`[CHECK CONFLICT] Comparing against: "${row.acara}" | ${row.pukul} (Mins: ${exs}-${exe})`);
     
     // Overlap condition: (Start1 < End2) AND (End1 > Start2)
-    if (sm < exe && se > exs) return true;
+    if (sm < exe && se > exs) {
+      console.log(`[CHECK CONFLICT] BENTROK DETECTED with "${row.acara}"!`);
+      return true;
+    }
   }
+  
+  console.log(`[CHECK CONFLICT] No conflict found.`);
   return false;
 };
 
