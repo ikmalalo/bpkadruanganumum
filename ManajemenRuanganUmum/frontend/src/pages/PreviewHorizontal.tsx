@@ -208,8 +208,12 @@ export default function PreviewHorizontal() {
         </div>
 
         <div className="bg-white rounded-[1.2rem] shadow-xl overflow-hidden border border-gray-100 w-full flex-1 flex flex-col relative">
-          {currentSlide?.type === 'AGENDA' ? (
-            <table className="w-full border-collapse flex-1 flex flex-col items-stretch">
+          <div 
+            key={currentPage} 
+            className="flex-1 flex flex-col animate-slide-right"
+          >
+            {currentSlide?.type === 'AGENDA' ? (
+              <table className="w-full border-collapse flex-1 flex flex-col items-stretch">
               <thead>
                 <tr className="bg-orange-500 text-white flex w-full">
                   <th className="py-2 px-2 text-center text-sm font-black w-16 flex items-center justify-center">NO</th>
@@ -249,7 +253,8 @@ export default function PreviewHorizontal() {
                   className="w-auto h-auto object-contain border-[12px] border-white rounded-lg" 
                 />
             </div>
-          ) : null}
+            ) : null}
+          </div>
         </div>
         </div>
       </div>
