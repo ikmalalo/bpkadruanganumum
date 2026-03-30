@@ -242,7 +242,7 @@ export default function PreviewHorizontal() {
                     <td className="px-6 flex-[2] min-w-[200px] flex items-center font-black text-[10px] md:text-xs lg:text-sm text-gray-800 uppercase leading-tight">{item.acara}</td>
                     <td className="px-4 w-[15%] min-w-[120px] hidden lg:flex items-center font-black text-[11px] md:text-[13px] text-gray-800 uppercase">{item.pelaksana}</td>
                     <td className="px-2 md:px-4 w-[12%] min-w-[90px] flex items-center justify-center">
-                      <span className={`inline-block py-1 md:py-1.5 px-3 rounded-lg md:rounded-xl text-[9px] md:text-[11px] font-black text-white text-center min-w-[80px] ${item.status === 'Berlangsung' ? 'bg-[#10b981]' : 'bg-[#3b82f6]'}`}>{item.status}</span>
+                      <span className={`inline-flex items-center justify-center py-1 md:py-1.5 px-4 rounded-lg md:rounded-xl text-[9px] md:text-[11px] font-black text-white min-w-[85px] ${item.status === 'Berlangsung' ? 'bg-[#10b981]' : 'bg-[#3b82f6]'}`}>{item.status}</span>
                     </td>
                   </tr>
                 ))}
