@@ -327,7 +327,7 @@ export default function PreviewVertikal() {
                   style={{ animationDelay: `${0.1 + idx * 0.2}s` }}
                 >
                   {!isPuppet && (
-                    <div className={`absolute top-3 right-3 px-3 py-1 text-[10px] rounded-full font-black text-white shadow-md z-10 ${item.status === "Berlangsung" ? "bg-[#10b981]" : "bg-[#3b82f6]"}`}>
+                    <div className={`absolute top-3 right-3 px-3 py-1 text-[10px] rounded-full font-black text-white shadow-md z-10 transition-all duration-300 ${item.status === "Berlangsung" ? "bg-[#10b981] animate-glow-green" : "bg-[#3b82f6] animate-glow-blue"}`}>
                       {item.status}
                     </div>
                   )}
