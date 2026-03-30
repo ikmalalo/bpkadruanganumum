@@ -58,13 +58,13 @@ export default function Preview() {
       <div ref={vantaRef} className="absolute inset-0 z-0"></div>
 
       {/* Main Content */}
-      <div className="relative z-10 flex flex-col pt-10 px-4 md:px-0 min-h-screen">
+      <div className="relative z-10 flex flex-col justify-center min-h-screen py-10 px-4 md:px-8">
       
       {/* Header for Standalone View */}
-      <div className="max-w-5xl mx-auto w-full mb-12 flex items-center justify-between">
+      <div className="max-w-6xl mx-auto w-full mb-12 flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold text-gray-900 tracking-tight">Pilih Mode Tampilan</h1>
-          <p className="text-gray-500 mt-1 text-sm">Silakan pilih orientasi layar untuk melanjutkan ke preview agenda.</p>
+          <h1 className="text-3xl md:text-4xl font-black text-gray-900 tracking-tight uppercase">Pilih Mode Tampilan</h1>
+          <p className="text-gray-500 mt-1 text-sm md:text-base">Silakan pilih orientasi layar untuk melanjutkan ke preview agenda.</p>
         </div>
         
         <button 
@@ -77,22 +77,22 @@ export default function Preview() {
       </div>
 
       {/* Cards */}
-      <div className="flex flex-col md:flex-row justify-center items-stretch gap-8 max-w-5xl mx-auto w-full mb-12">
+      <div className="flex flex-col md:flex-row justify-center items-stretch gap-8 md:gap-12 max-w-6xl mx-auto w-full mb-12">
 
         {/* Landscape */}
         <button
           onClick={() => setSelectedLocation("landscape")}
-          className={`group flex-1 relative rounded-xl p-8 text-left transition-all duration-300 border-2 overflow-hidden
-          aspect-[4/3] md:aspect-auto md:h-80 flex flex-col justify-end
+          className={`group flex-1 relative rounded-2xl p-8 md:p-10 text-left transition-all duration-300 border-2 overflow-hidden
+          aspect-[4/3] md:aspect-auto md:h-96 flex flex-col justify-end
           ${
             selectedLocation === "landscape"
-              ? "bg-orange-500 border-orange-500 text-white shadow-[0_0_20px_rgba(249,115,22,0.6)] scale-[1.02]"
-              : "bg-white border-orange-400 text-gray-900 hover:border-orange-500 hover:shadow-[0_0_15px_rgba(249,115,22,0.4)] hover:-translate-y-1"
+              ? "bg-orange-500 border-orange-500 text-white shadow-[0_20px_40px_rgba(249,115,22,0.4)] scale-[1.02]"
+              : "bg-white border-gray-100 text-gray-900 hover:border-orange-500 hover:shadow-[0_15px_30px_rgba(249,115,22,0.2)] hover:-translate-y-2"
           }`}
         >
           <div className="relative z-10 mt-auto transition-transform duration-300 group-hover:translate-x-1">
             <h3
-              className={`text-4xl md:text-5xl font-extrabold mb-2 tracking-tight ${
+              className={`text-4xl md:text-6xl font-black mb-2 tracking-tighter ${
                 selectedLocation === "landscape"
                   ? "text-white"
                   : "text-gray-900"
@@ -102,31 +102,36 @@ export default function Preview() {
             </h3>
 
             <p
-              className={`text-base font-medium ${
+              className={`text-lg md:text-xl font-bold ${
                 selectedLocation === "landscape"
                   ? "text-orange-50"
-                  : "text-gray-500"
+                  : "text-gray-400"
               }`}
             >
               Layar Horizontal
             </p>
+          </div>
+          
+          {/* Subtle Decorative Icon/Element */}
+          <div className={`absolute top-0 right-0 p-8 transition-opacity duration-300 ${selectedLocation === 'landscape' ? 'opacity-20' : 'opacity-5'}`}>
+             <div className="w-32 h-20 border-4 border-current rounded-lg opacity-40"></div>
           </div>
         </button>
 
         {/* Portrait */}
         <button
           onClick={() => setSelectedLocation("portrait")}
-          className={`group flex-1 relative rounded-xl p-8 text-left transition-all duration-300 border-2 overflow-hidden
-          aspect-[4/3] md:aspect-auto md:h-80 flex flex-col justify-end
+          className={`group flex-1 relative rounded-2xl p-8 md:p-10 text-left transition-all duration-300 border-2 overflow-hidden
+          aspect-[4/3] md:aspect-auto md:h-96 flex flex-col justify-end
           ${
             selectedLocation === "portrait"
-              ? "bg-orange-500 border-orange-500 text-white shadow-[0_0_20px_rgba(249,115,22,0.6)] scale-[1.02]"
-              : "bg-white border-orange-400 text-gray-900 hover:border-orange-500 hover:shadow-[0_0_15px_rgba(249,115,22,0.4)] hover:-translate-y-1"
+              ? "bg-orange-500 border-orange-500 text-white shadow-[0_20px_40px_rgba(249,115,22,0.4)] scale-[1.02]"
+              : "bg-white border-gray-100 text-gray-900 hover:border-orange-500 hover:shadow-[0_15px_30px_rgba(249,115,22,0.2)] hover:-translate-y-2"
           }`}
         >
           <div className="relative z-10 mt-auto transition-transform duration-300 group-hover:translate-x-1">
             <h3
-              className={`text-4xl md:text-5xl font-extrabold mb-2 tracking-tight ${
+              className={`text-4xl md:text-6xl font-black mb-2 tracking-tighter ${
                 selectedLocation === "portrait"
                   ? "text-white"
                   : "text-gray-900"
@@ -136,21 +141,26 @@ export default function Preview() {
             </h3>
 
             <p
-              className={`text-base font-medium ${
+              className={`text-lg md:text-xl font-bold ${
                 selectedLocation === "portrait"
                   ? "text-orange-50"
-                  : "text-gray-500"
+                  : "text-gray-400"
               }`}
             >
               Layar Vertikal
             </p>
+          </div>
+
+          {/* Subtle Decorative Icon/Element */}
+          <div className={`absolute top-0 right-0 p-8 transition-opacity duration-300 ${selectedLocation === 'portrait' ? 'opacity-20' : 'opacity-5'}`}>
+             <div className="w-20 h-32 border-4 border-current rounded-lg opacity-40"></div>
           </div>
         </button>
 
       </div>
 
       {/* Button */}
-      <div className="max-w-5xl mx-auto w-full flex justify-end pb-8">
+      <div className="max-w-6xl mx-auto w-full flex justify-end">
         <button
           onClick={() => {
             if (selectedLocation === "landscape") {
@@ -160,15 +170,15 @@ export default function Preview() {
             }
           }}
           disabled={!selectedLocation}
-          className={`flex items-center gap-2 px-8 py-3 rounded-lg font-semibold transition-all duration-200 shadow-sm
+          className={`flex items-center gap-2 px-10 py-4 rounded-xl font-black transition-all duration-300 shadow-sm text-lg
           ${
             selectedLocation
-              ? "bg-orange-500 text-white hover:bg-orange-600 shadow-orange-500/30"
-              : "bg-gray-200 text-gray-400 cursor-not-allowed"
+              ? "bg-orange-500 text-white hover:bg-orange-600 shadow-orange-500/30 hover:shadow-orange-500/50 hover:scale-105 active:scale-95"
+              : "bg-gray-100 text-gray-300 cursor-not-allowed"
           }`}
         >
-          Lanjut
-          <ArrowRight size={18} />
+          <span>Lanjut</span>
+          <ArrowRight size={22} className="group-hover:translate-x-1 transition-transform" />
         </button>
       </div>
 
