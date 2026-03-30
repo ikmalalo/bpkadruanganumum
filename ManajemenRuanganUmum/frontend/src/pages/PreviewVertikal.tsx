@@ -126,7 +126,7 @@ export default function PreviewVertikal() {
   }, [])
 
   useEffect(() => {
-    if (pages.length === 0) return
+    if (pages.length === 0 || isPuppet) return
     const interval = 50
     const step = (interval / SLIDE_DURATION) * 100
     const timer = setInterval(() => {
@@ -139,7 +139,7 @@ export default function PreviewVertikal() {
       })
     }, interval)
     return () => clearInterval(timer)
-  }, [pages.length])
+  }, [pages.length, isPuppet])
 
   const handlePageClick = (index: number) => {
     setCurrentPage(index);
@@ -152,7 +152,7 @@ export default function PreviewVertikal() {
     try {
       const frontendUrl = window.location.origin + '/preview-vertikal'
       // Tembak backend Railway (cloud) agar tidak usah jalan lokal
-      const recordUrl = `${apiUrl('/api/record/portrait')}?url=${encodeURIComponent(frontendUrl)}&slideDuration=${SLIDE_DURATION}`
+      const recordUrl = `${apiUrl('/api/record/portrait')}?url=${encodeURIComponent(frontendUrl)}&slideDuration=${SLIDE_DURATION}&t=${Date.now()}`
 
       const response = await fetch(recordUrl)
       if (!response.ok) {
