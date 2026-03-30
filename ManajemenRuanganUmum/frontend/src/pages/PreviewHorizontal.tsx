@@ -47,9 +47,9 @@ export default function PreviewHorizontal() {
   const [vantaEffect, setVantaEffect] = useState<any>(null)
 
   useEffect(() => {
-    if (!vantaEffect && vantaRef.current && window.VANTA) {
+    if (!vantaEffect && vantaRef.current && window.VANTA?.GLOBE) {
       setVantaEffect(
-        window.VANTA.DOTS({
+        window.VANTA.GLOBE({
           el: vantaRef.current,
           mouseControls: true,
           touchControls: true,
@@ -59,7 +59,8 @@ export default function PreviewHorizontal() {
           scale: 1.00,
           scaleMobile: 1.00,
           color: 0xff6a00,
-          color2: 0xff6a00,
+          color2: 0xffffff,
+          size: 0.9,
           backgroundColor: 0xffffff
         })
       )
@@ -217,11 +218,11 @@ export default function PreviewHorizontal() {
               <thead className="animate-slide-right">
                 <tr className="bg-orange-500 text-white flex w-full">
                   <th className="py-2 px-2 text-center text-[10px] md:text-sm font-black w-[5%] min-w-[40px] hidden md:flex items-center justify-center">NO</th>
-                  <th className="py-2 px-4 text-left text-[9px] md:text-[12px] font-black w-[15%] min-w-[100px] flex items-center">HARI / TANGGAL</th>
-                  <th className="py-2 px-4 text-left text-[9px] md:text-[12px] font-black flex-1 min-w-[120px] flex items-center">TEMPAT</th>
-                  <th className="py-2 px-4 text-center text-[9px] md:text-[12px] font-black w-[15%] min-w-[90px] flex items-center justify-center">PUKUL</th>
-                  <th className="py-2 px-6 text-left text-[9px] md:text-[12px] font-black flex-[2] min-w-[200px] flex items-center">ACARA</th>
-                  <th className="py-2 px-4 text-left text-[9px] md:text-[12px] font-black w-[15%] min-w-[120px] hidden lg:flex items-center">PELAKSANA</th>
+                  <th className="py-2 px-4 text-left text-[9px] md:text-[14px] font-black w-[15%] min-w-[100px] flex items-center">HARI / TANGGAL</th>
+                  <th className="py-2 px-4 text-left text-[9px] md:text-[14px] font-black flex-1 min-w-[120px] flex items-center">TEMPAT</th>
+                  <th className="py-2 px-4 text-center text-[9px] md:text-[14px] font-black w-[15%] min-w-[90px] flex items-center justify-center">PUKUL</th>
+                  <th className="py-2 px-6 text-left text-[9px] md:text-[14px] font-black flex-[2] min-w-[200px] flex items-center">ACARA</th>
+                  <th className="py-2 px-4 text-left text-[9px] md:text-[14px] font-black w-[15%] min-w-[120px] hidden lg:flex items-center">PELAKSANA</th>
                   <th className="py-2 px-2 md:px-4 text-center text-[10px] md:text-sm font-black w-[12%] min-w-[90px] flex items-center justify-center">STATUS</th>
                 </tr>
               </thead>
