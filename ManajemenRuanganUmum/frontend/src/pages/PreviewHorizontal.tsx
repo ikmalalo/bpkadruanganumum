@@ -44,12 +44,13 @@ export default function PreviewHorizontal() {
   const [loading, setLoading] = useState(true)
 
   const vantaRef = useRef<HTMLDivElement>(null)
-  const [vantaEffect, setVantaEffect] = useState<any>(null)
 
   useEffect(() => {
-    if (!vantaEffect && vantaRef.current && window.VANTA?.GLOBE) {
-      setVantaEffect(
-        window.VANTA.GLOBE({
+    let effect: any = null
+
+    const init = () => {
+      if (vantaRef.current && window.VANTA?.GLOBE) {
+        effect = window.VANTA.GLOBE({
           el: vantaRef.current,
           mouseControls: true,
           touchControls: true,
@@ -63,12 +64,20 @@ export default function PreviewHorizontal() {
           size: 0.9,
           backgroundColor: 0xffffff
         })
-      )
+        return true
+      }
+      return false
     }
-    return () => {
-      if (vantaEffect) vantaEffect.destroy()
+
+    if (!init()) {
+      const poll = setInterval(() => {
+        if (init()) clearInterval(poll)
+      }, 100)
+      return () => { clearInterval(poll); if (effect) effect.destroy() }
     }
-  }, [vantaEffect])
+
+    return () => { if (effect) effect.destroy() }
+  }, [])
 
   const fetchData = async () => {
     try {
