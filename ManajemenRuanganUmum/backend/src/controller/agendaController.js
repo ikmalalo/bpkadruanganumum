@@ -60,7 +60,12 @@ const autoUpdateStatuses = async () => {
 
 const checkConflict = async (ruangan, tanggal, waktuMulai, waktuSelesai, excludeId = null) => {
   const timeToMin = (t) => {
-    const [h, m] = t.split(':').map(Number);
+    if (!t) return 0;
+    if (t === 'Selesai') return 1439; // 23:59 (End of day)
+    const parts = t.split(':');
+    if (parts.length < 2) return 0;
+    const h = parseInt(parts[0]);
+    const m = parseInt(parts[1]);
     return h * 60 + m;
   };
   
