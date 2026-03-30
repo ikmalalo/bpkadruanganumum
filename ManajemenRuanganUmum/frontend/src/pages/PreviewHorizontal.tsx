@@ -259,7 +259,7 @@ export default function PreviewHorizontal() {
               </tbody>
             </table>
           ) : currentSlide?.type === 'CERTIFICATE' ? (
-            <div className="flex-1 flex items-center justify-center bg-white/30 overflow-hidden p-10 animate-slide-right">
+            <div className="flex-1 flex items-center justify-center bg-white/10 overflow-hidden p-10 animate-slide-right">
                 <img 
                   src={currentSlide.data.foto} 
                   alt="Sertifikat" 
