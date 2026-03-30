@@ -58,6 +58,36 @@ const autoUpdateStatuses = async () => {
   }
 };
 
+const checkConflict = async (ruangan, tanggal, waktuMulai, waktuSelesai, excludeId = null) => {
+  const timeToMin = (t) => {
+    const [h, m] = t.split(':').map(Number);
+    return h * 60 + m;
+  };
+  
+  const sm = timeToMin(waktuMulai);
+  const se = timeToMin(waktuSelesai);
+  
+  let query = 'SELECT id, pukul FROM agenda_ruangan WHERE tempat = ? AND tanggal = ?';
+  let params = [ruangan, tanggal];
+  
+  if (excludeId) {
+    query += ' AND id != ?';
+    params.push(excludeId);
+  }
+  
+  const [existing] = await db.query(query, params);
+  
+  for (const row of existing) {
+    const [exStartStr, exEndStr] = row.pukul.split(' - ');
+    const exs = timeToMin(exStartStr);
+    const exe = timeToMin(exEndStr);
+    
+    // Overlap condition: (Start1 < End2) AND (End1 > Start2)
+    if (sm < exe && se > exs) return true;
+  }
+  return false;
+};
+
 const getAgendas = async (req, res) => {
   try {
     // Run auto-update status before fetching data
@@ -83,6 +113,12 @@ const createAgenda = async (req, res) => {
       pelaksana, 
       dihadiri 
     } = req.body;
+
+    // Check for double booking
+    const hasConflict = await checkConflict(ruangan, tanggal, waktuMulai, waktuSelesai);
+    if (hasConflict) {
+      return res.status(400).json({ message: 'Ruangan sudah di booking pada jam tersebut. Silakan pilih jam atau ruangan lain.' });
+    }
 
     // Map into DB structure
     const type = jenisRuangan === 'bpkad' ? 'BPKAD' : 'PEMKOT';
@@ -160,6 +196,12 @@ const updateAgenda = async (req, res) => {
       pelaksana, 
       dihadiri 
     } = req.body;
+
+    // Check for double booking (excluding current record ID being edited)
+    const hasConflict = await checkConflict(ruangan, tanggal, waktuMulai, waktuSelesai, id);
+    if (hasConflict) {
+      return res.status(400).json({ message: 'Ruangan sudah di booking pada jam tersebut. Silakan pilih jam atau ruangan lain.' });
+    }
 
     // Map into DB structure
     const type = jenisRuangan === 'bpkad' ? 'BPKAD' : 'PEMKOT';
