@@ -92,7 +92,7 @@ export default function PreviewHorizontal() {
     return () => clearInterval(refreshInterval)
   }, [])
 
-  const itemsPerPageCount = 3
+  const itemsPerPageCount = 6
   const SLIDE_DURATION = 15000
 
   const pages = useMemo(() => {
