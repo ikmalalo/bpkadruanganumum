@@ -322,9 +322,11 @@ export default function PreviewVertikal() {
             <div className="flex flex-col gap-4 animate-in fade-in slide-in-from-bottom-4 duration-500">
               {currentSlide.data.map((item, idx) => (
                 <div key={idx} className="bg-white rounded-2xl shadow-md border border-gray-100 overflow-hidden flex flex-col relative translate-y-0 hover:-translate-y-1 transition-transform">
-                  <div className={`absolute ${isPuppet ? 'top-4 right-4 px-4 py-1.5 text-xs' : 'top-3 right-3 px-3 py-1 text-[10px]'} rounded-full font-black text-white shadow-md z-10 ${item.status === "Berlangsung" ? "bg-[#10b981]" : "bg-[#3b82f6]"}`}>
-                    {item.status}
-                  </div>
+                  {!isPuppet && (
+                    <div className={`absolute top-3 right-3 px-3 py-1 text-[10px] rounded-full font-black text-white shadow-md z-10 ${item.status === "Berlangsung" ? "bg-[#10b981]" : "bg-[#3b82f6]"}`}>
+                      {item.status}
+                    </div>
+                  )}
                   <div className={`bg-gray-50/50 ${isPuppet ? 'p-4 gap-4' : 'p-3 gap-3'} border-b border-gray-100 flex items-center`}>
                     <div className={`${isPuppet ? 'w-10 h-10 text-lg' : 'w-8 h-8 text-base'} rounded-xl bg-orange-500 flex items-center justify-center text-white font-black shadow-orange-200 shadow-lg`}>{idx + 1}</div>
                     <div>
