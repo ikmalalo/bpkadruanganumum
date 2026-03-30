@@ -152,7 +152,7 @@ export default function PreviewVertikal() {
     try {
       const frontendUrl = window.location.origin + '/preview-vertikal'
       // Tembak backend Railway (cloud) agar tidak usah jalan lokal
-      const recordUrl = `${apiUrl('/api/record/portrait')}?url=${encodeURIComponent(frontendUrl)}`
+      const recordUrl = `${apiUrl('/api/record/portrait')}?url=${encodeURIComponent(frontendUrl)}&slideDuration=${SLIDE_DURATION}`
 
       const response = await fetch(recordUrl)
       if (!response.ok) {

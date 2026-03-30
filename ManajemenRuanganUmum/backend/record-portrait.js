@@ -26,7 +26,7 @@ const urlArg = args.find(a => a.startsWith('--url='))?.split('=')[1]
   || null;
 
 const TARGET_URL = urlArg || 'http://localhost:5173/preview-vertikal';
-const SLIDE_DURATION_MS = 5000;     // durasi per slide dalam rekaman
+const SLIDE_DURATION_MS = 15000;    // durasi per slide dalam rekaman (disamakan dengan frontend 15 detik)
 const OUTPUT_FPS = 30;              // fps output video -> 30 fps supaya smooth
 const CAPTURE_INTERVAL_MS = Math.floor(1000 / OUTPUT_FPS); // ~33ms per frame
 const WIDTH = 450;                  // portrait 9:16 width
