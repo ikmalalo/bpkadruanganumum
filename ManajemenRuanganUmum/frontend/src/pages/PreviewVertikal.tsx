@@ -126,6 +126,9 @@ export default function PreviewVertikal() {
   }, [])
 
   useEffect(() => {
+    // Expand window object type implicitly or via any
+    (window as any).__SET_PROGRESS = (val: number) => setProgress(val)
+    
     if (pages.length === 0 || isPuppet) return
     const interval = 50
     const step = (interval / SLIDE_DURATION) * 100

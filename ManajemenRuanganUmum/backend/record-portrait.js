@@ -119,6 +119,13 @@ async function main() {
       for (let f = 0; f < framesPerSlide; f++) {
         const startCap = Date.now();
         
+        // Sinkronisasi progress bar di web dengan frame recording
+        await page.evaluate((currentFrame, totalFrames) => {
+          if (typeof window.__SET_PROGRESS === 'function') {
+            window.__SET_PROGRESS((currentFrame / totalFrames) * 100);
+          }
+        }, f + 1, framesPerSlide);
+
         // Gunakan JPEG kualitas 90 agar speed capture kencang (lebih mulus)
         const framePath = path.join(tmpDir, `frame_${String(frameIndex).padStart(6, '0')}.jpg`);
         await page.screenshot({ path: framePath, type: 'jpeg', quality: 90 });

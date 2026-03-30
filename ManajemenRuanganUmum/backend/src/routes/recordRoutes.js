@@ -86,6 +86,14 @@ router.get('/portrait', async (req, res) => {
 
       for (let f = 0; f < framesPerSlide; f++) {
         const startCap = Date.now();
+        
+        // Update progress bar frame demi frame (sync dengan Puppeteer)
+        await page.evaluate((currentFrame, totalFrames) => {
+          if (typeof window.__SET_PROGRESS === 'function') {
+            window.__SET_PROGRESS((currentFrame / totalFrames) * 100);
+          }
+        }, f + 1, framesPerSlide);
+
         const framePath = path.join(tmpDir, `frame_${String(frameIndex).padStart(6, '0')}.jpg`);
         // quality 80 memperkecil ukuran gambar per frame agar memori lebih longgar
         await page.screenshot({ path: framePath, type: 'jpeg', quality: 80 });
