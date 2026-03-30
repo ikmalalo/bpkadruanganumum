@@ -218,9 +218,9 @@ export default function PreviewHorizontal() {
                 <tr className="bg-orange-500 text-white flex w-full">
                   <th className="py-2 px-2 text-center text-sm font-black w-16 flex items-center justify-center">NO</th>
                   <th className="py-2 px-4 text-left text-sm font-black flex-1 flex items-center">HARI / TANGGAL</th>
-                  <th className="py-2 px-4 text-left text-sm font-black flex-[1.5] flex items-center">TEMPAT</th>
+                  <th className="py-2 px-4 text-left text-sm font-black flex-1 flex items-center">TEMPAT</th>
                   <th className="py-2 px-4 text-center text-sm font-black w-32 flex items-center justify-center">PUKUL</th>
-                  <th className="py-2 px-6 text-left text-sm font-black flex-[2.5] flex items-center">ACARA</th>
+                  <th className="py-2 px-6 text-left text-sm font-black flex-2 flex items-center">ACARA</th>
                   <th className="py-2 px-4 text-left text-sm font-black flex-1 flex items-center">PELAKSANA</th>
                   <th className="py-2 px-4 text-center text-sm font-black w-32 flex items-center justify-center">STATUS</th>
                 </tr>
@@ -237,9 +237,9 @@ export default function PreviewHorizontal() {
                       <span className="text-sm font-black text-gray-800 uppercase leading-none mb-1">{item.hari}</span>
                       <span className="text-[11px] font-bold text-gray-400 uppercase tracking-wider">{item.tanggal.split(', ')[1] || item.tanggal}</span>
                     </td>
-                    <td className="px-4 flex-[1.5] flex items-center min-w-0 font-black text-sm text-gray-800 uppercase whitespace-nowrap">{item.tempat}</td>
+                    <td className="px-4 flex-1 flex items-center min-w-0 font-black text-sm text-gray-800 uppercase leading-tight">{item.tempat}</td>
                     <td className="px-4 w-32 flex items-center justify-center"><span className="text-base font-black text-orange-500 bg-orange-50 px-2.5 py-1 rounded-md">{item.pukul}</span></td>
-                    <td className="px-6 flex-[2.5] flex items-center min-w-0 font-black text-sm text-gray-800 uppercase leading-tight">{item.acara}</td>
+                    <td className="px-6 flex-2 flex items-center min-w-0 font-black text-sm text-gray-800 uppercase leading-tight">{item.acara}</td>
                     <td className="px-4 flex-1 flex items-center min-w-0 font-black text-[13px] text-gray-800 uppercase">{item.pelaksana}</td>
                     <td className="px-4 w-32 flex items-center justify-center">
                       <span className={`inline-block w-32 py-2 rounded-xl text-sm font-black text-white text-center ${item.status === 'Berlangsung' ? 'bg-[#10b981]' : 'bg-[#3b82f6]'}`}>{item.status}</span>
