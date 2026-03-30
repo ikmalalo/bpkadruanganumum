@@ -41,34 +41,40 @@ export default function PreviewVertikal() {
   const [recordDone, setRecordDone] = useState(false)
 
   const vantaRef = useRef<HTMLDivElement>(null)
-  const [vantaEffect, setVantaEffect] = useState<any>(null)
 
   useEffect(() => {
-    if (!vantaEffect && vantaRef.current && window.VANTA) {
-      try {
-        setVantaEffect(
-          window.VANTA.DOTS({
-            el: vantaRef.current,
-            mouseControls: true,
-            touchControls: true,
-            gyroControls: false,
-            minHeight: 200.00,
-            minWidth: 200.00,
-            scale: 1.00,
-            scaleMobile: 1.00,
-            color: 0xff6a00,
-            color2: 0xff6a00,
-            backgroundColor: 0xffffff
-          })
-        )
-      } catch (error) {
-        console.warn("Vanta.js failed to initialize:", error);
+    let effect: any = null
+
+    const init = () => {
+      if (vantaRef.current && window.VANTA?.GLOBE) {
+        effect = window.VANTA.GLOBE({
+          el: vantaRef.current,
+          mouseControls: true,
+          touchControls: true,
+          gyroControls: false,
+          minHeight: 200.00,
+          minWidth: 200.00,
+          scale: 1.00,
+          scaleMobile: 1.00,
+          color: 0xff6a00,
+          color2: 0xffffff,
+          size: 0.8,
+          backgroundColor: 0xffffff
+        })
+        return true
       }
+      return false
     }
-    return () => {
-      if (vantaEffect) vantaEffect.destroy()
+
+    if (!init()) {
+      const poll = setInterval(() => {
+        if (init()) clearInterval(poll)
+      }, 100)
+      return () => { clearInterval(poll); if (effect) effect.destroy() }
     }
-  }, [vantaEffect])
+
+    return () => { if (effect) effect.destroy() }
+  }, [])
 
   const fetchData = async () => {
     try {
@@ -234,7 +240,7 @@ export default function PreviewVertikal() {
 
   return (
     <div 
-      className="bg-white h-screen relative overflow-hidden flex flex-col"
+      className="bg-white/60 h-screen relative overflow-hidden flex flex-col"
       onTouchStart={onTouchStart}
       onTouchMove={onTouchMove}
       onTouchEnd={onTouchEnd}
@@ -323,7 +329,7 @@ export default function PreviewVertikal() {
               {currentSlide.data.map((item, idx) => (
                 <div 
                   key={`${currentPage}-${idx}`} 
-                  className="bg-white rounded-2xl shadow-md border border-gray-100 overflow-hidden flex flex-col relative translate-y-0 hover:-translate-y-1 transition-transform animate-slide-right opacity-0"
+                  className="bg-white/60 backdrop-blur-sm rounded-2xl shadow-md border border-gray-100 overflow-hidden flex flex-col relative translate-y-0 hover:-translate-y-1 transition-transform animate-slide-right opacity-0"
                   style={{ animationDelay: `${0.1 + idx * 0.2}s` }}
                 >
                   {!isPuppet && (
