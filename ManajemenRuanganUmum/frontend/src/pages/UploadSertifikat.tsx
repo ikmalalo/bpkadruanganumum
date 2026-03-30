@@ -89,7 +89,16 @@ export default function UploadSertifikat() {
 
       if (response.ok) {
         setToast({ show: true, message: "Sertifikat berhasil diupload!", type: 'success' });
-        setTimeout(() => navigate("/riwayat"), 1500);
+        // Reset form to blank instead of navigating
+        setForm({
+          namaPenerima: "",
+          penghargaan: "ASN TERBAIK",
+          tanggal: format(new Date(), "EEEE, dd MMM yyyy", { locale: id }),
+          foto: null
+        });
+        setSelectedDate(new Date());
+        setPreview(null);
+        if (fileInputRef.current) fileInputRef.current.value = "";
       } else {
         const errorData = await response.json().catch(() => ({ message: "Ukuran file terlalu besar atau terjadi kesalahan server" }));
         setToast({ show: true, message: `Gagal upload: ${errorData.message}`, type: 'error' });
