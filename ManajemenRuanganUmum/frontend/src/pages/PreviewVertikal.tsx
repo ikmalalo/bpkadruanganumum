@@ -319,9 +319,13 @@ export default function PreviewVertikal() {
 
         <div className="flex-1 overflow-hidden">
           {currentSlide?.type === 'AGENDA' ? (
-            <div className="flex flex-col gap-4 animate-in fade-in slide-in-from-bottom-4 duration-500">
+            <div key={currentPage} className="flex flex-col gap-4">
               {currentSlide.data.map((item, idx) => (
-                <div key={idx} className="bg-white rounded-2xl shadow-md border border-gray-100 overflow-hidden flex flex-col relative translate-y-0 hover:-translate-y-1 transition-transform">
+                <div 
+                  key={`${currentPage}-${idx}`} 
+                  className="bg-white rounded-2xl shadow-md border border-gray-100 overflow-hidden flex flex-col relative translate-y-0 hover:-translate-y-1 transition-transform animate-slide-right opacity-0"
+                  style={{ animationDelay: `${0.1 + idx * 0.2}s` }}
+                >
                   {!isPuppet && (
                     <div className={`absolute top-3 right-3 px-3 py-1 text-[10px] rounded-full font-black text-white shadow-md z-10 ${item.status === "Berlangsung" ? "bg-[#10b981]" : "bg-[#3b82f6]"}`}>
                       {item.status}
