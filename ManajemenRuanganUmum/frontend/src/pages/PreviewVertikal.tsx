@@ -320,30 +320,30 @@ export default function PreviewVertikal() {
             <div className="flex flex-col gap-4 animate-in fade-in slide-in-from-bottom-4 duration-500">
               {currentSlide.data.map((item, idx) => (
                 <div key={idx} className="bg-white rounded-2xl shadow-md border border-gray-100 overflow-hidden flex flex-col relative translate-y-0 hover:-translate-y-1 transition-transform">
-                  <div className={`absolute top-4 right-4 px-4 py-1.5 rounded-full text-xs font-black text-white shadow-md z-10 ${item.status === "Berlangsung" ? "bg-[#10b981]" : "bg-[#3b82f6]"}`}>
+                  <div className={`absolute top-3 right-3 px-3 py-1 rounded-full text-[10px] font-black text-white shadow-md z-10 ${item.status === "Berlangsung" ? "bg-[#10b981]" : "bg-[#3b82f6]"}`}>
                     {item.status}
                   </div>
-                  <div className="bg-gray-50/50 p-4 border-b border-gray-100 flex items-center gap-4">
-                    <div className="w-10 h-10 rounded-xl bg-orange-500 flex items-center justify-center text-white font-black text-lg shadow-orange-200 shadow-lg">{idx + 1}</div>
+                  <div className="bg-gray-50/50 p-3 border-b border-gray-100 flex items-center gap-3">
+                    <div className="w-8 h-8 rounded-xl bg-orange-500 flex items-center justify-center text-white font-black text-base shadow-orange-200 shadow-lg">{idx + 1}</div>
                     <div>
-                      <div className="text-[10px] font-bold text-gray-400 uppercase tracking-wider leading-none">{item.hari}</div>
-                      <div className="text-xs font-black text-gray-600 uppercase mt-0.5">{item.tanggal.split(', ')[1] || item.tanggal}</div>
-                      <div className="text-base font-black text-orange-500 leading-none mt-1">{item.pukul}</div>
+                      <div className="text-[9px] font-bold text-gray-400 uppercase tracking-wider leading-none">{item.hari}</div>
+                      <div className="text-[11px] font-black text-gray-600 uppercase mt-0.5">{item.tanggal.split(', ')[1] || item.tanggal}</div>
+                      <div className="text-sm font-black text-orange-500 leading-none mt-1">{item.pukul}</div>
                     </div>
                   </div>
-                  <div className="p-5 flex flex-col gap-4">
+                  <div className="p-4 flex flex-col gap-3">
                     <div>
-                      <div className="text-[10px] font-bold text-orange-500 uppercase tracking-widest mb-1">ACARA / AGENDA</div>
-                      <h3 className="text-lg font-black text-gray-800 leading-tight uppercase line-clamp-3">{item.acara}</h3>
+                      <div className="text-[9px] font-bold text-orange-500 uppercase tracking-widest mb-0.5">ACARA / AGENDA</div>
+                      <h3 className="text-base font-black text-gray-800 leading-tight uppercase line-clamp-3">{item.acara}</h3>
                     </div>
-                    <div className="grid grid-cols-2 gap-4 mt-2">
+                    <div className="grid grid-cols-2 gap-3 mt-1">
                        <div>
-                          <div className="text-[10px] font-bold text-orange-500 uppercase tracking-widest mb-1">TEMPAT</div>
-                          <div className="text-sm font-black text-gray-700 uppercase">{item.tempat}</div>
+                          <div className="text-[9px] font-bold text-orange-500 uppercase tracking-widest mb-0.5">TEMPAT</div>
+                          <div className="text-xs font-black text-gray-700 uppercase">{item.tempat}</div>
                        </div>
                        <div>
-                          <div className="text-[10px] font-bold text-orange-500 uppercase tracking-widest mb-1">PELAKSANA</div>
-                          <div className="text-sm font-black text-gray-700 uppercase">{item.pelaksana}</div>
+                          <div className="text-[9px] font-bold text-orange-500 uppercase tracking-widest mb-0.5">PELAKSANA</div>
+                          <div className="text-xs font-black text-gray-700 uppercase">{item.pelaksana}</div>
                        </div>
                     </div>
                   </div>
