@@ -235,7 +235,7 @@ export default function PreviewHorizontal() {
                   <th className="py-2 px-2 md:px-4 text-center text-[10px] md:text-sm font-black w-[12%] min-w-[90px] flex items-center justify-center">STATUS</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-gray-100 flex-1 flex flex-col w-full overflow-hidden opacity-80">
+              <tbody className="divide-y divide-gray-100 flex-1 flex flex-col w-full overflow-hidden">
                 {currentSlide.data.map((item, idx) => (
                   <tr 
                     key={`${currentPage}-${idx}`} 
