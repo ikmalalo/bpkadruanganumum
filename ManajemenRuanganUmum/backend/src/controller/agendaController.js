@@ -1,7 +1,68 @@
 const db = require('../config/db');
 
+const autoUpdateStatuses = async () => {
+  try {
+    const now = new Date();
+    // Get WITA Time (UTC+8)
+    const witaOffset = 8 * 60; // 8 hours in minutes
+    const witaTime = new Date(now.getTime() + (witaOffset + now.getTimezoneOffset()) * 60000);
+    
+    const days = ['Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'];
+    const months = ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des'];
+    
+    const todayWita = new Date(witaTime.getFullYear(), witaTime.getMonth(), witaTime.getDate());
+    const currentTimeStr = witaTime.getHours().toString().padStart(2, '0') + ':' + witaTime.getMinutes().toString().padStart(2, '0');
+
+    // Helper to parse Indonesian Date String: "Senin, 30 Mar 2026"
+    const parseIndoDate = (dateStr) => {
+      const match = dateStr.match(/, (\d{1,2}) (\w{3}) (\d{4})/);
+      if (!match) return null;
+      const day = parseInt(match[1]);
+      const monthStr = match[2];
+      const year = parseInt(match[3]);
+      const monthMap = {
+        'Jan': 0, 'Feb': 1, 'Mar': 2, 'Apr': 3, 'Mei': 4, 'Jun': 5,
+        'Jul': 6, 'Agu': 7, 'Sep': 8, 'Okt': 9, 'Nov': 10, 'Des': 11
+      };
+      return new Date(year, monthMap[monthStr], day);
+    };
+
+    const [agendas] = await db.query('SELECT id, tanggal, pukul, status FROM agenda_ruangan');
+    
+    for (const agenda of agendas) {
+      const agendaDate = parseIndoDate(agenda.tanggal);
+      if (!agendaDate) continue;
+
+      const timeParts = agenda.pukul.split(' - ');
+      const startTime = timeParts[0];
+      const endTime = timeParts[1];
+
+      // Logic:
+      // 1. If date is past today -> DELETE
+      // 2. If date is today:
+      //    a. If time > endTime -> DELETE (Selesai automatically)
+      //    b. If status is 'Terjadwal' and time >= startTime -> UPDATE to 'Berlangsung'
+      
+      if (agendaDate < todayWita) {
+        await db.query('DELETE FROM agenda_ruangan WHERE id = ?', [agenda.id]);
+      } else if (agendaDate.getTime() === todayWita.getTime()) {
+        if (currentTimeStr >= endTime) {
+          await db.query('DELETE FROM agenda_ruangan WHERE id = ?', [agenda.id]);
+        } else if (agenda.status === 'Terjadwal' && currentTimeStr >= startTime) {
+          await db.query('UPDATE agenda_ruangan SET status = "Berlangsung" WHERE id = ?', [agenda.id]);
+        }
+      }
+    }
+  } catch (error) {
+    console.error('Error in autoUpdateStatuses:', error);
+  }
+};
+
 const getAgendas = async (req, res) => {
   try {
+    // Run auto-update status before fetching data
+    await autoUpdateStatuses();
+    
     const [rows] = await db.query('SELECT * FROM agenda_ruangan ORDER BY id ASC');
     res.status(200).json(rows);
   } catch (error) {
