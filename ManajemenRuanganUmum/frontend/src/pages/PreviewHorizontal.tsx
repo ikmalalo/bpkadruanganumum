@@ -210,11 +210,11 @@ export default function PreviewHorizontal() {
         <div className="bg-white rounded-[1.2rem] shadow-xl overflow-hidden border border-gray-100 w-full flex-1 flex flex-col relative">
           <div 
             key={currentPage} 
-            className="flex-1 flex flex-col animate-slide-right"
+            className="flex-1 flex flex-col"
           >
             {currentSlide?.type === 'AGENDA' ? (
               <table className="w-full border-collapse flex-1 flex flex-col items-stretch">
-              <thead>
+              <thead className="animate-slide-right">
                 <tr className="bg-orange-500 text-white flex w-full">
                   <th className="py-2 px-2 text-center text-sm font-black w-16 flex items-center justify-center">NO</th>
                   <th className="py-2 px-4 text-left text-sm font-black flex-1 flex items-center">HARI / TANGGAL</th>
@@ -227,7 +227,11 @@ export default function PreviewHorizontal() {
               </thead>
               <tbody className="divide-y divide-gray-100 flex-1 flex flex-col w-full overflow-hidden">
                 {currentSlide.data.map((item, idx) => (
-                  <tr key={idx} className="hover:bg-orange-50/40 transition-all duration-300 flex w-full flex-1 items-stretch min-h-0 animate-in fade-in slide-in-from-right-4">
+                  <tr 
+                    key={`${currentPage}-${idx}`} 
+                    className="hover:bg-orange-50/40 transition-all duration-300 flex w-full flex-1 items-stretch min-h-0 animate-slide-right opacity-0"
+                    style={{ animationDelay: `${0.1 + idx * 0.15}s` }}
+                  >
                     <td className="px-2 text-base font-black text-gray-400 text-center w-16 flex items-center justify-center">{idx + 1}</td>
                     <td className="px-4 flex-1 flex flex-col justify-center min-w-0">
                       <span className="text-sm font-black text-gray-800 uppercase leading-none mb-1">{item.hari}</span>
@@ -245,7 +249,7 @@ export default function PreviewHorizontal() {
               </tbody>
             </table>
           ) : currentSlide?.type === 'CERTIFICATE' ? (
-            <div className="flex-1 flex items-center justify-center bg-white overflow-hidden p-10">
+            <div className="flex-1 flex items-center justify-center bg-white overflow-hidden p-10 animate-slide-right">
                 <img 
                   src={currentSlide.data.foto} 
                   alt="Sertifikat" 
