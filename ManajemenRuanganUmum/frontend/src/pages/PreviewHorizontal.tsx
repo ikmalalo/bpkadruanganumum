@@ -176,12 +176,12 @@ export default function PreviewHorizontal() {
   }
 
   return (
-    <div className="bg-white h-screen relative overflow-hidden flex flex-col">
+    <div className="bg-white/60 h-screen relative overflow-hidden flex flex-col">
       {/* Vanta DOTS Background */}
       <div ref={vantaRef} className="absolute inset-0 z-0"></div>
       <div className="relative z-10 h-full flex flex-col">
       <div className="fixed top-0 left-0 w-20 h-20 z-50 group flex items-start justify-start p-3">
-        <button onClick={() => isVisitor ? navigate('/') : navigate('/preview')} className="bg-white p-2 rounded-full shadow-2xl border border-gray-100 text-orange-500 transition-all duration-300 opacity-0 group-hover:opacity-100 scale-75 group-hover:scale-100 active:scale-90">
+        <button onClick={() => isVisitor ? navigate('/') : navigate('/preview')} className="bg-white/60 p-2 rounded-full shadow-2xl border border-gray-100 text-orange-500 transition-all duration-300 opacity-0 group-hover:opacity-100 scale-75 group-hover:scale-100 active:scale-90">
           <ArrowLeft size={18} strokeWidth={3} />
         </button>
       </div>
@@ -217,7 +217,7 @@ export default function PreviewHorizontal() {
           </div>
         </div>
 
-        <div className="bg-white rounded-[1.2rem] shadow-xl overflow-hidden border border-gray-100 w-full flex-1 flex flex-col relative">
+        <div className="bg-white/60 rounded-[1.2rem] shadow-xl overflow-hidden border border-gray-100 w-full flex-1 flex flex-col relative">
           <div 
             key={currentPage} 
             className="flex-1 flex flex-col w-full"
@@ -259,7 +259,7 @@ export default function PreviewHorizontal() {
               </tbody>
             </table>
           ) : currentSlide?.type === 'CERTIFICATE' ? (
-            <div className="flex-1 flex items-center justify-center bg-white overflow-hidden p-10 animate-slide-right">
+            <div className="flex-1 flex items-center justify-center bg-white/60 overflow-hidden p-10 animate-slide-right">
                 <img 
                   src={currentSlide.data.foto} 
                   alt="Sertifikat" 
