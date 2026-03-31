@@ -1,18 +1,28 @@
 const db = require('../config/db');
 
 const timeToMin = (t, referenceStart = null) => {
-  if (!t) return 0;
-  const clean = t.toString().trim().toLowerCase();
+  if (!t) {
+    if (referenceStart !== null) return referenceStart + 180;
+    return 0;
+  }
   
-  // Handle "Selesai" as +3 hours from start, or 23:59 if no reference
-  if (clean === 'selesai' || clean === 'sampai selesai') {
+  // Clean up input: trim, lowercase, and handle dots as colons
+  const clean = t.toString().trim().toLowerCase().replace('.', ':');
+  
+  // Broaden "Selesai" detection
+  if (clean.includes('selesai')) {
     return referenceStart !== null ? referenceStart + 180 : 1439;
   }
   
-  const parts = clean.split(':');
-  if (parts.length < 2) return 0;
-  const h = parseInt(parts[0]) || 0;
-  const m = parseInt(parts[1]) || 0;
+  // Extract first HH:mm pattern found
+  const match = clean.match(/(\d{1,2}):(\d{1,2})/);
+  if (!match) {
+    if (referenceStart !== null) return referenceStart + 180;
+    return 0;
+  }
+  
+  const h = parseInt(match[1]) || 0;
+  const m = parseInt(match[2]) || 0;
   return h * 60 + m;
 };
 
@@ -76,7 +86,8 @@ const checkConflict = async (ruangan, tanggal, waktuMulai, waktuSelesai, exclude
   const searchRuangan = ruangan.trim();
   const searchTanggal = tanggal.trim();
 
-  console.log(`[CHECK CONFLICT] Checking: "${searchRuangan}" | "${searchTanggal}" | ${waktuMulai}-${waktuSelesai} (Mins: ${sm}-${se})`);
+  console.log(`[CHECK CONFLICT] Search for: "${searchRuangan}" on "${searchTanggal}"`);
+  console.log(`[CHECK CONFLICT] New Booking: ${waktuMulai} to ${waktuSelesai} (Mins: ${sm} to ${se})`);
   
   let query = 'SELECT id, pukul, acara FROM agenda_ruangan WHERE TRIM(tempat) = ? AND TRIM(tanggal) = ?';
   let params = [searchRuangan, searchTanggal];
@@ -87,23 +98,27 @@ const checkConflict = async (ruangan, tanggal, waktuMulai, waktuSelesai, exclude
   }
   
   const [existing] = await db.query(query, params);
-  console.log(`[CHECK CONFLICT] Found ${existing.length} existing agendas for this room/date.`);
+  console.log(`[CHECK CONFLICT] Found ${existing.length} matching rows.`);
   
   for (const row of existing) {
-    const timeParts = row.pukul.split(' - ');
-    const exs = timeToMin(timeParts[0]);
-    const exe = timeToMin(timeParts[1], exs);
+    // Split by dash variations
+    const timeParts = row.pukul.split(/\s*[-–—]\s*/);
+    const exsString = timeParts[0] || '';
+    const exeString = timeParts[1] || '';
     
-    console.log(`[CHECK CONFLICT] Comparing against: "${row.acara}" | ${row.pukul} (Mins: ${exs}-${exe})`);
+    const exs = timeToMin(exsString);
+    const exe = timeToMin(exeString, exs);
+    
+    console.log(`[CHECK CONFLICT] ID:${row.id} | Row Pukul: "${row.pukul}" -> Parsed as: ${exs}-${exe} (New is ${sm}-${se})`);
     
     // Overlap condition: (Start1 < End2) AND (End1 > Start2)
     if (sm < exe && se > exs) {
-      console.log(`[CHECK CONFLICT] BENTROK DETECTED with "${row.acara}"!`);
+      console.log(`[CHECK CONFLICT] !!! BENTROK DETECTED !!! with ID:${row.id} ("${row.acara}")`);
       return true;
     }
   }
   
-  console.log(`[CHECK CONFLICT] No conflict found.`);
+  console.log(`[CHECK CONFLICT] SUCCESS: No overlap with any of the ${existing.length} records.`);
   return false;
 };
 
