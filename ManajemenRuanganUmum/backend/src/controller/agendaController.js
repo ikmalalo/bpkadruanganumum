@@ -1,5 +1,21 @@
 const db = require('../config/db');
 
+const timeToMin = (t, referenceStart = null) => {
+  if (!t) return 0;
+  const clean = t.toString().trim().toLowerCase();
+  
+  // Handle "Selesai" as +3 hours from start, or 23:59 if no reference
+  if (clean === 'selesai' || clean === 'sampai selesai') {
+    return referenceStart !== null ? referenceStart + 180 : 1439;
+  }
+  
+  const parts = clean.split(':');
+  if (parts.length < 2) return 0;
+  const h = parseInt(parts[0]) || 0;
+  const m = parseInt(parts[1]) || 0;
+  return h * 60 + m;
+};
+
 const autoUpdateStatuses = async () => {
   try {
     const now = new Date();
@@ -7,11 +23,9 @@ const autoUpdateStatuses = async () => {
     const witaOffset = 8 * 60; // 8 hours in minutes
     const witaTime = new Date(now.getTime() + (witaOffset + now.getTimezoneOffset()) * 60000);
     
-    const days = ['Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'];
-    const months = ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des'];
-    
     const todayWita = new Date(witaTime.getFullYear(), witaTime.getMonth(), witaTime.getDate());
     const currentTimeStr = witaTime.getHours().toString().padStart(2, '0') + ':' + witaTime.getMinutes().toString().padStart(2, '0');
+    const cm = timeToMin(currentTimeStr);
 
     // Helper to parse Indonesian Date String: "Senin, 30 Mar 2026"
     const parseIndoDate = (dateStr) => {
@@ -37,18 +51,15 @@ const autoUpdateStatuses = async () => {
       const startTime = timeParts[0];
       const endTime = timeParts[1];
 
-      // Logic:
-      // 1. If date is past today -> DELETE
-      // 2. If date is today:
-      //    a. If time > endTime -> DELETE (Selesai automatically)
-      //    b. If status is 'Terjadwal' and time >= startTime -> UPDATE to 'Berlangsung'
-      
+      const sm = timeToMin(startTime);
+      const se = timeToMin(endTime, sm);
+
       if (agendaDate < todayWita) {
         await db.query('DELETE FROM agenda_ruangan WHERE id = ?', [agenda.id]);
       } else if (agendaDate.getTime() === todayWita.getTime()) {
-        if (currentTimeStr >= endTime) {
+        if (cm >= se) {
           await db.query('DELETE FROM agenda_ruangan WHERE id = ?', [agenda.id]);
-        } else if (agenda.status === 'Terjadwal' && currentTimeStr >= startTime) {
+        } else if (agenda.status === 'Terjadwal' && cm >= sm) {
           await db.query('UPDATE agenda_ruangan SET status = "Berlangsung" WHERE id = ?', [agenda.id]);
         }
       }
@@ -57,21 +68,9 @@ const autoUpdateStatuses = async () => {
     console.error('Error in autoUpdateStatuses:', error);
   }
 };
-
 const checkConflict = async (ruangan, tanggal, waktuMulai, waktuSelesai, excludeId = null) => {
-  const timeToMin = (t) => {
-    if (!t) return 0;
-    const clean = t.toString().trim().toLowerCase();
-    if (clean === 'selesai') return 1439; // 23:59
-    const parts = clean.split(':');
-    if (parts.length < 2) return 0;
-    const h = parseInt(parts[0]) || 0;
-    const m = parseInt(parts[1]) || 0;
-    return h * 60 + m;
-  };
-  
   const sm = timeToMin(waktuMulai);
-  const se = timeToMin(waktuSelesai);
+  const se = timeToMin(waktuSelesai, sm);
   
   // Normalisasi input untuk pencarian
   const searchRuangan = ruangan.trim();
@@ -93,7 +92,7 @@ const checkConflict = async (ruangan, tanggal, waktuMulai, waktuSelesai, exclude
   for (const row of existing) {
     const timeParts = row.pukul.split(' - ');
     const exs = timeToMin(timeParts[0]);
-    const exe = timeToMin(timeParts[1]);
+    const exe = timeToMin(timeParts[1], exs);
     
     console.log(`[CHECK CONFLICT] Comparing against: "${row.acara}" | ${row.pukul} (Mins: ${exs}-${exe})`);
     

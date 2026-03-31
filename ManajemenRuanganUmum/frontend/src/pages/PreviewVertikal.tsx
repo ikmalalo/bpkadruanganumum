@@ -337,7 +337,7 @@ export default function PreviewVertikal() {
                       {item.status}
                     </div>
                   )}
-                  <div className={`bg-gray-50/50 ${isPuppet ? 'p-4 gap-4' : 'p-3 gap-3'} border-b border-gray-100 flex items-center`}>
+                  <div className={`bg-gray-80/80 ${isPuppet ? 'p-4 gap-4' : 'p-3 gap-3'} border-b border-gray-100 flex items-center`}>
                     <div className={`${isPuppet ? 'w-10 h-10 text-lg' : 'w-8 h-8 text-base'} rounded-xl bg-orange-500 flex items-center justify-center text-white font-black shadow-orange-200 shadow-lg`}>{idx + 1}</div>
                     <div>
                       <div className={`${isPuppet ? 'text-[10px]' : 'text-[9px]'} font-bold text-gray-400 uppercase tracking-wider leading-none`}>{item.hari}</div>
