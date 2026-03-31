@@ -109,8 +109,36 @@ export default function PreviewHorizontal() {
     const slides: SlideItem[] = []
     
     // Group Agendas
-    const bpkad = allAgendas.filter(item => item.type === "BPKAD")
-    const pemkot = allAgendas.filter(item => item.type === "PEMKOT")
+    const monthMap: { [key: string]: number } = {
+      'Jan': 0, 'Feb': 1, 'Mar': 2, 'Apr': 3, 'Mei': 4, 'Jun': 5,
+      'Jul': 6, 'Agu': 7, 'Sep': 8, 'Okt': 9, 'Nov': 10, 'Des': 11
+    };
+
+    const parseIndoDate = (dateStr: string) => {
+      const match = dateStr.match(/, (\d{1,2}) (\w{3}) (\d{4})/);
+      if (!match) return new Date(0);
+      const day = parseInt(match[1]);
+      const monthStr = match[2];
+      const year = parseInt(match[3]);
+      return new Date(year, monthMap[monthStr] || 0, day);
+    };
+
+    const parseTime = (pukul: string) => {
+      const startTime = pukul.split(' - ')[0];
+      const match = startTime.match(/(\d{1,2})[:.](\d{1,2})/);
+      if (!match) return 0;
+      return parseInt(match[1]) * 60 + parseInt(match[2]);
+    };
+
+    const sortedAgendas = [...allAgendas].sort((a, b) => {
+      const dateA = parseIndoDate(a.tanggal).getTime();
+      const dateB = parseIndoDate(b.tanggal).getTime();
+      if (dateA !== dateB) return dateA - dateB;
+      return parseTime(a.pukul) - parseTime(b.pukul);
+    });
+
+    const bpkad = sortedAgendas.filter(item => item.type === "BPKAD")
+    const pemkot = sortedAgendas.filter(item => item.type === "PEMKOT")
 
     const chunk = (arr: AgendaItem[], size: number, category: 'BPKAD' | 'PEMKOT') => {
       for (let i = 0; i < arr.length; i += size) {
