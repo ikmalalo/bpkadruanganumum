@@ -356,7 +356,7 @@ export default function PreviewVertikal() {
                 {currentSlide.data.map((item, idx) => (
                   <div
                     key={`${currentPage}-${idx}`}
-                    className="bg-white/20 backdrop-blur-[2px] rounded-2xl shadow-[0_8px_32px_rgba(251,146,60,0.1)] border border-orange-500/30 overflow-hidden flex flex-col relative translate-y-0 hover:-translate-y-1 transition-transform animate-slide-right opacity-0"
+                    className="bg-white/30 rounded-2xl shadow-[0_8px_32px_rgba(251,146,60,0.1)] border border-orange-500/30 overflow-hidden flex flex-col relative translate-y-0 hover:-translate-y-1 transition-transform animate-slide-right opacity-0"
                     style={{ animationDelay: `${0.1 + idx * 0.2}s` }}
                   >
                     {!isPuppet && (
