@@ -12,19 +12,25 @@ import Riwayat from "./pages/Riwayat"
 import UploadSertifikat from "./pages/UploadSertifikat"
 import LoadingScreen from "./components/LoadingScreen"
 import DashboardLayout from "./components/DashboardComponents/DashboardLayout"
+import ProtectedRoute from "./components/Common/ProtectedRoute"
 import ConditionalPreviewLayout from "./layouts/ConditionalPreviewLayout"
 import { useState, useEffect } from "react"
 
 export default function App() {
-  const [loading, setLoading] = useState(true)
+  // Cek sessionStorage untuk menentukan state awal loading
+  const [loading, setLoading] = useState(() => {
+    return !sessionStorage.getItem('hasLoaded')
+  })
 
   useEffect(() => {
-    const timer = setTimeout(() => {
-      setLoading(false)
-    }, 3000)
-
-    return () => clearTimeout(timer)
-  }, [])
+    if (loading) {
+      const timer = setTimeout(() => {
+        setLoading(false)
+        sessionStorage.setItem('hasLoaded', 'true')
+      }, 3000)
+      return () => clearTimeout(timer)
+    }
+  }, [loading])
 
   if (loading) {
     return <LoadingScreen />
@@ -35,7 +41,6 @@ export default function App() {
       {/* Portals */}
       <Route path="/" element={<HomeSelect />} />
       <Route path="/login" element={<LoginPage />} />
-      <Route path="/services" element={<ServiceSelect />} />
       
       {/* Standalone Route (Visitor or Admin conditionally) */}
       <Route element={<ConditionalPreviewLayout />}>
@@ -46,13 +51,18 @@ export default function App() {
       <Route path="/preview-horizontal" element={<PreviewHorizontal />} />
       <Route path="/preview-vertikal" element={<PreviewVertikal />} />
 
-      {/* Admin Dashboard */}
-      <Route element={<DashboardLayout />}>
-        <Route path="/rooms" element={<RoomDashboard />} />
-        <Route path="/peminjaman" element={<Peminjaman />} />
-        <Route path="/riwayat" element={<Riwayat />} />
-        <Route path="/upload-sertifikat" element={<UploadSertifikat />} />
-        <Route path="/konfirmasipeminjaman" element={<KonfirmasiPeminjaman />} />
+      {/* Protected Routes */}
+      <Route element={<ProtectedRoute />}>
+        <Route path="/services" element={<ServiceSelect />} />
+        
+        {/* Admin Dashboard */}
+        <Route element={<DashboardLayout />}>
+          <Route path="/rooms" element={<RoomDashboard />} />
+          <Route path="/peminjaman" element={<Peminjaman />} />
+          <Route path="/riwayat" element={<Riwayat />} />
+          <Route path="/upload-sertifikat" element={<UploadSertifikat />} />
+          <Route path="/konfirmasipeminjaman" element={<KonfirmasiPeminjaman />} />
+        </Route>
       </Route>
 
     </Routes>
