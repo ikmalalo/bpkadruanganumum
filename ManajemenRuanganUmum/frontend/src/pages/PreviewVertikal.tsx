@@ -162,7 +162,7 @@ export default function PreviewVertikal() {
   useEffect(() => {
     // Expand window object type implicitly or via any
     (window as any).__SET_PROGRESS = (val: number) => setProgress(val)
-    
+
     if (pages.length === 0 || isPuppet) return
     const interval = 50
     const step = (interval / SLIDE_DURATION) * 100
@@ -194,7 +194,7 @@ export default function PreviewVertikal() {
       const response = await fetch(recordUrl)
       if (!response.ok) {
         let errMsg = 'Unknown error'
-        try { const err = await response.json(); errMsg = err.error || errMsg } catch {}
+        try { const err = await response.json(); errMsg = err.error || errMsg } catch { }
         alert('Gagal merekam: ' + errMsg)
         setIsRecording(false)
         return
@@ -267,7 +267,7 @@ export default function PreviewVertikal() {
   }
 
   return (
-    <div 
+    <div
       className="bg-white h-screen relative overflow-hidden flex flex-col"
       onTouchStart={onTouchStart}
       onTouchMove={onTouchMove}
@@ -277,155 +277,154 @@ export default function PreviewVertikal() {
       <div ref={vantaRef} className="absolute inset-0 z-0"></div>
       <div className="relative z-10 h-full flex flex-col">
 
-      {/* Back button — hidden in puppet mode */}
-      {!isPuppet && (
-        <div className="fixed top-0 left-0 w-20 h-20 z-50 group flex items-start justify-start p-3">
-          <button onClick={() => isVisitor ? navigate('/') : navigate('/preview')} className="bg-white p-2 rounded-full shadow-2xl border border-gray-100 text-orange-500 transition-all duration-300 opacity-0 group-hover:opacity-100 scale-75 group-hover:scale-100 active:scale-90">
-            <ArrowLeft size={18} strokeWidth={3} />
-          </button>
-        </div>
-      )}
+        {/* Back button — hidden in puppet mode */}
+        {!isPuppet && (
+          <div className="fixed top-0 left-0 w-20 h-20 z-50 group flex items-start justify-start p-3">
+            <button onClick={() => isVisitor ? navigate('/') : navigate('/preview')} className="bg-white p-2 rounded-full shadow-2xl border border-gray-100 text-orange-500 transition-all duration-300 opacity-0 group-hover:opacity-100 scale-75 group-hover:scale-100 active:scale-90">
+              <ArrowLeft size={18} strokeWidth={3} />
+            </button>
+          </div>
+        )}
 
-      {/* Record button — hidden in puppet mode */}
-      {!isPuppet && (
-        <div className="fixed top-3 right-3 z-50">
-          <button
-            id="btn-record-portrait"
-            onClick={handleRecord}
-            disabled={isRecording || pages.length === 0}
-            title="Rekam semua halaman sebagai MP4 Portrait 9:16"
-            className={`flex items-center gap-2 px-4 py-2 rounded-full text-xs font-bold shadow-xl border transition-all duration-300
-              ${
-                recordDone
+        {/* Record button — hidden in puppet mode */}
+        {!isPuppet && (
+          <div className="fixed top-3 right-3 z-50">
+            <button
+              id="btn-record-portrait"
+              onClick={handleRecord}
+              disabled={isRecording || pages.length === 0}
+              title="Rekam semua halaman sebagai MP4 Portrait 9:16"
+              className={`flex items-center gap-2 px-4 py-2 rounded-full text-xs font-bold shadow-xl border transition-all duration-300
+              ${recordDone
                   ? 'bg-green-500 border-green-400 text-white shadow-green-300/50 scale-95'
                   : isRecording
-                  ? 'bg-orange-100 border-orange-300 text-orange-500 cursor-wait'
-                  : pages.length === 0
-                  ? 'bg-gray-100 border-gray-200 text-gray-400 cursor-not-allowed'
-                  : 'bg-white border-orange-300 text-orange-500 hover:bg-orange-500 hover:text-white hover:border-orange-500 hover:shadow-orange-300/50'
-              }`
-            }
-          >
-            {isRecording ? (
-              <><Loader2 size={14} className="animate-spin" /><span>Merekam...</span></>
-            ) : recordDone ? (
-              <><Download size={14} /><span>Tersimpan!</span></>
-            ) : (
-              <><Video size={14} /><span>Rekam MP4</span></>
-            )}
-          </button>
-        </div>
-      )}
-
-      <div className="flex-1 p-3 md:p-4 flex flex-col w-full max-w-full mx-auto overflow-hidden">
-        <div className="flex flex-col items-center mb-3 text-center">
-          <img src={logo} alt="Logo" className="h-10 mb-2 object-contain" />
-          <div className="flex flex-col items-center">
-            {!isPuppet && (
-              <div className="flex items-baseline gap-1.5">
-                <span className="text-2xl md:text-3xl font-black text-gray-800">{format(time, "HH:mm")}</span>
-                <span className="text-base md:text-lg font-bold text-orange-500">WITA</span>
-              </div>
-            )}
-            <span className={`${isPuppet ? 'text-sm md:text-base mt-1' : 'text-xs md:text-sm mt-1'} font-bold text-orange-500 uppercase tracking-widest leading-none`}>
-              {format(time, "EEEE, dd MMMM yyyy", { locale: id })}
-            </span>
+                    ? 'bg-orange-100 border-orange-300 text-orange-500 cursor-wait'
+                    : pages.length === 0
+                      ? 'bg-gray-100 border-gray-200 text-gray-400 cursor-not-allowed'
+                      : 'bg-white border-orange-300 text-orange-500 hover:bg-orange-500 hover:text-white hover:border-orange-500 hover:shadow-orange-300/50'
+                }`
+              }
+            >
+              {isRecording ? (
+                <><Loader2 size={14} className="animate-spin" /><span>Merekam...</span></>
+              ) : recordDone ? (
+                <><Download size={14} /><span>Tersimpan!</span></>
+              ) : (
+                <><Video size={14} /><span>Rekam MP4</span></>
+              )}
+            </button>
           </div>
-        </div>
+        )}
 
-        <div className="w-full h-1.5 rounded-full overflow-hidden flex mb-3 shadow-inner bg-gray-200">
-          <div className="bg-orange-500 h-full transition-all duration-100 ease-linear" style={{ width: `${progress}%` }}></div>
-        </div>
-
-        <div className="flex flex-col items-center mb-3 text-center">
-          <h1 className="text-base md:text-lg font-black text-gray-800 tracking-tight uppercase leading-tight mb-2 min-h-[1.5em]">{pageTitle}</h1>
-          <div className="flex gap-1">
-            {pages.map((_, i) => (
-              <div 
-                key={i} 
-                data-slide-dot={i}
-                onClick={() => handlePageClick(i)}
-                className={`w-1.5 h-1.5 rounded-full transition-all duration-300 cursor-pointer hover:scale-150 ${i === currentPage ? "bg-orange-500 scale-110 shadow-lg shadow-orange-200" : "bg-gray-300 shadow-sm"}`}
-              ></div>
-            ))}
-          </div>
-        </div>
-
-        <div className="flex-1 overflow-hidden">
-          {currentSlide?.type === 'AGENDA' ? (
-            <div key={currentPage} className="flex flex-col gap-4">
-              {currentSlide.data.map((item, idx) => (
-                <div 
-                  key={`${currentPage}-${idx}`} 
-                  className="bg-white rounded-2xl shadow-md border border-gray-100 overflow-hidden flex flex-col relative translate-y-0 hover:-translate-y-1 transition-transform animate-slide-right opacity-0"
-                  style={{ animationDelay: `${0.1 + idx * 0.2}s` }}
-                >
-                  {!isPuppet && (
-                    <div className={`absolute top-3 right-3 px-3 py-1 text-[10px] rounded-full font-black text-white shadow-md z-10 transition-all duration-300 ${item.status === "Berlangsung" ? "bg-[#10b981] animate-glow-green" : "bg-[#3b82f6] animate-glow-blue"}`}>
-                      {item.status}
-                    </div>
-                  )}
-                   <div className={`bg-gray-80/80 ${isPuppet ? 'p-4 gap-4' : 'p-3 gap-3'} border-b border-gray-100 flex items-center`}>
-                    <div className={`${isPuppet ? 'w-10 h-10 text-lg' : 'w-8 h-8 text-base'} rounded-xl bg-orange-500 flex items-center justify-center text-white font-black shadow-orange-200 shadow-lg`}>
-                      {currentSlide.type === 'AGENDA' ? currentSlide.startIndex + idx + 1 : idx + 1}
-                    </div>
-                    <div>
-                      <div className={`${isPuppet ? 'text-[10px]' : 'text-[9px]'} font-bold text-gray-400 uppercase tracking-wider leading-none`}>{item.hari}</div>
-                      <div className={`${isPuppet ? 'text-xs' : 'text-[11px]'} font-black text-gray-600 uppercase mt-0.5`}>{item.tanggal.split(', ')[1] || item.tanggal}</div>
-                      <div className={`${isPuppet ? 'text-base' : 'text-sm'} font-black text-orange-500 leading-none mt-1`}>{item.pukul}</div>
-                    </div>
-                  </div>
-                  <div className={`${isPuppet ? 'p-5 gap-4' : 'p-4 gap-3'} flex flex-col`}>
-                    <div>
-                      <div className={`${isPuppet ? 'text-[10px] mb-1' : 'text-[9px] mb-0.5'} font-bold text-orange-500 uppercase tracking-widest`}>ACARA / AGENDA</div>
-                      <h3 className={`${isPuppet ? 'text-lg' : 'text-base'} font-black text-gray-800 leading-tight uppercase line-clamp-3`}>{item.acara}</h3>
-                    </div>
-                    <div className={`grid grid-cols-2 ${isPuppet ? 'gap-4 mt-2' : 'gap-3 mt-1'}`}>
-                       <div>
-                          <div className={`${isPuppet ? 'text-[10px] mb-1' : 'text-[9px] mb-0.5'} font-bold text-orange-500 uppercase tracking-widest`}>TEMPAT</div>
-                          <div className={`${isPuppet ? 'text-sm' : 'text-xs'} font-black text-gray-700 uppercase`}>{item.tempat}</div>
-                       </div>
-                       <div>
-                          <div className={`${isPuppet ? 'text-[10px] mb-1' : 'text-[9px] mb-0.5'} font-bold text-orange-500 uppercase tracking-widest`}>PELAKSANA</div>
-                          <div className={`${isPuppet ? 'text-sm' : 'text-xs'} font-black text-gray-700 uppercase`}>{item.pelaksana}</div>
-                       </div>
-                    </div>
-                  </div>
+        <div className="flex-1 p-3 md:p-4 flex flex-col w-full max-w-full mx-auto overflow-hidden">
+          <div className="flex flex-col items-center mb-3 text-center">
+            <img src={logo} alt="Logo" className="h-10 mb-2 object-contain" />
+            <div className="flex flex-col items-center">
+              {!isPuppet && (
+                <div className="flex items-baseline gap-1.5">
+                  <span className="text-2xl md:text-3xl font-black text-gray-800">{format(time, "HH:mm")}</span>
+                  <span className="text-base md:text-lg font-bold text-orange-500">WITA</span>
                 </div>
+              )}
+              <span className={`${isPuppet ? 'text-sm md:text-base mt-1' : 'text-xs md:text-sm mt-1'} font-bold text-orange-500 uppercase tracking-widest leading-none`}>
+                {format(time, "EEEE, dd MMMM yyyy", { locale: id })}
+              </span>
+            </div>
+          </div>
+
+          <div className="w-full h-1.5 rounded-full overflow-hidden flex mb-3 shadow-inner bg-gray-200">
+            <div className="bg-orange-500 h-full transition-all duration-100 ease-linear" style={{ width: `${progress}%` }}></div>
+          </div>
+
+          <div className="flex flex-col items-center mb-3 text-center">
+            <h1 className="text-base md:text-lg font-black text-gray-800 tracking-tight uppercase leading-tight mb-2 min-h-[1.5em]">{pageTitle}</h1>
+            <div className="flex gap-1">
+              {pages.map((_, i) => (
+                <div
+                  key={i}
+                  data-slide-dot={i}
+                  onClick={() => handlePageClick(i)}
+                  className={`w-1.5 h-1.5 rounded-full transition-all duration-300 cursor-pointer hover:scale-150 ${i === currentPage ? "bg-orange-500 scale-110 shadow-lg shadow-orange-200" : "bg-gray-300 shadow-sm"}`}
+                ></div>
               ))}
             </div>
-          ) : null}
-        </div>
-      </div>
+          </div>
 
-      {/* Swipe Feedback Overlay (Dynamic Pull Only) */}
-      {touchStart !== null && touchCurrent !== null ? (
-        <div className="fixed inset-0 pointer-events-none flex items-center justify-center z-[100]">
-          {/* Pulling Feedback */}
-          {touchStart - touchCurrent > 20 && (
-            <div 
-              className="fixed right-0 bg-orange-500/10 text-orange-500 p-4 rounded-l-3xl backdrop-blur-sm transition-all duration-75 flex items-center justify-center border-l-2 border-y-2 border-orange-500/20"
-              style={{ 
-                opacity: Math.min((touchStart - touchCurrent) / 200, 0.8),
-                transform: `translateX(${Math.max(40 - (touchStart - touchCurrent) / 4, 0)}px)`
-              }}
-            >
-              <ChevronRight size={60} strokeWidth={4} />
-            </div>
-          )}
-          {touchCurrent - touchStart > 20 && (
-            <div 
-              className="fixed left-0 bg-orange-500/10 text-orange-500 p-4 rounded-r-3xl backdrop-blur-sm transition-all duration-75 flex items-center justify-center border-r-2 border-y-2 border-orange-500/20"
-              style={{ 
-                opacity: Math.min((touchCurrent - touchStart) / 200, 0.8),
-                transform: `translateX(${Math.min(-40 + (touchCurrent - touchStart) / 4, 0)}px)`
-              }}
-            >
-              <ChevronLeft size={60} strokeWidth={4} />
-            </div>
-          )}
+          <div className="flex-1 overflow-hidden">
+            {currentSlide?.type === 'AGENDA' ? (
+              <div key={currentPage} className="flex flex-col gap-4">
+                {currentSlide.data.map((item, idx) => (
+                  <div
+                    key={`${currentPage}-${idx}`}
+                    className="bg-white/20 backdrop-blur-[2px] rounded-2xl shadow-[0_8px_32px_rgba(251,146,60,0.1)] border border-orange-500/30 overflow-hidden flex flex-col relative translate-y-0 hover:-translate-y-1 transition-transform animate-slide-right opacity-0"
+                    style={{ animationDelay: `${0.1 + idx * 0.2}s` }}
+                  >
+                    {!isPuppet && (
+                      <div className={`absolute top-3 right-3 px-3 py-1 text-[10px] rounded-full font-black text-white shadow-md z-10 transition-all duration-300 ${item.status === "Berlangsung" ? "bg-[#10b981] animate-glow-green" : "bg-[#3b82f6] animate-glow-blue"}`}>
+                        {item.status}
+                      </div>
+                    )}
+                    <div className={`bg-white/10 ${isPuppet ? 'p-4 gap-4' : 'p-3 gap-3'} border-b border-white/10 flex items-center`}>
+                      <div className={`${isPuppet ? 'w-10 h-10 text-lg' : 'w-8 h-8 text-base'} rounded-xl bg-orange-500 flex items-center justify-center text-white font-black shadow-orange-200 shadow-lg`}>
+                        {currentSlide.type === 'AGENDA' ? currentSlide.startIndex + idx + 1 : idx + 1}
+                      </div>
+                      <div>
+                        <div className={`${isPuppet ? 'text-[10px]' : 'text-[9px]'} font-bold text-gray-400 uppercase tracking-wider leading-none`}>{item.hari}</div>
+                        <div className={`${isPuppet ? 'text-xs' : 'text-[11px]'} font-black text-gray-600 uppercase mt-0.5`}>{item.tanggal.split(', ')[1] || item.tanggal}</div>
+                        <div className={`${isPuppet ? 'text-base' : 'text-sm'} font-black text-orange-500 leading-none mt-1`}>{item.pukul}</div>
+                      </div>
+                    </div>
+                    <div className={`${isPuppet ? 'p-5 gap-4' : 'p-4 gap-3'} flex flex-col`}>
+                      <div>
+                        <div className={`${isPuppet ? 'text-[10px] mb-1' : 'text-[9px] mb-0.5'} font-bold text-orange-500 uppercase tracking-widest`}>ACARA / AGENDA</div>
+                        <h3 className={`${isPuppet ? 'text-lg' : 'text-base'} font-black text-gray-800 leading-tight uppercase line-clamp-3`}>{item.acara}</h3>
+                      </div>
+                      <div className={`grid grid-cols-2 ${isPuppet ? 'gap-4 mt-2' : 'gap-3 mt-1'}`}>
+                        <div>
+                          <div className={`${isPuppet ? 'text-[10px] mb-1' : 'text-[9px] mb-0.5'} font-bold text-orange-500 uppercase tracking-widest`}>TEMPAT</div>
+                          <div className={`${isPuppet ? 'text-sm' : 'text-xs'} font-black text-gray-700 uppercase`}>{item.tempat}</div>
+                        </div>
+                        <div>
+                          <div className={`${isPuppet ? 'text-[10px] mb-1' : 'text-[9px] mb-0.5'} font-bold text-orange-500 uppercase tracking-widest`}>PELAKSANA</div>
+                          <div className={`${isPuppet ? 'text-sm' : 'text-xs'} font-black text-gray-700 uppercase`}>{item.pelaksana}</div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            ) : null}
+          </div>
         </div>
-      ) : null}
+
+        {/* Swipe Feedback Overlay (Dynamic Pull Only) */}
+        {touchStart !== null && touchCurrent !== null ? (
+          <div className="fixed inset-0 pointer-events-none flex items-center justify-center z-[100]">
+            {/* Pulling Feedback */}
+            {touchStart - touchCurrent > 20 && (
+              <div
+                className="fixed right-0 bg-orange-500/10 text-orange-500 p-4 rounded-l-3xl backdrop-blur-sm transition-all duration-75 flex items-center justify-center border-l-2 border-y-2 border-orange-500/20"
+                style={{
+                  opacity: Math.min((touchStart - touchCurrent) / 200, 0.8),
+                  transform: `translateX(${Math.max(40 - (touchStart - touchCurrent) / 4, 0)}px)`
+                }}
+              >
+                <ChevronRight size={60} strokeWidth={4} />
+              </div>
+            )}
+            {touchCurrent - touchStart > 20 && (
+              <div
+                className="fixed left-0 bg-orange-500/10 text-orange-500 p-4 rounded-r-3xl backdrop-blur-sm transition-all duration-75 flex items-center justify-center border-r-2 border-y-2 border-orange-500/20"
+                style={{
+                  opacity: Math.min((touchCurrent - touchStart) / 200, 0.8),
+                  transform: `translateX(${Math.min(-40 + (touchCurrent - touchStart) / 4, 0)}px)`
+                }}
+              >
+                <ChevronLeft size={60} strokeWidth={4} />
+              </div>
+            )}
+          </div>
+        ) : null}
       </div>
     </div>
   )
