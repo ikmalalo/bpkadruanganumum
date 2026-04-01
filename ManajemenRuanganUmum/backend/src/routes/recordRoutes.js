@@ -30,13 +30,14 @@ router.get('/portrait', async (req, res) => {
   let browser;
   try {
     browser = await puppeteer.launch({
-      headless: 'new',
+      headless: true, // Kembali ke mode stabil untuk WebGL screenshot
       args: [
         '--no-sandbox', 
         '--disable-setuid-sandbox', 
         '--disable-dev-shm-usage',
         '--use-gl=angle',
-        '--use-angle=swiftshader', // Memaksa software WebGL untuk render Vanta di server
+        '--use-angle=swiftshader',
+        '--disable-accelerated-2d-canvas', // Fokuskan RAM ke WebGL
         `--window-size=${WIDTH},${HEIGHT}`
       ]
     });
@@ -44,8 +45,8 @@ router.get('/portrait', async (req, res) => {
     const page = await browser.newPage();
     // Samarkan Puppeteer sebagai browser Chrome asli agar tidak diblokir sistem anti-bot (seperti Vercel Edge / Cloudflare)
     await page.setUserAgent('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36');
-    // deviceScaleFactor 2.4 menghasilkan resolusi tepat Full HD (1080x1920). Kualitas tertinggi.
-    await page.setViewport({ width: WIDTH, height: HEIGHT, deviceScaleFactor: 2.4 });
+    // deviceScaleFactor 2.2 menghasilkan resolusi tajam namun lebih aman RAM
+    await page.setViewport({ width: WIDTH, height: HEIGHT, deviceScaleFactor: 2.2 });
 
     // Dengarkan log console browser untuk debugging Vercel jika gagal
     page.on('console', msg => console.log('💻 [Browser Log]:', msg.type().toUpperCase(), msg.text()));
