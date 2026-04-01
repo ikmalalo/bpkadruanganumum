@@ -31,7 +31,14 @@ router.get('/portrait', async (req, res) => {
   try {
     browser = await puppeteer.launch({
       headless: 'new',
-      args: ['--no-sandbox', '--disable-setuid-sandbox', '--disable-dev-shm-usage', '--disable-gpu', `--window-size=${WIDTH},${HEIGHT}`]
+      args: [
+        '--no-sandbox', 
+        '--disable-setuid-sandbox', 
+        '--disable-dev-shm-usage',
+        '--use-gl=angle',
+        '--use-angle=swiftshader', // Memaksa software WebGL untuk render Vanta di server
+        `--window-size=${WIDTH},${HEIGHT}`
+      ]
     });
 
     const page = await browser.newPage();
