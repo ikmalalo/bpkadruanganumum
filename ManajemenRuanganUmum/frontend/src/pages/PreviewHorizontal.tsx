@@ -33,7 +33,7 @@ interface CertificateItem {
   foto: string // base64
 }
 
-type SlideItem = { type: 'AGENDA'; data: AgendaItem[]; category: 'BPKAD' | 'PEMKOT' } | { type: 'CERTIFICATE'; data: CertificateItem }
+type SlideItem = { type: 'AGENDA'; data: AgendaItem[]; category: 'BPKAD' | 'PEMKOT'; startIndex: number } | { type: 'CERTIFICATE'; data: CertificateItem }
 
 export default function PreviewHorizontal() {
   const navigate = useNavigate()
@@ -142,7 +142,7 @@ export default function PreviewHorizontal() {
 
     const chunk = (arr: AgendaItem[], size: number, category: 'BPKAD' | 'PEMKOT') => {
       for (let i = 0; i < arr.length; i += size) {
-        slides.push({ type: 'AGENDA', data: arr.slice(i, i + size), category })
+        slides.push({ type: 'AGENDA', data: arr.slice(i, i + size), category, startIndex: i })
       }
     }
 
@@ -270,7 +270,9 @@ export default function PreviewHorizontal() {
                     className="hover:bg-orange-50/40 transition-all duration-300 flex w-full min-h-[80px] items-stretch animate-slide-right opacity-0"
                     style={{ animationDelay: `${0.1 + idx * 0.15}s` }}
                   >
-                    <td className="px-2 text-[10px] md:text-sm font-black text-gray-400 text-center w-[5%] min-w-[40px] hidden md:flex items-center justify-center">{idx + 1}</td>
+                    <td className="px-2 text-[10px] md:text-sm font-black text-gray-400 text-center w-[5%] min-w-[40px] hidden md:flex items-center justify-center">
+                      {currentSlide.type === 'AGENDA' ? currentSlide.startIndex + idx + 1 : idx + 1}
+                    </td>
                     <td className="px-4 w-[15%] min-w-[100px] flex flex-col justify-center min-w-0">
                       <span className="text-[9px] md:text-[11px] font-black text-gray-800 uppercase leading-none mb-1">{item.hari}</span>
                       <span className="text-[8px] md:text-[9px] font-bold text-gray-400 uppercase tracking-wider">{item.tanggal.split(', ')[1] || item.tanggal}</span>
