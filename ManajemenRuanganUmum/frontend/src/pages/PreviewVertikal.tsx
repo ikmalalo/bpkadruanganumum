@@ -340,21 +340,25 @@ export default function PreviewVertikal() {
           </div>
 
           <div className="w-full h-1.5 rounded-full overflow-hidden flex mb-3 shadow-inner bg-gray-200">
-            <div className="bg-orange-500 h-full transition-all duration-100 ease-linear" style={{ width: `${progress}%` }}></div>
+            {!isPuppet && (
+              <div className="bg-orange-500 h-full transition-all duration-100 ease-linear" style={{ width: `${progress}%` }}></div>
+            )}
           </div>
 
           <div className="flex flex-col items-center mb-3 text-center">
             <h1 className="text-base md:text-lg font-black text-gray-800 tracking-tight uppercase leading-tight mb-2 min-h-[1.5em]">{pageTitle}</h1>
-            <div className="flex gap-1">
-              {pages.map((_, i) => (
-                <div
-                  key={i}
-                  data-slide-dot={i}
-                  onClick={() => handlePageClick(i)}
-                  className={`w-1.5 h-1.5 rounded-full transition-all duration-300 cursor-pointer hover:scale-150 ${i === currentPage ? "bg-orange-500 scale-110 shadow-lg shadow-orange-200" : "bg-gray-300 shadow-sm"}`}
-                ></div>
-              ))}
-            </div>
+            {!isPuppet && (
+              <div className="flex gap-1">
+                {pages.map((_, i) => (
+                  <div
+                    key={i}
+                    data-slide-dot={i}
+                    onClick={() => handlePageClick(i)}
+                    className={`w-1.5 h-1.5 rounded-full transition-all duration-300 cursor-pointer hover:scale-150 ${i === currentPage ? "bg-orange-500 scale-110 shadow-lg shadow-orange-200" : "bg-gray-300 shadow-sm"}`}
+                  ></div>
+                ))}
+              </div>
+            )}
           </div>
 
           <div className="flex-1 overflow-hidden">
