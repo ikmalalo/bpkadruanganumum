@@ -46,6 +46,9 @@ export default function PreviewVertikal() {
     let effect: any = null
 
     const init = () => {
+      // Jangan jalankan Vanta jika sedang direkam (Puppeteer) agar server Railway tidak berat/crash
+      if (isPuppet) return true;
+
       if (vantaRef.current && window.VANTA?.GLOBE) {
         effect = window.VANTA.GLOBE({
           el: vantaRef.current,
@@ -54,17 +57,19 @@ export default function PreviewVertikal() {
           gyroControls: false,
           minHeight: 200.00,
           minWidth: 200.00,
-          scale: isPuppet ? 0.5 : 1.00, // Kecilkan skala saat direkam biar ringan
+          scale: 1.00,
           scaleMobile: 1.00,
           color: 0xff6a00,
           color2: 0xffffff,
-          size: isPuppet ? 0.4 : 0.8, // Kurangi kepadatan globe saat direkam
+          size: 0.8,
           backgroundColor: 0xffffff
         })
         return true
       }
       return false
     }
+
+    if (isPuppet) return; // Langsung keluar jika direkam
 
     if (!init()) {
       const poll = setInterval(() => {
