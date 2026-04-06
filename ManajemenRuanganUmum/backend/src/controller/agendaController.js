@@ -2,7 +2,7 @@ const db = require('../config/db');
 
 const timeToMin = (t, referenceStart = null) => {
   if (!t) {
-    if (referenceStart !== null) return referenceStart + 180;
+    if (referenceStart !== null) return referenceStart + 300;
     return 0;
   }
   
@@ -11,13 +11,13 @@ const timeToMin = (t, referenceStart = null) => {
   
   // Broaden "Selesai" detection
   if (clean.includes('selesai')) {
-    return referenceStart !== null ? referenceStart + 180 : 1439;
+    return referenceStart !== null ? referenceStart + 300 : 1439;
   }
   
   // Extract first HH:mm pattern found
   const match = clean.match(/(\d{1,2}):(\d{1,2})/);
   if (!match) {
-    if (referenceStart !== null) return referenceStart + 180;
+    if (referenceStart !== null) return referenceStart + 300;
     return 0;
   }
   
