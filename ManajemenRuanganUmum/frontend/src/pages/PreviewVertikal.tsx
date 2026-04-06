@@ -54,11 +54,11 @@ export default function PreviewVertikal() {
           gyroControls: false,
           minHeight: 200.00,
           minWidth: 200.00,
-          scale: 1.00,
+          scale: isPuppet ? 0.5 : 1.00, // Kecilkan skala saat direkam biar ringan
           scaleMobile: 1.00,
           color: 0xff6a00,
           color2: 0xffffff,
-          size: 0.8,
+          size: isPuppet ? 0.4 : 0.8, // Kurangi kepadatan globe saat direkam
           backgroundColor: 0xffffff
         })
         return true

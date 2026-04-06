@@ -9,14 +9,14 @@ const os = require('os');
 
 ffmpeg.setFfmpegPath(ffmpegInstaller.path);
 
-const WIDTH = 450;
-const HEIGHT = 800;
+const WIDTH = 360;
+const HEIGHT = 640;
 
 router.get('/portrait', async (req, res) => {
   const frontendUrl = req.query.url || 'http://localhost:5173/preview-vertikal';
   const slideDurationMs = parseInt(req.query.slideDuration) || 5000;
   
-  const OUTPUT_FPS = 30;
+  const OUTPUT_FPS = 15;
   const CAPTURE_INTERVAL_MS = Math.floor(1000 / OUTPUT_FPS);
   const framesPerSlide = Math.round(slideDurationMs / CAPTURE_INTERVAL_MS);
 
@@ -45,15 +45,16 @@ router.get('/portrait', async (req, res) => {
     const page = await browser.newPage();
     // Samarkan Puppeteer sebagai browser Chrome asli agar tidak diblokir sistem anti-bot (seperti Vercel Edge / Cloudflare)
     await page.setUserAgent('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36');
-    // deviceScaleFactor 2.2 menghasilkan resolusi tajam namun lebih aman RAM
-    await page.setViewport({ width: WIDTH, height: HEIGHT, deviceScaleFactor: 2.2 });
+    // deviceScaleFactor 0.8 adalah yang paling ringan untuk RAM agar tidak crash
+    await page.setViewport({ width: WIDTH, height: HEIGHT, deviceScaleFactor: 0.8 });
 
     // Dengarkan log console browser untuk debugging Vercel jika gagal
     page.on('console', msg => console.log('💻 [Browser Log]:', msg.type().toUpperCase(), msg.text()));
 
     const targetUrl = frontendUrl.includes('?') ? `${frontendUrl}&puppet=1` : `${frontendUrl}?puppet=1`;
     console.log('[RECORD] Membuka URL:', targetUrl);
-    await page.goto(targetUrl, { waitUntil: 'networkidle2', timeout: 30000 });
+    // Tambah timeout menjadi 60 detik untuk loading lebih sabar
+    await page.goto(targetUrl, { waitUntil: 'networkidle2', timeout: 60000 });
 
     // Tunggu sampai layar loading muter hilang DAN minimal 1 dot muncul (atau slide count > 0)
     await page.waitForFunction(() => {
@@ -103,8 +104,8 @@ router.get('/portrait', async (req, res) => {
         }, f + 1, framesPerSlide);
 
         const framePath = path.join(tmpDir, `frame_${String(frameIndex).padStart(6, '0')}.jpg`);
-        // quality 80 memperkecil ukuran gambar per frame agar memori lebih longgar
-        await page.screenshot({ path: framePath, type: 'jpeg', quality: 80 });
+        // quality 40 sangat ringan di RAM untuk menghindari SIGKILL dari Railway
+        await page.screenshot({ path: framePath, type: 'jpeg', quality: 40 });
         frameIndex++;
         
         const elapsed = Date.now() - startCap;
@@ -125,11 +126,11 @@ router.get('/portrait', async (req, res) => {
         .input(path.join(tmpDir, 'frame_%06d.jpg'))
         .inputFPS(OUTPUT_FPS)
         .outputOptions([
-          // Full HD Portrait! 1080 x 1920 (Habis dibagi 2 dengan sempurna)
-          `-vf scale=1080:1920`,
+          // Skala output 720p (720x1280) agar tetap layak dilihat
+          `-vf scale=720:1280`,
           '-c:v libx264', 
-          '-preset medium', // Sangat butuh agar CPU/RAM limit railway tdk ngos-ngosan
-          '-crf 16', 
+          '-preset ultrafast', 
+          '-crf 28', // Kompresi tinggi biar encoding sangat cepat
           '-pix_fmt yuv420p', 
           `-r ${OUTPUT_FPS}`, 
           '-movflags +faststart',
