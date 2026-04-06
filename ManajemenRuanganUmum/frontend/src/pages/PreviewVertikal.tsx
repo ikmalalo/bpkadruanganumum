@@ -95,7 +95,7 @@ export default function PreviewVertikal() {
   }, [])
 
   const itemsPerPageCount = 2
-  const SLIDE_DURATION = 15000
+  const SLIDE_DURATION = 20000
 
   const pages = useMemo(() => {
     const slides: SlideItem[] = []

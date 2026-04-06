@@ -103,7 +103,6 @@ export default function PreviewHorizontal() {
   }, [])
 
   const itemsPerPageCount = 6
-  const SLIDE_DURATION = 15000
 
   const pages = useMemo(() => {
     const slides: SlideItem[] = []
@@ -168,7 +167,11 @@ export default function PreviewHorizontal() {
   useEffect(() => {
     if (pages.length === 0) return
     const interval = 50
-    const step = (interval / SLIDE_DURATION) * 100
+    // Agenda: 20 detik, Sertifikat: 15 detik
+    const currentSlideType = pages[currentPage]?.type;
+    const duration = currentSlideType === 'CERTIFICATE' ? 15000 : 20000;
+    const step = (interval / duration) * 100
+
     const timer = setInterval(() => {
       setProgress((prev) => {
         if (prev >= 100) {
@@ -179,7 +182,7 @@ export default function PreviewHorizontal() {
       })
     }, interval)
     return () => clearInterval(timer)
-  }, [pages.length])
+  }, [pages.length, currentPage])
 
   const handlePageClick = (index: number) => {
     setCurrentPage(index);
