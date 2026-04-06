@@ -378,7 +378,7 @@ export default function PreviewVertikal() {
                     <div className={`${isPuppet ? 'p-5 gap-4' : 'p-4 gap-3'} flex flex-col`}>
                       <div>
                         <div className={`${isPuppet ? 'text-[10px] mb-1' : 'text-[9px] mb-0.5'} font-bold text-orange-500 uppercase tracking-widest`}>ACARA / AGENDA</div>
-                        <h3 className={`${isPuppet ? 'text-lg' : 'text-base'} font-black text-gray-800 leading-tight uppercase line-clamp-3`}>{item.acara}</h3>
+                        <h3 className={`${isPuppet ? 'text-sm' : 'text-xs'} font-black text-gray-800 leading-tight uppercase line-clamp-3`}>{item.acara}</h3>
                       </div>
                       <div className={`grid grid-cols-2 ${isPuppet ? 'gap-4 mt-2' : 'gap-3 mt-1'}`}>
                         <div>

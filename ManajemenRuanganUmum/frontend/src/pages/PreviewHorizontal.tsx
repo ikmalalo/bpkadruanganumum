@@ -262,8 +262,8 @@ export default function PreviewHorizontal() {
                   <th className="py-2 px-4 text-left text-[9px] md:text-[14px] font-black flex-1 min-w-[120px] flex items-center">TEMPAT</th>
                   <th className="py-2 px-4 text-center text-[9px] md:text-[14px] font-black w-[12%] min-w-[90px] flex items-center justify-center">PUKUL</th>
                   <th className="py-2 px-6 text-left text-[9px] md:text-[14px] font-black flex-[2] min-w-[200px] flex items-center">ACARA</th>
-                  <th className="py-2 px-4 text-left text-[9px] md:text-[14px] font-black w-[12%] min-w-[100px] hidden lg:flex items-center">DIHADIRI</th>
-                  <th className="py-2 px-4 text-left text-[9px] md:text-[14px] font-black w-[12%] min-w-[100px] hidden xl:flex items-center">PELAKSANA</th>
+                  <th className="py-2 px-4 text-left text-[9px] md:text-[14px] font-black w-[12%] min-w-[100px] hidden lg:flex items-center">PELAKSANA</th>
+                  <th className="py-2 px-4 text-left text-[9px] md:text-[14px] font-black w-[12%] min-w-[100px] hidden xl:flex items-center">DIHADIRI</th>
                   <th className="py-2 px-2 md:px-4 text-center text-[10px] md:text-sm font-black w-[10%] min-w-[80px] flex items-center justify-center">STATUS</th>
                 </tr>
               </thead>
@@ -284,8 +284,8 @@ export default function PreviewHorizontal() {
                     <td className="px-4 flex-1 min-w-[120px] flex items-center font-black text-[9px] md:text-[11px] lg:text-[12px] text-gray-800 uppercase leading-tight">{item.tempat}</td>
                     <td className="px-4 w-[15%] min-w-[90px] flex items-center justify-center"><span className="text-[9px] md:text-xs lg:text-sm font-black text-orange-500 bg-orange-50 px-1.5 md:px-2.5 py-1 rounded-md whitespace-nowrap">{item.pukul}</span></td>
                     <td className="px-6 flex-[2] min-w-[200px] flex items-center font-black text-[9px] md:text-[11px] lg:text-[12px] text-gray-800 uppercase leading-tight">{item.acara}</td>
-                    <td className="px-4 w-[12%] min-w-[100px] hidden lg:flex items-center font-black text-[10px] md:text-[11px] text-gray-800 uppercase">{item.dihadiri || '-'}</td>
-                    <td className="px-4 w-[12%] min-w-[100px] hidden xl:flex items-center font-black text-[10px] md:text-[11px] text-gray-800 uppercase">{item.pelaksana}</td>
+                    <td className="px-4 w-[12%] min-w-[100px] hidden lg:flex items-center font-black text-[10px] md:text-[11px] text-gray-800 uppercase">{item.pelaksana}</td>
+                    <td className="px-4 w-[12%] min-w-[100px] hidden xl:flex items-center font-black text-[10px] md:text-[11px] text-gray-800 uppercase">{item.dihadiri || '-'}</td>
                     <td className="px-2 md:px-4 w-[10%] min-w-[80px] flex items-center justify-center">
                       <span className={`inline-flex items-center justify-center py-1 md:py-1.5 px-4 rounded-lg md:rounded-xl text-[9px] md:text-[11px] font-black text-white min-w-[85px] transition-all duration-300 ${item.status === 'Berlangsung' ? 'bg-[#10b981] animate-glow-green' : 'bg-[#3b82f6] animate-glow-blue'}`}>{item.status}</span>
                     </td>
