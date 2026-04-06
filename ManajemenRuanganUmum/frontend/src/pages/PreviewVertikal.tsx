@@ -188,8 +188,8 @@ export default function PreviewVertikal() {
     setRecordDone(false)
     try {
       const frontendUrl = window.location.origin + '/preview-vertikal'
-      // Batasi perekaman maksimal 8 detik per slide agar server NodeJS/Railway tidak Timeout (Time Limit Exceeded)
-      const RECORD_DURATION = Math.min(SLIDE_DURATION, 8000)
+      // Batasi perekaman maksimal 12 detik per slide agar video terlihat premium namun tetap menghidari timeout di Railway
+      const RECORD_DURATION = Math.min(SLIDE_DURATION, 12000)
       const recordUrl = `${apiUrl('/api/record/portrait')}?url=${encodeURIComponent(frontendUrl)}&slideDuration=${RECORD_DURATION}&t=${Date.now()}`
 
       const response = await fetch(recordUrl)
