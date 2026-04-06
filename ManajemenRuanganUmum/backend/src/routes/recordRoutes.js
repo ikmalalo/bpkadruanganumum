@@ -56,16 +56,27 @@ router.get('/portrait', async (req, res) => {
 
     const targetUrl = frontendUrl.includes('?') ? `${frontendUrl}&puppet=1` : `${frontendUrl}?puppet=1`;
     console.log('[RECORD] Membuka URL:', targetUrl);
-    // Tambah timeout menjadi 60 detik untuk loading lebih sabar
-    await page.goto(targetUrl, { waitUntil: 'networkidle2', timeout: 60000 });
+    
+    // Log waktu mulai untuk debugging
+    const startNav = Date.now();
+    try {
+      // Gunakan domcontentloaded agar tidak menunggu semua network idle (lebih cepat & stabil)
+      // Lalu kita tunggu manual indikator visualnya (spinner hilang)
+      await page.goto(targetUrl, { waitUntil: 'domcontentloaded', timeout: 90000 });
+      console.log(`[RECORD] Navigasi selesai dalam ${((Date.now() - startNav) / 1000).toFixed(1)} detik.`);
+    } catch (err) {
+      console.error('[RECORD] Navigasi Gagal atau Timeout:', err.message);
+      throw new Error(`Gagal membuka halaman (Timeout 90 detik). Vercel mungkin sedang lambat atau 'Cold Start'.`);
+    }
 
     // Tunggu sampai layar loading muter hilang DAN minimal 1 dot muncul (atau slide count > 0)
+    console.log('[RECORD] Menunggu Konten Ready...');
     await page.waitForFunction(() => {
       const isSpinning = document.querySelector('.animate-spin');
       const hasSlides = (window.__SLIDE_COUNT__ && window.__SLIDE_COUNT__ > 0) || document.querySelectorAll('[data-slide-dot]').length > 0;
       return !isSpinning && hasSlides;
-    }, { timeout: 30000 }).catch(() => {
-      console.log('[RECORD] Timeout menunggu loading selesai / data tidak termuat.');
+    }, { timeout: 60000 }).catch(() => {
+      console.log('[RECORD] Timeout menunggu indikator visual, mencoba lanjut saja...');
     });
 
     await new Promise(r => setTimeout(r, 4000));
