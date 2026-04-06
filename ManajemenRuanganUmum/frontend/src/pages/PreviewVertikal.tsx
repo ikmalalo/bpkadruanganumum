@@ -389,6 +389,10 @@ export default function PreviewVertikal() {
                           <div className={`${isPuppet ? 'text-[10px] mb-1' : 'text-[9px] mb-0.5'} font-bold text-orange-500 uppercase tracking-widest`}>PELAKSANA</div>
                           <div className={`${isPuppet ? 'text-sm' : 'text-xs'} font-black text-gray-700 uppercase`}>{item.pelaksana}</div>
                         </div>
+                        <div className="col-span-2">
+                          <div className={`${isPuppet ? 'text-[10px] mb-1' : 'text-[9px] mb-0.5'} font-bold text-orange-500 uppercase tracking-widest`}>DIHADIRI</div>
+                          <div className={`${isPuppet ? 'text-sm' : 'text-xs'} font-black text-gray-700 uppercase`}>{item.dihadiri || '-'}</div>
+                        </div>
                       </div>
                     </div>
                   </div>
