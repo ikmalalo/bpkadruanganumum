@@ -33,6 +33,7 @@ export default function PreviewVertikal() {
   const navigate = useNavigate()
   const location = useLocation()
   const isPuppet = new URLSearchParams(location.search).get('puppet') === '1'
+  const slideDurationParam = new URLSearchParams(location.search).get('slideDuration')
   const isVisitor = sessionStorage.getItem('isVisitor') === 'true'
   const [time, setTime] = useState(new Date())
   const [allAgendas, setAllAgendas] = useState<AgendaItem[]>([])
@@ -168,20 +169,28 @@ export default function PreviewVertikal() {
     // Expand window object type implicitly or via any
     (window as any).__SET_PROGRESS = (val: number) => setProgress(val)
 
-    if (pages.length === 0 || isPuppet) return
+    if (pages.length === 0) return
     const interval = 50
-    const step = (interval / SLIDE_DURATION) * 100
+    // Gunakan durasi dari URL jika sedang direkam (Puppeteer), kalau tidak gunakan durasi default 20s
+    const activeDuration = (isPuppet && slideDurationParam) ? parseInt(slideDurationParam) : SLIDE_DURATION
+    const step = (interval / activeDuration) * 100
+    
     const timer = setInterval(() => {
       setProgress((prev) => {
         if (prev >= 100) {
-          setCurrentPage((oldPage) => (oldPage + 1) % pages.length)
-          return 0
+          // Hanya pindah halaman otomatis di browser biasa, jangan saat direkam 
+          // (karena Puppeteer yang mengatur pergerakan halamannya dari backend)
+          if (!isPuppet) {
+            setCurrentPage((oldPage) => (oldPage + 1) % pages.length)
+            return 0
+          }
+          return 100 // Tahan di 100% saat direkam per halaman
         }
         return prev + step
       })
     }, interval)
     return () => clearInterval(timer)
-  }, [pages.length, isPuppet])
+  }, [pages.length, isPuppet, slideDurationParam])
 
   const handlePageClick = (index: number) => {
     setCurrentPage(index);
@@ -193,8 +202,8 @@ export default function PreviewVertikal() {
     setRecordDone(false)
     try {
       const frontendUrl = window.location.origin + '/preview-vertikal'
-      // Batasi perekaman maksimal 12 detik per slide agar video terlihat premium namun tetap menghidari timeout di Railway
-      const RECORD_DURATION = Math.min(SLIDE_DURATION, 12000)
+      // Durasi rekam per halaman: 20 detik (sudah aman karena Globe dimatikan)
+      const RECORD_DURATION = 20000 
       const recordUrl = `${apiUrl('/api/record/portrait')}?url=${encodeURIComponent(frontendUrl)}&slideDuration=${RECORD_DURATION}&t=${Date.now()}`
 
       const response = await fetch(recordUrl)
@@ -339,9 +348,7 @@ export default function PreviewVertikal() {
           </div>
 
           <div className="w-full h-1.5 rounded-full overflow-hidden flex mb-3 shadow-inner bg-gray-200">
-            {!isPuppet && (
-              <div className="bg-orange-500 h-full transition-all duration-100 ease-linear" style={{ width: `${progress}%` }}></div>
-            )}
+            <div className="bg-orange-500 h-full transition-all duration-100 ease-linear" style={{ width: `${progress}%` }}></div>
           </div>
 
           <div className="flex flex-col items-center mb-3 text-center">
@@ -374,33 +381,33 @@ export default function PreviewVertikal() {
                         {item.status}
                       </div>
                     )}
-                    <div className={`bg-white/10 ${isPuppet ? 'p-4 gap-4' : 'p-3 gap-3'} border-b border-white/10 flex items-center`}>
-                      <div className={`${isPuppet ? 'w-10 h-10 text-lg' : 'w-8 h-8 text-base'} rounded-xl bg-orange-500 flex items-center justify-center text-white font-black shadow-orange-200 shadow-lg`}>
+                    <div className={`bg-white/10 ${isPuppet ? 'p-2.5 gap-2.5' : 'p-3 gap-3'} border-b border-white/10 flex items-center`}>
+                      <div className={`${isPuppet ? 'w-7 h-7 text-sm' : 'w-8 h-8 text-base'} rounded-xl bg-orange-500 flex items-center justify-center text-white font-black shadow-orange-200 shadow-lg`}>
                         {currentSlide.type === 'AGENDA' ? currentSlide.startIndex + idx + 1 : idx + 1}
                       </div>
                       <div>
-                        <div className={`${isPuppet ? 'text-[10px]' : 'text-[9px]'} font-bold text-gray-400 uppercase tracking-wider leading-none`}>{item.hari}</div>
-                        <div className={`${isPuppet ? 'text-xs' : 'text-[11px]'} font-black text-gray-600 uppercase mt-0.5`}>{item.tanggal.split(', ')[1] || item.tanggal}</div>
-                        <div className={`${isPuppet ? 'text-base' : 'text-sm'} font-black text-orange-500 leading-none mt-1`}>{item.pukul}</div>
+                        <div className={`${isPuppet ? 'text-[8px]' : 'text-[9px]'} font-bold text-gray-400 uppercase tracking-wider leading-none`}>{item.hari}</div>
+                        <div className={`${isPuppet ? 'text-[10px]' : 'text-[11px]'} font-black text-gray-600 uppercase mt-0.5`}>{item.tanggal.split(', ')[1] || item.tanggal}</div>
+                        <div className={`${isPuppet ? 'text-sm' : 'text-sm'} font-black text-orange-500 leading-none mt-1`}>{item.pukul}</div>
                       </div>
                     </div>
-                    <div className={`${isPuppet ? 'p-5 gap-4' : 'p-4 gap-3'} flex flex-col`}>
+                    <div className={`${isPuppet ? 'p-3 gap-2.5' : 'p-4 gap-3'} flex flex-col`}>
                       <div>
-                        <div className={`${isPuppet ? 'text-[10px] mb-1' : 'text-[9px] mb-0.5'} font-bold text-orange-500 uppercase tracking-widest`}>ACARA / AGENDA</div>
-                        <h3 className={`${isPuppet ? 'text-sm' : 'text-xs'} font-black text-gray-800 leading-tight uppercase line-clamp-3`}>{item.acara}</h3>
+                        <div className={`${isPuppet ? 'text-[8px] mb-0.5' : 'text-[9px] mb-0.5'} font-bold text-orange-500 uppercase tracking-widest`}>ACARA / AGENDA</div>
+                        <h3 className={`${isPuppet ? 'text-xs' : 'text-xs'} font-black text-gray-800 leading-tight uppercase line-clamp-3`}>{item.acara}</h3>
                       </div>
-                      <div className={`grid grid-cols-2 ${isPuppet ? 'gap-4 mt-2' : 'gap-3 mt-1'}`}>
+                      <div className={`grid grid-cols-2 ${isPuppet ? 'gap-2.5 mt-1' : 'gap-3 mt-1'}`}>
                         <div>
-                          <div className={`${isPuppet ? 'text-[10px] mb-1' : 'text-[9px] mb-0.5'} font-bold text-orange-500 uppercase tracking-widest`}>TEMPAT</div>
-                          <div className={`${isPuppet ? 'text-sm' : 'text-xs'} font-black text-gray-700 uppercase`}>{item.tempat}</div>
+                          <div className={`${isPuppet ? 'text-[8px] mb-0.5' : 'text-[9px] mb-0.5'} font-bold text-orange-500 uppercase tracking-widest`}>TEMPAT</div>
+                          <div className={`${isPuppet ? 'text-[10px]' : 'text-xs'} font-black text-gray-700 uppercase`}>{item.tempat}</div>
                         </div>
                         <div>
-                          <div className={`${isPuppet ? 'text-[10px] mb-1' : 'text-[9px] mb-0.5'} font-bold text-orange-500 uppercase tracking-widest`}>PELAKSANA</div>
-                          <div className={`${isPuppet ? 'text-sm' : 'text-xs'} font-black text-gray-700 uppercase`}>{item.pelaksana}</div>
+                          <div className={`${isPuppet ? 'text-[8px] mb-0.5' : 'text-[9px] mb-0.5'} font-bold text-orange-500 uppercase tracking-widest`}>PELAKSANA</div>
+                          <div className={`${isPuppet ? 'text-[10px]' : 'text-xs'} font-black text-gray-700 uppercase`}>{item.pelaksana}</div>
                         </div>
                         <div className="col-span-2">
-                          <div className={`${isPuppet ? 'text-[10px] mb-1' : 'text-[9px] mb-0.5'} font-bold text-orange-500 uppercase tracking-widest`}>DIHADIRI</div>
-                          <div className={`${isPuppet ? 'text-sm' : 'text-xs'} font-black text-gray-700 uppercase`}>{item.dihadiri || '-'}</div>
+                          <div className={`${isPuppet ? 'text-[8px] mb-0.5' : 'text-[9px] mb-0.5'} font-bold text-orange-500 uppercase tracking-widest`}>DIHADIRI</div>
+                          <div className={`${isPuppet ? 'text-[10px]' : 'text-xs'} font-black text-gray-700 uppercase`}>{item.dihadiri || '-'}</div>
                         </div>
                       </div>
                     </div>
