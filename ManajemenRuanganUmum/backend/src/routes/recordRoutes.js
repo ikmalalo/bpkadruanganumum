@@ -9,8 +9,8 @@ const os = require('os');
 
 ffmpeg.setFfmpegPath(ffmpegInstaller.path);
 
-const WIDTH = 1080;
-const HEIGHT = 1920;
+const WIDTH = 450;
+const HEIGHT = 800;
 
 router.get('/portrait', async (req, res) => {
   const frontendUrl = req.query.url || 'http://localhost:5173/preview-vertikal';
@@ -41,15 +41,21 @@ router.get('/portrait', async (req, res) => {
         '--use-gl=angle',
         '--use-angle=swiftshader',
         '--disable-accelerated-2d-canvas',
-        `--window-size=${WIDTH},${HEIGHT}`
+        `--window-size=${WIDTH * 2},${HEIGHT * 2}` // Buffer size
       ]
     });
 
     const page = await browser.newPage();
     // Samarkan Puppeteer sebagai browser Chrome asli agar tidak diblokir sistem anti-bot (seperti Vercel Edge / Cloudflare)
     await page.setUserAgent('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36');
-    // deviceScaleFactor 1.0 pada resolusi 1080p sudah sangat tajam.
-    await page.setViewport({ width: WIDTH, height: HEIGHT, deviceScaleFactor: 1.0 });
+    // deviceScaleFactor 2.4 pada resolusi 450x800 menghasilkan output 1080x1920 (High Resolution Mobile)
+    await page.setViewport({ 
+      width: WIDTH, 
+      height: HEIGHT, 
+      deviceScaleFactor: 2.4,
+      isMobile: true,
+      hasTouch: true
+    });
 
     // Dengarkan log console browser untuk debugging Vercel jika gagal
     page.on('console', msg => console.log('💻 [Browser Log]:', msg.type().toUpperCase(), msg.text()));
@@ -141,11 +147,11 @@ router.get('/portrait', async (req, res) => {
         .input(path.join(tmpDir, 'frame_%06d.jpg'))
         .inputFPS(OUTPUT_FPS)
         .outputOptions([
-          // Full HD Output! (1080x1920)
+          // Output tetal Full HD (1080x1920) karena deviceScaleFactor 2.4 x 450px
           `-vf scale=1080:1920`,
           '-c:v libx264', 
           '-preset ultrafast', 
-          '-crf 18', // Kualitas tinggi (CRF rendah = lebih tajam)
+          '-crf 18', 
           '-pix_fmt yuv420p', 
           `-r ${OUTPUT_FPS}`, 
           '-movflags +faststart',

@@ -274,8 +274,7 @@ export default function PreviewVertikal() {
 
   return (
     <div
-      className="bg-white relative overflow-hidden flex flex-col"
-      style={isPuppet ? { width: '1080px', height: '1920px' } : { height: '100vh', width: '100%' }}
+      className="bg-white h-screen relative overflow-hidden flex flex-col"
       onTouchStart={onTouchStart}
       onTouchMove={onTouchMove}
       onTouchEnd={onTouchEnd}
@@ -323,7 +322,7 @@ export default function PreviewVertikal() {
           </div>
         )}
 
-        <div className={`flex-1 p-3 md:p-4 flex flex-col ${isPuppet ? 'w-[1080px]' : 'w-full'} mx-auto overflow-hidden`}>
+        <div className="flex-1 p-3 md:p-4 flex flex-col w-full mx-auto overflow-hidden">
           <div className="flex flex-col items-center mb-3 text-center">
             <img src={logo} alt="Logo" className="h-10 mb-2 object-contain" />
             <div className="flex flex-col items-center">
