@@ -341,12 +341,10 @@ export default function PreviewVertikal() {
           <div className="flex flex-col items-center mb-3 text-center">
             <img src={logo} alt="Logo" className="h-10 mb-2 object-contain" />
             <div className="flex flex-col items-center">
-              {!isPuppet && (
-                <div className="flex items-baseline gap-1.5">
-                  <span className="text-2xl md:text-3xl font-black text-gray-800">{format(time, "HH:mm")}</span>
-                  <span className="text-base md:text-lg font-bold text-orange-500">WITA</span>
-                </div>
-              )}
+              <div className="flex items-baseline gap-1.5">
+                <span className="text-2xl md:text-3xl font-black text-gray-800">{format(time, "HH:mm")}</span>
+                <span className="text-base md:text-lg font-bold text-orange-500">WITA</span>
+              </div>
               <span className={`${isPuppet ? 'text-sm md:text-base mt-1' : 'text-xs md:text-sm mt-1'} font-bold text-orange-500 uppercase tracking-widest leading-none`}>
                 {format(time, "EEEE, dd MMMM yyyy", { locale: id })}
               </span>
@@ -359,18 +357,16 @@ export default function PreviewVertikal() {
 
           <div className="flex flex-col items-center mb-3 text-center">
             <h1 className="text-base md:text-lg font-black text-gray-800 tracking-tight uppercase leading-tight mb-2 min-h-[1.5em]">{pageTitle}</h1>
-            {!isPuppet && (
-              <div className="flex gap-1">
-                {pages.map((_, i) => (
-                  <div
-                    key={i}
-                    data-slide-dot={i}
-                    onClick={() => handlePageClick(i)}
-                    className={`w-1.5 h-1.5 rounded-full transition-all duration-300 cursor-pointer hover:scale-150 ${i === currentPage ? "bg-orange-500 scale-110 shadow-lg shadow-orange-200" : "bg-gray-300 shadow-sm"}`}
-                  ></div>
-                ))}
-              </div>
-            )}
+            <div className="flex gap-1">
+              {pages.map((_, i) => (
+                <div
+                  key={i}
+                  data-slide-dot={i}
+                  onClick={() => handlePageClick(i)}
+                  className={`w-1.5 h-1.5 rounded-full transition-all duration-300 cursor-pointer hover:scale-150 ${i === currentPage ? "bg-orange-500 scale-110 shadow-lg shadow-orange-200" : "bg-gray-300 shadow-sm"}`}
+                ></div>
+              ))}
+            </div>
           </div>
 
           <div className="flex-1 overflow-hidden">
@@ -382,11 +378,9 @@ export default function PreviewVertikal() {
                     className="bg-white/50 rounded-2xl shadow-[0_8px_32px_rgba(251,146,60,0.1)] border border-orange-500/30 overflow-hidden flex flex-col relative translate-y-0 hover:-translate-y-1 transition-transform animate-slide-right opacity-0"
                     style={{ animationDelay: `${0.1 + idx * 0.2}s` }}
                   >
-                    {!isPuppet && (
-                      <div className={`absolute top-3 right-3 px-3 py-1 text-[10px] rounded-full font-black text-white shadow-md z-10 transition-all duration-300 ${item.status === "Berlangsung" ? "bg-[#10b981] animate-glow-green" : "bg-[#3b82f6] animate-glow-blue"}`}>
-                        {item.status}
-                      </div>
-                    )}
+                    <div className={`absolute top-3 right-3 px-3 py-1 text-[10px] rounded-full font-black text-white shadow-md z-10 transition-all duration-300 ${item.status === "Berlangsung" ? "bg-[#10b981] animate-glow-green" : "bg-[#3b82f6] animate-glow-blue"}`}>
+                      {item.status}
+                    </div>
                     <div className={`bg-white/10 ${isPuppet ? 'p-2.5 gap-2.5' : 'p-3 gap-3'} border-b border-white/10 flex items-center`}>
                       <div className={`${isPuppet ? 'w-7 h-7 text-sm' : 'w-8 h-8 text-base'} rounded-xl bg-orange-500 flex items-center justify-center text-white font-black shadow-orange-200 shadow-lg`}>
                         {currentSlide.type === 'AGENDA' ? currentSlide.startIndex + idx + 1 : idx + 1}
