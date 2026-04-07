@@ -5,6 +5,8 @@ declare global {
   interface Window {
     VANTA: any;
     __SLIDE_COUNT__: number;
+    __SET_PROGRESS: (val: number) => void;
+    __SET_PAGE: (idx: number) => void;
   }
 }
 import logo from "../assets/images/logo.png"
@@ -167,7 +169,11 @@ export default function PreviewVertikal() {
 
   useEffect(() => {
     // Expand window object type implicitly or via any
-    (window as any).__SET_PROGRESS = (val: number) => setProgress(val)
+    window.__SET_PROGRESS = (val: number) => setProgress(val)
+    window.__SET_PAGE = (idx: number) => {
+      setCurrentPage(idx)
+      setProgress(0)
+    }
 
     if (pages.length === 0) return
     const interval = 50

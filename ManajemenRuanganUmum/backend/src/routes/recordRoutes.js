@@ -108,8 +108,12 @@ router.get('/portrait', async (req, res) => {
     for (let slideIdx = 0; slideIdx < totalSlides; slideIdx++) {
       console.log(`[RECORD] Memulai Slide ${slideIdx + 1} dari ${totalSlides}...`);
       await page.evaluate((idx) => {
-        const dots = document.querySelectorAll('[data-slide-dot]');
-        if (dots[idx]) dots[idx].click();
+        if (typeof window.__SET_PAGE === 'function') {
+          window.__SET_PAGE(idx);
+        } else {
+          const dots = document.querySelectorAll('[data-slide-dot]');
+          if (dots[idx]) dots[idx].click();
+        }
       }, slideIdx);
 
       await new Promise(r => setTimeout(r, 500));
