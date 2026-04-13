@@ -393,26 +393,33 @@ export default function PreviewVertikal() {
                         <div className={`${isPuppet ? 'text-sm' : 'text-sm'} font-black text-orange-500 leading-none mt-1`}>{item.pukul}</div>
                       </div>
                     </div>
-                    <div className={`${isPuppet ? 'p-3 gap-2.5' : 'p-4 gap-3'} flex flex-col`}>
-                      <div>
-                        <div className={`${isPuppet ? 'text-[8px] mb-0.5' : 'text-[9px] mb-0.5'} font-bold text-orange-500 uppercase tracking-widest`}>ACARA / AGENDA</div>
-                        <h3 className={`${isPuppet ? 'text-xs' : 'text-xs'} font-black text-gray-800 leading-tight uppercase line-clamp-3`}>{item.acara}</h3>
-                      </div>
-                      <div className={`grid grid-cols-2 ${isPuppet ? 'gap-2.5 mt-1' : 'gap-3 mt-1'}`}>
-                        <div>
-                          <div className={`${isPuppet ? 'text-[8px] mb-0.5' : 'text-[9px] mb-0.5'} font-bold text-orange-500 uppercase tracking-widest`}>TEMPAT</div>
-                          <div className={`${isPuppet ? 'text-[10px]' : 'text-xs'} font-black text-gray-700 uppercase`}>{item.tempat}</div>
-                        </div>
-                        <div>
-                          <div className={`${isPuppet ? 'text-[8px] mb-0.5' : 'text-[9px] mb-0.5'} font-bold text-orange-500 uppercase tracking-widest`}>PELAKSANA</div>
-                          <div className={`${isPuppet ? 'text-[10px]' : 'text-xs'} font-black text-gray-700 uppercase`}>{item.pelaksana}</div>
-                        </div>
-                        {item.type === 'PEMKOT' && (
-                          <div className="col-span-2">
-                            <div className={`${isPuppet ? 'text-[8px] mb-0.5' : 'text-[9px] mb-0.5'} font-bold text-orange-500 uppercase tracking-widest`}>DIHADIRI</div>
-                            <div className={`${isPuppet ? 'text-[10px]' : 'text-xs'} font-black text-gray-700 uppercase`}>{item.dihadiri || '-'}</div>
+                    <div className={`${isPuppet ? 'p-3' : 'p-4'} flex-1`}>
+                      <div className="grid grid-cols-2 gap-4 h-full">
+                        {/* Left Column: Acara & Tempat */}
+                        <div className="flex flex-col gap-4">
+                          <div>
+                            <div className={`${isPuppet ? 'text-[8px] mb-0.5' : 'text-[9px] mb-0.5'} font-bold text-orange-500 uppercase tracking-widest`}>ACARA / AGENDA</div>
+                            <h3 className={`${isPuppet ? 'text-xs' : 'text-xs'} font-black text-gray-800 leading-tight uppercase line-clamp-5`}>{item.acara}</h3>
                           </div>
-                        )}
+                          <div>
+                            <div className={`${isPuppet ? 'text-[8px] mb-0.5' : 'text-[9px] mb-0.5'} font-bold text-orange-500 uppercase tracking-widest`}>TEMPAT</div>
+                            <div className={`${isPuppet ? 'text-[10px]' : 'text-xs'} font-black text-gray-700 uppercase leading-snug`}>{item.tempat}</div>
+                          </div>
+                        </div>
+
+                        {/* Right Column: Pelaksana & Dihadiri */}
+                        <div className="flex flex-col gap-4">
+                          <div>
+                            <div className={`${isPuppet ? 'text-[8px] mb-0.5' : 'text-[9px] mb-0.5'} font-bold text-orange-500 uppercase tracking-widest`}>PELAKSANA</div>
+                            <div className={`${isPuppet ? 'text-[10px]' : 'text-xs'} font-black text-gray-700 uppercase leading-snug`}>{item.pelaksana}</div>
+                          </div>
+                          {item.type === 'PEMKOT' && (
+                            <div>
+                              <div className={`${isPuppet ? 'text-[8px] mb-0.5' : 'text-[9px] mb-0.5'} font-bold text-orange-500 uppercase tracking-widest`}>DIHADIRI</div>
+                              <div className={`${isPuppet ? 'text-[10px]' : 'text-xs'} font-black text-gray-700 uppercase leading-snug`}>{item.dihadiri || '-'}</div>
+                            </div>
+                          )}
+                        </div>
                       </div>
                     </div>
                   </div>
