@@ -266,7 +266,7 @@ export default function PreviewHorizontal() {
                   {currentSlide.category === 'PEMKOT' && (
                     <th className="py-2 px-4 text-left text-[9px] md:text-[14px] font-black w-[15%] min-w-[100px] hidden lg:flex items-center">DIHADIRI</th>
                   )}
-                  <th className="py-2 px-2 md:px-4 text-center text-[10px] md:text-sm font-black w-[10%] min-w-[80px] flex items-center justify-center">STATUS</th>
+                  <th className="py-2 px-2 md:px-4 text-center text-[10px] md:text-sm font-black w-[15%] min-w-[80px] flex items-center justify-center">STATUS</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-100 flex-1 flex flex-col w-full overflow-hidden">
@@ -290,7 +290,7 @@ export default function PreviewHorizontal() {
                     {item.type === 'PEMKOT' && (
                       <td className="px-4 w-[15%] min-w-[100px] hidden lg:flex items-center font-black text-[10px] md:text-[11px] text-gray-800 uppercase">{item.dihadiri || '-'}</td>
                     )}
-                    <td className="px-2 md:px-4 w-[10%] min-w-[80px] flex items-center justify-center">
+                    <td className="px-2 md:px-4 w-[15%] min-w-[80px] flex items-center justify-center">
                       <span className={`inline-flex items-center justify-center py-1 md:py-1.5 px-4 rounded-lg md:rounded-xl text-[9px] md:text-[11px] font-black text-white min-w-[85px] transition-all duration-300 ${item.status === 'Berlangsung' ? 'bg-[#10b981] animate-glow-green' : 'bg-[#3b82f6] animate-glow-blue'}`}>{item.status}</span>
                     </td>
                   </tr>
