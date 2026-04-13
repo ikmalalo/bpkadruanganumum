@@ -284,7 +284,7 @@ export default function PreviewHorizontal() {
                       <span className="text-[8px] md:text-[9px] font-bold text-gray-400 uppercase tracking-wider">{item.tanggal.split(', ')[1] || item.tanggal}</span>
                     </td>
                     <td className="px-4 flex-1 min-w-[120px] flex items-center font-black text-[9px] md:text-[11px] lg:text-[12px] text-gray-800 uppercase leading-tight">{item.tempat}</td>
-                    <td className="px-4 w-[10%] min-w-[90px] flex items-center justify-center"><span className="text-[9px] md:text-xs lg:text-sm font-black text-orange-500 bg-orange-50 px-1.5 md:px-2.5 py-1 rounded-md whitespace-nowrap">{item.pukul}</span></td>
+                    <td className="px-4 w-[10%] min-w-[90px] flex items-center justify-center"><span className="text-[9px] md:text-[11px] lg:text-[12px] font-black text-orange-500 bg-orange-50 px-1.5 md:px-2.5 py-1 rounded-md whitespace-nowrap">{item.pukul}</span></td>
                     <td className="px-6 flex-[2] min-w-[200px] flex items-center font-black text-[9px] md:text-[11px] lg:text-[12px] text-gray-800 uppercase leading-tight">{item.acara}</td>
                     <td className="px-4 w-[12%] min-w-[100px] hidden lg:flex items-center font-black text-[10px] md:text-[11px] text-gray-800 uppercase">{item.pelaksana}</td>
                     {item.type === 'PEMKOT' && (
