@@ -394,30 +394,28 @@ export default function PreviewVertikal() {
                       </div>
                     </div>
                     <div className={`${isPuppet ? 'p-3' : 'p-4'} flex-1`}>
-                      <div className="grid grid-cols-2 gap-4 h-full">
-                        {/* Left Column: Acara & Tempat */}
-                        <div className="flex flex-col gap-4">
-                          <div>
-                            <div className={`${isPuppet ? 'text-[8px] mb-0.5' : 'text-[9px] mb-0.5'} font-bold text-orange-500 uppercase tracking-widest`}>ACARA / AGENDA</div>
-                            <h3 className={`${isPuppet ? 'text-xs' : 'text-xs'} font-black text-gray-800 leading-tight uppercase line-clamp-5`}>{item.acara}</h3>
-                          </div>
-                          <div>
-                            <div className={`${isPuppet ? 'text-[8px] mb-0.5' : 'text-[9px] mb-0.5'} font-bold text-orange-500 uppercase tracking-widest`}>TEMPAT</div>
-                            <div className={`${isPuppet ? 'text-[10px]' : 'text-xs'} font-black text-gray-700 uppercase leading-snug`}>{item.tempat}</div>
-                          </div>
+                      <div className="grid grid-cols-2 gap-x-4 gap-y-4">
+                        {/* Row 1: Acara & Pelaksana */}
+                        <div>
+                          <div className={`${isPuppet ? 'text-[8px] mb-0.5' : 'text-[9px] mb-0.5'} font-bold text-orange-500 uppercase tracking-widest`}>ACARA / AGENDA</div>
+                          <h3 className={`${isPuppet ? 'text-xs' : 'text-xs'} font-black text-gray-800 leading-tight uppercase line-clamp-5`}>{item.acara}</h3>
+                        </div>
+                        <div>
+                          <div className={`${isPuppet ? 'text-[8px] mb-0.5' : 'text-[9px] mb-0.5'} font-bold text-orange-500 uppercase tracking-widest`}>PELAKSANA</div>
+                          <div className={`${isPuppet ? 'text-[10px]' : 'text-xs'} font-black text-gray-700 uppercase leading-snug`}>{item.pelaksana}</div>
                         </div>
 
-                        {/* Right Column: Pelaksana & Dihadiri */}
-                        <div className="flex flex-col gap-4">
-                          <div>
-                            <div className={`${isPuppet ? 'text-[8px] mb-0.5' : 'text-[9px] mb-0.5'} font-bold text-orange-500 uppercase tracking-widest`}>PELAKSANA</div>
-                            <div className={`${isPuppet ? 'text-[10px]' : 'text-xs'} font-black text-gray-700 uppercase leading-snug`}>{item.pelaksana}</div>
-                          </div>
+                        {/* Row 2: Tempat & Dihadiri */}
+                        <div>
+                          <div className={`${isPuppet ? 'text-[8px] mb-0.5' : 'text-[9px] mb-0.5'} font-bold text-orange-500 uppercase tracking-widest`}>TEMPAT</div>
+                          <div className={`${isPuppet ? 'text-[10px]' : 'text-xs'} font-black text-gray-700 uppercase leading-snug`}>{item.tempat}</div>
+                        </div>
+                        <div>
                           {item.type === 'PEMKOT' && (
-                            <div>
+                            <>
                               <div className={`${isPuppet ? 'text-[8px] mb-0.5' : 'text-[9px] mb-0.5'} font-bold text-orange-500 uppercase tracking-widest`}>DIHADIRI</div>
                               <div className={`${isPuppet ? 'text-[10px]' : 'text-xs'} font-black text-gray-700 uppercase leading-snug`}>{item.dihadiri || '-'}</div>
-                            </div>
+                            </>
                           )}
                         </div>
                       </div>
