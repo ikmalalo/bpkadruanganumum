@@ -260,7 +260,7 @@ export default function PreviewHorizontal() {
                   <th className="py-2 px-2 text-center text-[10px] md:text-sm font-black w-[5%] min-w-[40px] hidden md:flex items-center justify-center">NO</th>
                   <th className="py-2 px-4 text-left text-[9px] md:text-[14px] font-black w-[15%] min-w-[100px] flex items-center">HARI / TANGGAL</th>
                   <th className="py-2 px-4 text-left text-[9px] md:text-[14px] font-black flex-1 min-w-[120px] flex items-center">TEMPAT</th>
-                  <th className="py-2 px-4 text-center text-[9px] md:text-[14px] font-black w-[12%] min-w-[90px] flex items-center justify-center">PUKUL</th>
+                  <th className="py-2 px-4 text-center text-[9px] md:text-[14px] font-black w-[15%] min-w-[90px] flex items-center justify-center">PUKUL</th>
                   <th className="py-2 px-6 text-left text-[9px] md:text-[14px] font-black flex-[2] min-w-[200px] flex items-center">ACARA</th>
                   <th className="py-2 px-4 text-left text-[9px] md:text-[14px] font-black w-[12%] min-w-[100px] hidden lg:flex items-center">PELAKSANA</th>
                   {currentSlide.category === 'PEMKOT' && (
