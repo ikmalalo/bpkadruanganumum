@@ -65,10 +65,10 @@ const autoUpdateStatuses = async () => {
       const se = timeToMin(endTime, sm);
 
       if (agendaDate < todayWita) {
-        await db.query('DELETE FROM agenda_ruangan WHERE id = ?', [agenda.id]);
+        await db.query('UPDATE agenda_ruangan SET status = "Selesai" WHERE id = ?', [agenda.id]);
       } else if (agendaDate.getTime() === todayWita.getTime()) {
         if (cm >= se) {
-          await db.query('DELETE FROM agenda_ruangan WHERE id = ?', [agenda.id]);
+          await db.query('UPDATE agenda_ruangan SET status = "Selesai" WHERE id = ?', [agenda.id]);
         } else if (agenda.status === 'Terjadwal' && cm >= sm) {
           await db.query('UPDATE agenda_ruangan SET status = "Berlangsung" WHERE id = ?', [agenda.id]);
         }
@@ -195,8 +195,8 @@ const updateAgendaStatus = async (req, res) => {
     let result;
 
     if (status === 'Selesai') {
-      // If status is 'Selesai', delete the record as requested by user
-      query = 'DELETE FROM agenda_ruangan WHERE id = ?';
+      // If status is 'Selesai', update status instead of deleting
+      query = 'UPDATE agenda_ruangan SET status = "Selesai" WHERE id = ?';
       [result] = await db.query(query, [id]);
     } else {
       // Otherwise, update the status
@@ -271,9 +271,23 @@ const updateAgenda = async (req, res) => {
   }
 };
 
+const clearHistory = async (req, res) => {
+  try {
+    const [result] = await db.query("DELETE FROM agenda_ruangan WHERE status = 'Selesai'");
+    res.status(200).json({ 
+      message: 'Semua riwayat berhasil dihapus', 
+      affectedRows: result.affectedRows 
+    });
+  } catch (error) {
+    console.error('Error clearing history:', error);
+    res.status(500).json({ message: 'Internal Server Error', error: error.message });
+  }
+};
+
 module.exports = {
   getAgendas,
   createAgenda,
   updateAgendaStatus,
-  updateAgenda
+  updateAgenda,
+  clearHistory
 };

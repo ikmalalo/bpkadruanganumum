@@ -130,7 +130,11 @@ export default function PreviewVertikal() {
     };
 
     const sortedAgendas = [...allAgendas]
-      .filter(item => isPuppet ? item.status === "Terjadwal" : true)
+      .filter(item => {
+        if (item.status === "Selesai") return false;
+        if (isPuppet) return item.status === "Terjadwal";
+        return true;
+      })
       .sort((a, b) => {
         const dateA = parseIndoDate(a.tanggal).getTime();
         const dateB = parseIndoDate(b.tanggal).getTime();

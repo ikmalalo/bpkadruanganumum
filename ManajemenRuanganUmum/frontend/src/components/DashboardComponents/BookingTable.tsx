@@ -206,14 +206,14 @@ const applyStatusChange=async ()=>{
     if(type==="bpkad"){
       let newData=[...bpkadData]
       let newTemp=[...tempStatus]
-      if(status==="Selesai"){ newData.splice(index,1); newTemp.splice(index,1); }
-      else { newData[index].status=status; newTemp[index]=status; }
+      newData[index].status=status; 
+      newTemp[index]=status;
       setBpkadData(newData); setTempStatus(newTemp);
     } else {
       let newData=[...pemkotData]
       let newTemp=[...tempPemkotStatus]
-      if(status==="Selesai"){ newData.splice(index,1); newTemp.splice(index,1); }
-      else { newData[index].status=status; newTemp[index]=status; }
+      newData[index].status=status; 
+      newTemp[index]=status;
       setPemkotData(newData); setTempPemkotStatus(newTemp);
     }
 

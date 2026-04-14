@@ -129,12 +129,14 @@ export default function PreviewHorizontal() {
       return parseInt(match[1]) * 60 + parseInt(match[2]);
     };
 
-    const sortedAgendas = [...allAgendas].sort((a, b) => {
-      const dateA = parseIndoDate(a.tanggal).getTime();
-      const dateB = parseIndoDate(b.tanggal).getTime();
-      if (dateA !== dateB) return dateA - dateB;
-      return parseTime(a.pukul) - parseTime(b.pukul);
-    });
+    const sortedAgendas = [...allAgendas]
+      .filter(item => item.status !== "Selesai")
+      .sort((a, b) => {
+        const dateA = parseIndoDate(a.tanggal).getTime();
+        const dateB = parseIndoDate(b.tanggal).getTime();
+        if (dateA !== dateB) return dateA - dateB;
+        return parseTime(a.pukul) - parseTime(b.pukul);
+      });
 
     const bpkad = sortedAgendas.filter(item => item.type === "BPKAD")
     const pemkot = sortedAgendas.filter(item => item.type === "PEMKOT")

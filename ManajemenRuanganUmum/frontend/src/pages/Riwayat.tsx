@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react"
 import { apiUrl } from "../lib/api"
+import { Trash2 } from "lucide-react"
 
 interface AgendaItem {
   id: number
@@ -33,8 +34,38 @@ export default function Riwayat() {
     fetchAgendas()
   }, [])
 
+  const handleClearHistory = async () => {
+    if (!confirm("Apakah Anda yakin ingin menghapus semua riwayat peminjaman yang sudah selesai?")) return;
+    
+    try {
+      const response = await fetch(apiUrl('/api/agendas/history'), {
+        method: 'DELETE',
+      });
+      if (response.ok) {
+        setAgendas(prev => prev.filter(a => a.status !== 'Selesai'));
+      } else {
+        alert("Gagal menghapus riwayat.");
+      }
+    } catch (error) {
+      console.error('Error clearing history:', error);
+      alert("Terjadi kesalahan saat menghapus riwayat.");
+    }
+  };
+
   return (
-    <div className="flex flex-col">
+    <div className="flex flex-col gap-4">
+      <div className="flex justify-between items-center">
+        <h2 className="text-xl font-bold text-gray-800">Riwayat Peminjaman</h2>
+        {agendas.some(a => a.status === 'Selesai') && (
+          <button 
+            onClick={handleClearHistory}
+            className="flex items-center gap-2 px-4 py-2 bg-red-50 text-red-600 rounded-lg font-bold text-xs hover:bg-red-100 transition-colors shadow-sm border border-red-100"
+          >
+            <Trash2 size={14} />
+            Hapus Semua Riwayat
+          </button>
+        )}
+      </div>
 
       <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
         {loading ? (
@@ -73,7 +104,8 @@ export default function Riwayat() {
                   <td className="p-4 text-gray-500">{item.pelaksana}</td>
                   <td className="p-4">
                     <span className={`px-3 py-1 rounded-full text-[10px] font-black uppercase
-                      ${item.status === "Berlangsung" ? "bg-green-100 text-green-600" : "bg-blue-100 text-blue-600"}`}>
+                      ${item.status === "Berlangsung" ? "bg-green-100 text-green-600" : 
+                        item.status === "Selesai" ? "bg-gray-100 text-gray-500" : "bg-blue-100 text-blue-600"}`}>
                       {item.status}
                     </span>
                   </td>
