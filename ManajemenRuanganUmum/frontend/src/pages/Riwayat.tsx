@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react"
 import { apiUrl } from "../lib/api"
-import { Trash2 } from "lucide-react"
+import { Trash2, ChevronLeft, ChevronRight } from "lucide-react"
 
 interface AgendaItem {
   id: number
@@ -17,6 +17,8 @@ interface AgendaItem {
 export default function Riwayat() {
   const [agendas, setAgendas] = useState<AgendaItem[]>([])
   const [loading, setLoading] = useState(true)
+  const [currentPage, setCurrentPage] = useState(1)
+  const rowsPerPage = 10
 
   useEffect(() => {
     const fetchAgendas = async () => {
@@ -51,6 +53,11 @@ export default function Riwayat() {
       alert("Terjadi kesalahan saat menghapus riwayat.");
     }
   };
+
+  const totalPages = Math.ceil(agendas.length / rowsPerPage)
+  const indexOfLastRow = currentPage * rowsPerPage
+  const indexOfFirstRow = indexOfLastRow - rowsPerPage
+  const currentAgendas = agendas.slice(indexOfFirstRow, indexOfLastRow)
 
   return (
     <div className="flex flex-col gap-4">
@@ -91,9 +98,9 @@ export default function Riwayat() {
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-50 text-gray-700">
-              {agendas.map((item, index) => (
+              {currentAgendas.map((item, index) => (
                 <tr key={item.id} className="hover:bg-gray-50/50 transition-colors">
-                  <td className="p-4 text-center font-bold text-gray-400">{index + 1}</td>
+                  <td className="p-4 text-center font-bold text-gray-400">{indexOfFirstRow + index + 1}</td>
                   <td className="p-4">
                     <div className="font-bold text-gray-800">{item.hari}</div>
                     <div className="text-xs text-gray-400">{item.tanggal}</div>
@@ -115,6 +122,34 @@ export default function Riwayat() {
           </table>
         )}
       </div>
+
+      {/* Pagination Controls */}
+      {!loading && agendas.length > 0 && (
+        <div className="flex flex-col sm:flex-row justify-between items-center mt-2 gap-4 px-2">
+          <div className="text-xs text-gray-500 font-medium">
+            Menampilkan <span className="text-gray-900">{indexOfFirstRow + 1} - {Math.min(indexOfLastRow, agendas.length)}</span> dari <span className="text-gray-900">{agendas.length}</span> data
+          </div>
+          <div className="flex items-center gap-2">
+            <button 
+              onClick={() => setCurrentPage(p => Math.max(p - 1, 1))} 
+              className="p-2 border border-gray-200 rounded-lg bg-white hover:bg-gray-50 disabled:opacity-50" 
+              disabled={currentPage === 1}
+            >
+              <ChevronLeft size={16}/>
+            </button>
+            <span className="w-8 h-8 flex items-center justify-center bg-orange-500 text-white rounded-lg text-sm font-bold shadow-md shadow-orange-200">
+              {currentPage}
+            </span>
+            <button 
+              onClick={() => setCurrentPage(p => Math.min(p + 1, totalPages))} 
+              className="p-2 border border-gray-200 rounded-lg bg-white hover:bg-gray-50 disabled:opacity-50" 
+              disabled={currentPage === totalPages || totalPages === 0}
+            >
+              <ChevronRight size={16}/>
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   )
 }

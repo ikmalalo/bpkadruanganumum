@@ -126,7 +126,7 @@ useEffect(() => {
   setTempPemkotStatus(pemkotData.map((d:any)=>d.status))
 }, [pemkotData])
 
-const rowsPerPage=5
+const rowsPerPage=10
 const [bpkadPage,setBpkadPage]=useState(1)
 const [pemkotPage,setPemkotPage]=useState(1)
 
